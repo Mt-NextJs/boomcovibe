@@ -22,7 +22,7 @@ const config: Config = {
     theme: {
         extend: {
             borderWidth: {
-                1: '1px'
+                1: '1px',
             },
             colors: {
                 primary: {
@@ -55,7 +55,7 @@ const config: Config = {
                     999: '#999999',
                     ddd: '#dddddd',
                     ccc: '#cccccc',
-                }
+                },
             },
         },
     },
