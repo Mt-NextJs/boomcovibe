@@ -1,14 +1,15 @@
-import {Metadata} from "next";
+import AuthForm from '@components/auth-form';
+import { Metadata } from 'next';
 
 //metadata
 export const metadata: Metadata = {
-    title: "Login"
-}
+    title: 'Login',
+};
 
 export default function Login() {
-  return (
-    <div>
-      <h1>로그인 페이지</h1>
-    </div>
-  );
+    return (
+        <div className="flex min-h-[100vh] items-center justify-center">
+            <AuthForm type="login"></AuthForm>
+        </div>
+    );
 }
