@@ -1,8 +1,34 @@
+'use client';
 import Image from 'next/image';
-import Empty from './Empty ';
-import Block from './Block';
+import { useState } from 'react';
+import Block from './block';
+import Empty from './empty ';
+import { ReactSortable, SortableEvent } from 'react-sortablejs';
 
 export default function Admin() {
+    const [array, setArray] = useState([
+        { id: 1, item: 'Item 1' },
+        { id: 2, item: 'Item 2' },
+        { id: 3, item: 'Item 3' },
+        { id: 4, item: 'Item 4' },
+    ]);
+
+    const handleBlock = (index: number, action: string) => {
+        if (action === 'UP' && index === 0) return;
+        if (action === 'DOWN' && index === array.length - 1) return;
+        setArray((arr) => {
+            let list = [...arr];
+            const item = list.splice(index, 1);
+
+            return action === 'UP' ? [...item, ...list] : [...list, ...item];
+        });
+    };
+    const dragEnd = (e: SortableEvent) => {
+        const list = [...array];
+        const obj = list.splice(e.oldIndex as number, 1);
+        list.splice(e.newIndex as number, 0, ...obj);
+        setArray(list);
+    };
     return (
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-5 bg-white">
             {/* 프로필 */}
@@ -70,20 +96,31 @@ export default function Admin() {
                         />
                     </a>
                 </h2>
-                <Block />
-                <Block />
-                <Block />
-                <Block />
-                <Block />
-                <Block />
-                {/* <Empty /> */}
+                <ReactSortable
+                    list={array}
+                    tag={'ul'}
+                    handle=".drag-button"
+                    setList={setArray}
+                    animation={300}
+                    onEnd={dragEnd}
+                >
+                    {array.map((el, i) => (
+                        <Block
+                            item={el.item}
+                            index={i}
+                            key={el.item}
+                            handleBlock={handleBlock}
+                        />
+                    ))}
+                </ReactSortable>
+                <Empty />
             </section>
             {/* 미리보기 & 추가 버튼 */}
             <footer className="pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between bg-gradient-to-b from-transparent to-white p-3">
                 <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
                     미리보기
                 </button>
-                <button className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-[var(--primary)] p-4">
+                <button className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4">
                     <Image
                         src={'/assets/icons/icon_plus.png'}
                         alt="plus icon"

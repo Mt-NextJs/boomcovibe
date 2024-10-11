@@ -1,17 +1,56 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import Menu from './menu';
 
-export default function Block() {
+export default function Block({
+    index,
+    item,
+    handleBlock,
+}: {
+    index: number;
+    item: string;
+    handleBlock: (index: number, action: string) => void;
+}) {
     const [isToggled, setIsToggled] = useState(false);
+    const [menuToggle, setMenuToggle] = useState(false);
+    const menuRef = useRef<HTMLDivElement | null>(null);
 
+    useEffect(() => {
+        // 블록 메뉴 닫는 함수
+        const handleClickOutside = (event: MouseEvent) => {
+            console.log(event.target);
+            if (
+                menuRef.current &&
+                !menuRef.current.contains(event.target as Node)
+            ) {
+                setMenuToggle(false);
+            }
+        };
+
+        if (menuToggle) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () =>
+            document.removeEventListener('mousedown', handleClickOutside);
+    }, [menuToggle]);
     const toggle = () => {
         setIsToggled(!isToggled);
     };
+    const handleMenu = () => {
+        setMenuToggle(!menuToggle);
+    };
     return (
-        <div className="mb-3 flex overflow-hidden rounded-lg border border-gray-200">
-            <div className="flex flex-col bg-gray-100">
-                <button className="flex-1">
+        <li className={`relative mb-3 flex rounded-lg border border-gray-200`}>
+            {/* 드래그 버튼 */}
+            <div className="flex flex-col rounded-l-lg bg-gray-100">
+                <button
+                    className="flex-1"
+                    onClick={() => handleBlock(index, 'UP')}
+                >
                     <Image
                         className="p-2"
                         src={'/assets/icons/icon_btn_handle_up.svg'}
@@ -20,7 +59,7 @@ export default function Block() {
                         height={30}
                     />
                 </button>
-                <button className="flex-1">
+                <button className="drag-button flex-1">
                     <Image
                         className="border-y-1 p-2"
                         src={'/assets/icons/icon_grabber.png'}
@@ -29,7 +68,10 @@ export default function Block() {
                         height={30}
                     />
                 </button>
-                <button className="flex-1">
+                <button
+                    className="flex-1"
+                    onClick={() => handleBlock(index, 'DOWN')}
+                >
                     <Image
                         className="p-2"
                         src={'/assets/icons/icon_btn_handle_down.svg'}
@@ -40,7 +82,7 @@ export default function Block() {
                 </button>
             </div>
             <div className="relative flex-1 p-3">
-                <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-[var(--primary)]">
+                <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
                     {/* 블록 타입 */}
                     <Image
                         src={'/assets/icons/icon_link.png'}
@@ -48,13 +90,14 @@ export default function Block() {
                         width={15}
                         height={15}
                     />
-                    링크
+                    링크 {item}
                 </div>
                 <div className="flex gap-2">
                     {/* 이미지 / title */}
                     <div className="h-14 w-14 bg-slate-400">이미지</div>
                     <div>title</div>
                 </div>
+                {/* 활성화 버튼 & 메뉴 */}
                 <div className="absolute right-0 top-0 flex p-3">
                     <div className="flex items-center">
                         <button
@@ -66,7 +109,7 @@ export default function Block() {
                             />
                         </button>
                     </div>
-                    <button>
+                    <button onClick={handleMenu}>
                         <Image
                             src={'/assets/icons/icon_menu_dot.png'}
                             alt="menu button"
@@ -75,7 +118,12 @@ export default function Block() {
                         />
                     </button>
                 </div>
+                {menuToggle && (
+                    <div ref={menuRef}>
+                        <Menu />
+                    </div>
+                )}
             </div>
-        </div>
+        </li>
     );
 }
