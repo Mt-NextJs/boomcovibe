@@ -1,5 +1,6 @@
 'use client';
 
+import { ClientRoute } from '@config/route';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
@@ -15,7 +16,7 @@ export default function AuthForm({ type }: { type: string }) {
                 ) : type === 'login' ? (
                     <>
                         <div className="relative mb-5 cursor-pointer">
-                            <Link href={'/'}>
+                            <Link href={ClientRoute.MAIN as string}>
                                 <Image
                                     src="/assets/icons/icon_back.png"
                                     alt="back"
@@ -46,7 +47,7 @@ export default function AuthForm({ type }: { type: string }) {
                         <>
                             <div className="mt-2 flex">
                                 <p className="mr-2">이미 가입하셨나요 ?</p>
-                                <Link href={'/login'}>
+                                <Link href={ClientRoute.LOGIN as string}>
                                     <p className="text-orange-400">
                                         로그인하기
                                     </p>
@@ -138,7 +139,7 @@ export default function AuthForm({ type }: { type: string }) {
                             <button className="button color" type="submit">
                                 In My Link 로그인
                             </button>
-                            <Link href={'/join'}>
+                            <Link href={ClientRoute.JOIN as string}>
                                 <button className="button gray" type="submit">
                                     In My Link 무료 회원가입
                                 </button>
