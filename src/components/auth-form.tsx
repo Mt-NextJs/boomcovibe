@@ -1,12 +1,30 @@
 'use client';
 
 import { ClientRoute } from '@config/route';
+import { RegisterFormData } from '@config/types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { registerFormSchema } from 'schemas/schema';
 
 export default function AuthForm({ type }: { type: string }) {
     const [user, setUser] = useState(null);
+
+    const {
+        register,
+        handleSubmit,
+        reset,
+        formState: { errors },
+    } = useForm<RegisterFormData>({
+        resolver: zodResolver(registerFormSchema),
+    });
+
+    async function handleRegister(data: RegisterFormData) {
+        console.log(data);
+        reset();
+    }
 
     return (
         <div>
@@ -57,7 +75,7 @@ export default function AuthForm({ type }: { type: string }) {
                     )}
                 </div>
 
-                <form className="mt-8">
+                <form className="mt-8" onSubmit={handleSubmit(handleRegister)}>
                     <label htmlFor="id" className="title">
                         아이디
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
@@ -65,8 +83,10 @@ export default function AuthForm({ type }: { type: string }) {
                         </span>
                     </label>
                     <input
+                        {...register('id')}
                         id="id"
-                        type="email"
+                        name="id"
+                        type="text"
                         className="input mb-5"
                         placeholder="아이디를 입력하세요."
                         onFocus={(e) => (e.target.placeholder = '')}
@@ -74,6 +94,12 @@ export default function AuthForm({ type }: { type: string }) {
                             (e.target.placeholder = '아이디를 입력하세요.')
                         }
                     ></input>
+                    {/* Login, Join에서 아이디가 유효하지 않을때, 에러처리 */}
+                    {errors.id && (
+                        <p className="text-sm text-red-600">
+                            {errors.id.message as string}
+                        </p>
+                    )}
 
                     <label htmlFor="password" className="title">
                         비밀번호
@@ -82,13 +108,21 @@ export default function AuthForm({ type }: { type: string }) {
                         </span>
                     </label>
                     <input
+                        {...register('password')}
                         id="password"
+                        name="password"
                         type="password"
                         className="input mb-5"
                         placeholder="********"
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) => (e.target.placeholder = '********')}
                     ></input>
+                    {/* Login, Join에서 비밀번호가 유효하지 않을때, 에러처리 */}
+                    {errors.password && (
+                        <p className="text-sm text-red-600">
+                            {errors.password.message as string}
+                        </p>
+                    )}
 
                     {user ? (
                         'Account'
@@ -97,14 +131,16 @@ export default function AuthForm({ type }: { type: string }) {
                     ) : (
                         <>
                             {' '}
-                            <label htmlFor="confirm" className="title">
+                            <label htmlFor="confirmPassword" className="title">
                                 비밀번호 확인
                                 <span className="title relative top-1 ml-2 inline-block text-red-500">
                                     *
                                 </span>
                             </label>
                             <input
-                                id="confirm"
+                                {...register('confirmPassword')}
+                                id="confirmPassword"
+                                name="confirmPassword"
                                 type="password"
                                 className="input mb-5"
                                 placeholder="********"
@@ -113,6 +149,12 @@ export default function AuthForm({ type }: { type: string }) {
                                     (e.target.placeholder = '********')
                                 }
                             ></input>
+                            {/* Join에서 비밀번호 확인 부분에서 일치하지 않을때, 에러처리 */}
+                            {errors.confirmPassword && (
+                                <p className="text-sm text-red-600">
+                                    {errors.confirmPassword.message as string}
+                                </p>
+                            )}
                             <label htmlFor="email" className="title">
                                 이메일
                                 <span className="title relative top-1 ml-2 inline-block text-red-500">
@@ -120,8 +162,10 @@ export default function AuthForm({ type }: { type: string }) {
                                 </span>
                             </label>
                             <input
+                                {...register('email')}
                                 id="email"
-                                type="email"
+                                name="email"
+                                type="text"
                                 className="input mb-5"
                                 placeholder="mylink@boomco.com"
                                 onFocus={(e) => (e.target.placeholder = '')}
@@ -129,6 +173,12 @@ export default function AuthForm({ type }: { type: string }) {
                                     (e.target.placeholder = 'mylink@boomco.com')
                                 }
                             ></input>
+                            {/* Join에서 이메일이 유효하지 않을때, 에러처리 */}
+                            {errors.email && (
+                                <p className="text-sm text-red-600">
+                                    {errors.email.message as string}
+                                </p>
+                            )}
                         </>
                     )}
 
