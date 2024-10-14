@@ -13,7 +13,7 @@ export default function BlockHeader({
     blockDescription: string;
 }) {
     return (
-        <div className="p-10">
+        <div className="px-10 pt-10">
             <div className="relative mb-5 h-6 w-6 cursor-pointer">
                 <Link href={iconLink}>
                     <Image
@@ -24,8 +24,8 @@ export default function BlockHeader({
                     />
                 </Link>
             </div>
-            <p className="pageName mb-10">{blockTitle}</p>
-            <div className="flex flex-col gap-2">
+            <p className="pageName">{blockTitle}</p>
+            <div className="mt-10 flex flex-col gap-2">
                 <label
                     htmlFor="src"
                     dangerouslySetInnerHTML={{ __html: blockDescription }}

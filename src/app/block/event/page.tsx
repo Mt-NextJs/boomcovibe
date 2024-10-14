@@ -1,12 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
+import Datepicker from 'react-tailwindcss-datepicker';
 import BlockHeader from '../components/block-header';
 
 export default function EventBlock() {
     const [eventTitle, setEventTitle] = useState('');
     const [eventContent, setEventContent] = useState('');
     const [eventGuide, setEventGuide] = useState('');
+
+    const [startDateValue, setStartDateValue] = useState({
+        startDate: null,
+        endDate: null,
+    });
     return (
         <div>
             <BlockHeader
@@ -16,8 +22,38 @@ export default function EventBlock() {
                 blockDescription={''}
             />
             <div className="px-10">
-                <div>events preview</div>
-                <div>border-line</div>
+                <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
+                    <div className="w-full max-w-[450px] rounded-xl bg-white shadow-lg">
+                        <div className="text-md p-4 text-gray-200">event</div>
+                        <div className="flex flex-col items-center px-4">
+                            <div>
+                                {eventTitle.length > 0 ? (
+                                    <>{eventTitle}</>
+                                ) : (
+                                    <>타이틀을 입력해주세요</>
+                                )}
+                            </div>
+                            <div className="mb-4 font-light text-gray-400">
+                                {eventContent.length > 0 ? (
+                                    <>{eventContent}</>
+                                ) : (
+                                    <>이벤트 설명을 입력해보세요</>
+                                )}
+                            </div>
+                        </div>
+                        <div className="flex items-center justify-between rounded-b-lg bg-gray-100 px-4 py-3 text-sm">
+                            <span className="text-gray-400">
+                                24.09.11 16:00 ~ 24.09.11 16:00
+                            </span>
+                            <button className="flex items-center text-gray-400 transition-colors hover:text-gray-700">
+                                80일 남음
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <div className="my-10 w-full border-b" />
+
                 <div className="mb-10 flex flex-col gap-2">
                     <div className="flex">
                         <label htmlFor="link">이벤트명</label>
@@ -68,6 +104,24 @@ export default function EventBlock() {
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
                             *
                         </span>
+                    </div>
+                    <div className="min-h-1/2 flex w-full flex-1 flex-col justify-center rounded-md bg-gray-100 p-12">
+                        <div className="flex flex-wrap gap-2">
+                            시작{' '}
+                            <Datepicker
+                                primaryColor="orange"
+                                i18n={'ko'}
+                                placeholder={'날짜 선택'}
+                                displayFormat="YYYY. MM. DD"
+                                asSingle={true}
+                                useRange={true}
+                                value={startDateValue}
+                                showShortcuts={true}
+                                onChange={(newValue) =>
+                                    setStartDateValue(newValue)
+                                }
+                            />
+                        </div>
                     </div>
                     <div>Calendar</div>
                 </div>
