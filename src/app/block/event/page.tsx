@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Datepicker from 'react-tailwindcss-datepicker';
 import BlockHeader from '../components/block-header';
+import SelectTime from '../calendar/component/select-time';
 
 export default function EventBlock() {
     const [eventTitle, setEventTitle] = useState('');
@@ -13,6 +14,10 @@ export default function EventBlock() {
         startDate: null,
         endDate: null,
     });
+    console.log(startDateValue);
+    const [startTimeValue, setStartTimeValue] = useState('');
+    const [endTimeValue, setEndTimeValue] = useState('');
+
     return (
         <div>
             <BlockHeader
@@ -105,15 +110,28 @@ export default function EventBlock() {
                             *
                         </span>
                     </div>
-                    <div className="min-h-1/2 flex w-full flex-1 flex-col justify-center rounded-md bg-gray-100 p-12">
-                        <div className="flex flex-wrap gap-2">
-                            시작{' '}
+
+                    <div className="min-h-1/2 flex w-full flex-1 flex-col justify-center gap-2 rounded-md bg-gray-100 p-12">
+                        <div className="flex gap-2">
+                            <div className="flex min-w-9 items-center">
+                                시작{' '}
+                            </div>
                             <Datepicker
                                 primaryColor="orange"
                                 i18n={'ko'}
+                                configs={{
+                                    shortcuts: {
+                                        today: '오늘',
+                                        yesterday: '어제',
+                                        past: (period) =>
+                                            '지난 ' + period + ' 일 동안',
+                                        currentMonth: '이번달 내내',
+                                        pastMonth: '지난달',
+                                    },
+                                }}
                                 placeholder={'날짜 선택'}
                                 displayFormat="YYYY. MM. DD"
-                                asSingle={true}
+                                asSingle={false}
                                 useRange={true}
                                 value={startDateValue}
                                 showShortcuts={true}
@@ -121,9 +139,34 @@ export default function EventBlock() {
                                     setStartDateValue(newValue)
                                 }
                             />
+                            <SelectTime
+                                selectedTime={startTimeValue}
+                                setSelectedTime={setStartTimeValue}
+                            />
+                        </div>
+                        <div className="flex gap-2">
+                            <div className="flex min-w-9 items-center">
+                                종료
+                            </div>
+                            <Datepicker
+                                primaryColor="orange"
+                                i18n={'ko'}
+                                placeholder={'날짜 선택'}
+                                displayFormat="YYYY. MM. DD"
+                                asSingle={false}
+                                useRange={true}
+                                value={startDateValue}
+                                showShortcuts={true}
+                                onChange={(newValue) =>
+                                    setStartDateValue(newValue)
+                                }
+                            />
+                            <SelectTime
+                                selectedTime={endTimeValue}
+                                setSelectedTime={setEndTimeValue}
+                            />
                         </div>
                     </div>
-                    <div>Calendar</div>
                 </div>
                 <button
                     className={`button color ${!eventTitle ? 'disable' : ''}`}
