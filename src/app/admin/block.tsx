@@ -2,24 +2,59 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import Menu from './menu';
+import Schedule from './schedule';
+
+const blockTitleMap: Record<number, { title: string; src: string }> = {
+    1: { title: '구분선', src: '/assets/icons/icon_divide.png' },
+    2: { title: '동영상', src: '/assets/icons/icon_video.png' },
+    3: { title: '링크', src: '/assets/icons/icon_link.png' },
+    4: { title: '이미지', src: '/assets/icons/icon_image.png' },
+    5: { title: '이벤트', src: '/assets/icons/icon_gift.png' },
+    6: { title: '텍스트', src: '/assets/icons/icon_text.png' },
+    7: { title: '캘린더', src: '/assets/icons/icon_calendar.png' },
+};
+
+interface BlockProps extends Block {
+    index: number;
+    handleBlock: (index: number, action: 'UP' | 'DOWN') => void;
+    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => true | undefined;
+    isMoving: boolean;
+    movingIndex: number | null;
+    movingAction: 'UP' | 'DOWN' | null;
+}
 
 export default function Block({
+    type,
+    imgUrl,
     index,
-    item,
+    title,
+    schedule,
     handleBlock,
-}: {
-    index: number;
-    item: string;
-    handleBlock: (index: number, action: string) => void;
-}) {
+    toggleMove,
+    isMoving,
+    movingIndex,
+    movingAction,
+}: BlockProps) {
     const [isToggled, setIsToggled] = useState(false);
     const [menuToggle, setMenuToggle] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
 
+    const blockStyle = () => {
+        if (isMoving && movingAction === 'UP' && index < movingIndex!)
+            return 'translate-y-full';
+        if (isMoving && movingAction === 'DOWN' && index > movingIndex!)
+            return '-translate-y-full';
+        if (isMoving && movingAction === 'UP' && index === movingIndex)
+            return '-translate-y-full z-10';
+        if (isMoving && movingAction === 'DOWN' && index === movingIndex)
+            return 'translate-y-full z-10';
+
+        return '';
+    };
+
     useEffect(() => {
         // 블록 메뉴 닫는 함수
         const handleClickOutside = (event: MouseEvent) => {
-            console.log(event.target);
             if (
                 menuRef.current &&
                 !menuRef.current.contains(event.target as Node)
@@ -37,19 +72,36 @@ export default function Block({
         return () =>
             document.removeEventListener('mousedown', handleClickOutside);
     }, [menuToggle]);
+
+    // 블록 최 상하단 버튼
+    const handleMove = (index: number, action: 'UP' | 'DOWN') => {
+        if (action === 'UP' && index === 0) return;
+        if (toggleMove(index, action)) return;
+        toggleMove(index, action);
+        setTimeout(() => {
+            handleBlock(index, action);
+            toggleMove();
+        }, 300);
+    };
+
+    //활성화 버튼
     const toggle = () => {
         setIsToggled(!isToggled);
     };
+    // 메뉴 버튼
     const handleMenu = () => {
         setMenuToggle(!menuToggle);
     };
+
     return (
-        <li className={`relative mb-3 flex rounded-lg border border-gray-200`}>
+        <li
+            className={`relative mb-3 flex min-h-32 rounded-lg border border-gray-200 bg-white shadow-lg ${isMoving && 'transform transition-transform duration-500'} ${blockStyle()}`}
+        >
             {/* 드래그 버튼 */}
             <div className="flex flex-col rounded-l-lg bg-gray-100">
                 <button
                     className="flex-1"
-                    onClick={() => handleBlock(index, 'UP')}
+                    onClick={() => handleMove(index, 'UP')}
                 >
                     <Image
                         className="p-2"
@@ -70,7 +122,7 @@ export default function Block({
                 </button>
                 <button
                     className="flex-1"
-                    onClick={() => handleBlock(index, 'DOWN')}
+                    onClick={() => handleMove(index, 'DOWN')}
                 >
                     <Image
                         className="p-2"
@@ -85,17 +137,31 @@ export default function Block({
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
                     {/* 블록 타입 */}
                     <Image
-                        src={'/assets/icons/icon_link.png'}
+                        src={blockTitleMap[type].src}
                         alt="type image"
                         width={15}
                         height={15}
                     />
-                    링크 {item}
+                    {blockTitleMap[type].title}
                 </div>
-                <div className="flex gap-2">
-                    {/* 이미지 / title */}
-                    <div className="h-14 w-14 bg-slate-400">이미지</div>
-                    <div>title</div>
+                <div className={`flex gap-2`}>
+                    {/* content */}
+                    {schedule ? (
+                        <Schedule schedule={schedule} />
+                    ) : (
+                        <>
+                            {imgUrl && (
+                                <Image
+                                    src={imgUrl}
+                                    alt={''}
+                                    width={56}
+                                    height={56}
+                                    className="rounded-md"
+                                />
+                            )}
+                            <div>{title}</div>
+                        </>
+                    )}
                 </div>
                 {/* 활성화 버튼 & 메뉴 */}
                 <div className="absolute right-0 top-0 flex p-3">
