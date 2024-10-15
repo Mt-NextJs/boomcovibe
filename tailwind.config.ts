@@ -18,11 +18,12 @@ const config: Config = {
         './src/app/**/*.{js,ts,jsx,tsx}',
         './src/components/**/*.{js,ts,jsx,tsx}',
         './src/styles/**/*.{js,ts,jsx,tsx}',
+        './node_modules/react-tailwindcss-datepicker/dist/index.esm.{js,ts}',
     ],
     theme: {
         extend: {
             borderWidth: {
-                1: '1px'
+                1: '1px',
             },
             colors: {
                 primary: {
@@ -55,7 +56,7 @@ const config: Config = {
                     999: '#999999',
                     ddd: '#dddddd',
                     ccc: '#cccccc',
-                }
+                },
             },
         },
     },
