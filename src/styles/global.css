@@ -51,6 +51,14 @@ input:focus {
     @apply border-primary-200 outline-none;
 }
 
+select {
+    @apply h-12 w-full rounded-lg border-1 border-gray-200;
+}
+
+select:focus {
+    @apply border-primary-200 outline-none;
+}
+
 a {
     cursor: pointer;
 }
