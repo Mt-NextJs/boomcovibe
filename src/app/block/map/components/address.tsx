@@ -50,10 +50,12 @@ export default function DaumPost({ setAddressObj }: Props) {
         <>
             <button
                 type="button"
-                className="mt-2 h-10 w-28 rounded-lg border bg-green-400"
+                className="button color"
                 onClick={handleClick}
             >
-                <div className="text-white-100 font-bold">주소찾기</div>
+                <div className="text-white-100 font-bold">
+                    + 주소를 검색하세요
+                </div>
             </button>
         </>
     );

@@ -55,9 +55,14 @@ export default function MapBlock() {
                 blockDescription={`주소를 검색하여 등록해주세요`}
             />
             <div className="px-10">
+                <DaumPost setAddressObj={setAddressObj} />
+                <div className="w-full border-b" />
+            </div>
+
+            <div className="px-10 pt-10">
                 <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
                     <div className="w-full max-w-[450px] rounded-xl bg-white shadow-lg">
-                        <div className="text-md p-4 text-gray-200">지도</div>
+                        <div className="text-md p-4 text-gray-200">장소</div>
                         <div className="flex flex-col items-center px-4">
                             <div>
                                 {totalValue.title.length > 0 ? (
@@ -75,7 +80,7 @@ export default function MapBlock() {
                             }
                         />
 
-                        <div className="text-h6 mt-4">
+                        <div className="m-2 flex items-center justify-center font-light text-gray-400">
                             {addressObj.areaAddress} {addressObj.townAddress}
                         </div>
                     </div>
@@ -100,13 +105,26 @@ export default function MapBlock() {
                         className="input"
                     />
                 </div>
+                <div className="mb-10 flex flex-col gap-2">
+                    <div className="flex">
+                        <label htmlFor="title">장소설명</label>
+                    </div>
+                    <input
+                        type="text"
+                        name="title"
+                        id="title"
+                        value={totalValue.content}
+                        onChange={handleInputFunction}
+                        placeholder="장소를 알아보기 쉬운 설명을 덧붙이면 좋아요"
+                        className="input"
+                    />
+                </div>
 
-                <div className="text-h5 leading-12 text-black-100 block flex flex-col justify-center font-bold">
-                    주소찾기
-                </div>
-                <div className="block flex justify-end">
-                    <DaumPost setAddressObj={setAddressObj} />
-                </div>
+                <button
+                    className={`button color ${totalValue.title.length === 0 ? 'disable' : ''}`}
+                >
+                    추가 완료
+                </button>
             </div>
         </>
     );
