@@ -1,15 +1,15 @@
-import AuthForm from '@components/auth-form';
+import AuthForm from '@app/(auth)/components/auth-form';
 import { Metadata } from 'next';
 
 //metadata
 export const metadata: Metadata = {
-    title: 'Login',
+    title: 'Join',
 };
 
-export default function Login() {
+export default function Join() {
     return (
         <div className="flex min-h-[100vh] items-center justify-center">
-            <AuthForm type="login"></AuthForm>
+            <AuthForm type="join"></AuthForm>
         </div>
     );
 }

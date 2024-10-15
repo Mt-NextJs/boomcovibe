@@ -1,13 +1,13 @@
 'use client';
 
 import { ClientRoute } from '@config/route';
-import { RegisterFormData } from '@config/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { registerFormSchema } from 'schemas/schema';
+import { RegisterFormData } from 'types/auth';
 
 export default function AuthForm({ type }: { type: string }) {
     const [user, setUser] = useState(null);
