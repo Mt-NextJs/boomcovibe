@@ -33,7 +33,7 @@ export default function PageBlock() {
                     type="text"
                     name="content"
                     id="content"
-                    placeholder="줄바꿈을 포함하여 원하느 ㄴ내용을 자유롭게 입력해주세요."
+                    placeholder="줄바꿈을 포함하여 원하는 내용을 자유롭게 입력해주세요."
                     className="input"
                 />
             </div>
