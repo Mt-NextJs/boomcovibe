@@ -1,27 +1,35 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
-import Block from './block';
-import Empty from './empty ';
+import Empty from './components/empty ';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
+import data from 'types/dummy';
+import Block from './components/block';
 
 export default function Admin() {
-    const [array, setArray] = useState([
-        { id: 1, item: 'Item 1' },
-        { id: 2, item: 'Item 2' },
-        { id: 3, item: 'Item 3' },
-        { id: 4, item: 'Item 4' },
-    ]);
+    const [array, setArray] = useState<Block[]>(data);
+    const [movingIndex, setMovingIndex] = useState<number | null>(null);
+    const [movingAction, setMovingAction] = useState<'UP' | 'DOWN' | null>(
+        null,
+    );
 
-    const handleBlock = (index: number, action: string) => {
-        if (action === 'UP' && index === 0) return;
-        if (action === 'DOWN' && index === array.length - 1) return;
+    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
         setArray((arr) => {
             let list = [...arr];
             const item = list.splice(index, 1);
-
             return action === 'UP' ? [...item, ...list] : [...list, ...item];
         });
+    };
+
+    const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
+        if (action === 'DOWN' && index === array.length - 1) return true;
+        if (index !== undefined && action) {
+            setMovingIndex(index);
+            setMovingAction(action);
+        } else {
+            setMovingIndex(null);
+            setMovingAction(null);
+        }
     };
     const dragEnd = (e: SortableEvent) => {
         const list = [...array];
@@ -106,10 +114,14 @@ export default function Admin() {
                 >
                     {array.map((el, i) => (
                         <Block
-                            item={el.item}
+                            {...el}
                             index={i}
-                            key={el.item}
+                            key={el.sequence}
                             handleBlock={handleBlock}
+                            toggleMove={toggleMove}
+                            isMoving={movingIndex !== null}
+                            movingIndex={movingIndex}
+                            movingAction={movingAction}
                         />
                     ))}
                 </ReactSortable>
