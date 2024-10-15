@@ -1,10 +1,10 @@
 'use client';
 import Image from 'next/image';
-import { useEffect, useState } from 'react';
-import Block from './block';
-import Empty from './empty ';
+import { useState } from 'react';
+import Empty from './components/empty ';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import data from 'types/dummy';
+import Block from './components/block';
 
 export default function Admin() {
     const [array, setArray] = useState<Block[]>(data);

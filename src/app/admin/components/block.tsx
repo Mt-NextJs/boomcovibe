@@ -3,6 +3,7 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import Menu from './menu';
 import Schedule from './schedule';
+import Event from './event';
 
 const blockTitleMap: Record<number, { title: string; src: string }> = {
     1: { title: '구분선', src: '/assets/icons/icon_divide.png' },
@@ -34,8 +35,9 @@ export default function Block({
     isMoving,
     movingIndex,
     movingAction,
+    ...rest
 }: BlockProps) {
-    const [isToggled, setIsToggled] = useState(false);
+    const [isToggled, setIsToggled] = useState(rest.active === 1);
     const [menuToggle, setMenuToggle] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
 
@@ -51,7 +53,6 @@ export default function Block({
 
         return '';
     };
-
     useEffect(() => {
         // 블록 메뉴 닫는 함수
         const handleClickOutside = (event: MouseEvent) => {
@@ -146,9 +147,15 @@ export default function Block({
                 </div>
                 <div className={`flex gap-2`}>
                     {/* content */}
-                    {schedule ? (
-                        <Schedule schedule={schedule} />
-                    ) : (
+                    {type === 5 && (
+                        <Event
+                            title={title}
+                            dateStart={rest.dateStart}
+                            dateEnd={rest.dateEnd}
+                        />
+                    )}
+                    {schedule && <Schedule schedule={schedule} />}
+                    {type !== 5 && type !== 7 && (
                         <>
                             {imgUrl && (
                                 <Image
