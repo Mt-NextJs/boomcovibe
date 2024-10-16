@@ -2,6 +2,7 @@
 import { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { FaMapMarkedAlt } from 'react-icons/fa';
 
 export default function Admin() {
     const [isOpen, setIsOpen] = useState(false);
@@ -177,6 +178,20 @@ export default function Admin() {
                                     <p className="text-lg font-bold">이벤트</p>
                                     <p className="text-base text-gray-400">
                                         이벤트 응모부터, 추첨까지 진행해보세요
+                                    </p>
+                                </div>
+                            </div>
+                        </Link>
+
+                        <Link href={'/block/map'}>
+                            <div className="mb-3 flex items-center border-b border-gray-200 pb-3">
+                                <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-blue-500">
+                                    <FaMapMarkedAlt size="30" color="white" />
+                                </div>
+                                <div className="ml-4">
+                                    <p className="text-lg font-bold">장소</p>
+                                    <p className="text-base text-gray-400">
+                                        알려야하는 위치를 띄워보세요
                                     </p>
                                 </div>
                             </div>
