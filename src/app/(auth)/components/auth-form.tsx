@@ -26,6 +26,8 @@ export default function AuthForm({ type }: { type: string }) {
         reset();
     }
 
+    async function handleLogin() {}
+
     return (
         <div>
             <div className="bg-white px-[25px] py-10">
