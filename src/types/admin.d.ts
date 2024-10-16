@@ -32,3 +32,18 @@ interface Block {
     active: number;
     schedule?: Schedule[]; // type이 7일 때만 포함되는 일정 데이터
 }
+
+interface UserInfo {
+    name: string;
+    userId: string;
+    email: string | null;
+    countryCode: string;
+    dateCreate: string;
+    dateUpdate: string;
+}
+
+interface Visitor {
+    today: number;
+    realTime: number;
+    total: number;
+}
