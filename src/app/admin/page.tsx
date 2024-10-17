@@ -10,7 +10,7 @@ import {
     fetchBlockList,
     fetchUserInfo,
     fetchVisitorInfo,
-} from 'service/adminApi';
+} from 'service/admin-api';
 import Skeleton from './components/skeleton';
 
 export default function Admin() {
