@@ -4,57 +4,54 @@ import { useEffect, useState } from 'react';
 import Empty from './components/empty ';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import Block from './components/block';
+import { ClientRoute } from '@config/route';
+import { useRouter } from 'next/navigation';
+import {
+    fetchBlockList,
+    fetchUserInfo,
+    fetchVisitorInfo,
+} from 'service/adminApi';
+import Skeleton from './components/skeleton';
 
-const option = {
-    headers: {
-        Authorization: `Bearer 6MiwibmeyJpZCIFtZSI6Iuu2kOy9lOuwlOydtOu4jCIsInVzZXJJZCI6ImJvb21jb3ZpYmUiLCJqb2luVHlwZSI6IjEiLCJwYXNzb3dyZCI6IjEyMzQiLCJlbWFpbCI6IiIsImNvdW50cnlDb2RlIjoiS1IiLCJwaG9uZU51bWJlciI6bnVsbCwicGxhbiI6Ik4iLCJwbXNMaW5rIjoiWSIsInBtc0J1c2luZXNzIjoiTiIsInBtc01hcmtldCI6Ik4iLCJhbGFybVRhbGsiOiJOIiwiY2F0ZWdvcmllcyI6bnVsbCwiZGF0ZUNyZWF0ZSI6IjIwMjQtMTAtMDlUMDQ6NDM6MzkuMDAwWiIsImRhdGVVcGRhdGUiOm51bGwsImFjdGl2ZSI6MX0`,
-    },
-};
 export default function Admin() {
     const [blocks, setBlocks] = useState<Block[] | null>(null);
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
+
     const [movingState, setMovingState] = useState<{
         index: number | null;
         action: 'UP' | 'DOWN' | null;
     }>({ index: null, action: null });
-
+    const router = useRouter();
     useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            router.push(ClientRoute.LOGIN as string);
+        }
         const fetchData = async () => {
-            try {
-                const [userRes, blockRes, visitorRes] = await Promise.all([
-                    fetch('/api/user/info', {
-                        method: 'GET',
-                        ...option,
-                    }),
-                    fetch('/api/link/list', {
-                        method: 'GET',
-                        ...option,
-                    }),
-                    fetch('/api/user/visitor', {
-                        method: 'GET',
-                        ...option,
-                    }),
-                ]);
-                const { data: blockData }: { data: Block[] } =
-                    await blockRes.json();
-                const { data: userData }: { data: UserInfo } =
-                    await userRes.json();
-                const { data: visitorData }: { data: Visitor } =
-                    await visitorRes.json();
-                setBlocks(blockData);
-                setUserInfo(userData);
-                setVisitorInfo(visitorData);
-            } catch (error) {
-                setBlocks(null);
-                setUserInfo(null);
-                setVisitorInfo(null);
-                console.error(error);
+            if (token) {
+                try {
+                    const [userData, blockData, visitorData] =
+                        await Promise.all([
+                            fetchUserInfo(token),
+                            fetchBlockList(token),
+                            fetchVisitorInfo(token),
+                        ]);
+
+                    setBlocks(blockData);
+                    setUserInfo(userData);
+                    setVisitorInfo(visitorData);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setLoading(false);
+                }
             }
         };
-
         fetchData();
     }, []);
+
     const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
         setBlocks((arr) => {
             if (!arr) return null;
@@ -63,7 +60,6 @@ export default function Admin() {
             return action === 'UP' ? [item, ...list] : [...list, item];
         });
     };
-
     const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
         if (!blocks) return;
         if (action === 'DOWN' && index === blocks.length - 1) return true;
@@ -80,6 +76,19 @@ export default function Admin() {
         list.splice(e.newIndex as number, 0, ...obj);
         setBlocks(list);
     };
+    if (loading)
+        return (
+            <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
+                <Skeleton width="w-full" height="h-52" />;
+                <Skeleton width="w-full" height="h-20" />;
+                <Skeleton
+                    width="w-full"
+                    height="min-h-1/2"
+                    className="flex-1"
+                />
+                ;
+            </main>
+        );
     return (
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-5 bg-white">
             {/* 프로필 */}
@@ -180,6 +189,7 @@ export default function Admin() {
                 )}
             </section>
             {/* 미리보기 & 추가 버튼 */}
+
             <footer className="pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between bg-gradient-to-b from-transparent to-white p-3">
                 <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
                     미리보기
