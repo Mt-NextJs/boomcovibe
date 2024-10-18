@@ -49,7 +49,8 @@
                 "email": null,
                 "countryCode": "KR",
                 "dateCreate": "2024-10-08T19:41:26.000Z",
-                "dateUpdate": "2024-10-11T04:41:33.000Z"
+                "dateUpdate": "2024-10-11T04:41:33.000Z",
+                "privateYn": "N"
             }
         },
     },
