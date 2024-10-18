@@ -1,0 +1,3 @@
+.schedule-last>*:last-child {
+    overflow: hidden;
+}

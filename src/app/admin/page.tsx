@@ -1,9 +1,10 @@
 'use client';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import Empty from './components/empty ';
+import Empty from './components/empty';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import Block from './components/block';
+import BlockLink from './components/block-link';
 import { ClientRoute } from '@config/route';
 import { useRouter } from 'next/navigation';
 import {
@@ -14,13 +15,15 @@ import {
 } from 'service/admin-api';
 import Skeleton from './components/skeleton';
 
+
+
 export default function Admin() {
     const [token, setToken] = useState<string | null>(null);
     const [blocks, setBlocks] = useState<Block[] | null>(null);
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
-
+    const [isBlockLinkOpen, setIsBlockLinkOpen] = useState(false);
     const [movingState, setMovingState] = useState<{
         index: number | null;
         action: 'UP' | 'DOWN' | null;
@@ -84,7 +87,10 @@ export default function Admin() {
             setMovingState({ index: null, action: null });
         }
     };
-
+    const handleBlockLink = () => {
+        setIsBlockLinkOpen(!isBlockLinkOpen);
+    };
+  
     if (loading)
         return (
             <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
@@ -98,6 +104,7 @@ export default function Admin() {
                 ;
             </main>
         );
+
     return (
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-5 bg-white">
             {/* 프로필 */}
@@ -171,6 +178,7 @@ export default function Admin() {
                         />
                     </a>
                 </h2>
+              
                 {blocks ? (
                     <ReactSortable
                         list={blocks}
@@ -196,6 +204,7 @@ export default function Admin() {
                 ) : (
                     <Empty />
                 )}
+                {isBlockLinkOpen && <BlockLink handleBlockLink={handleBlockLink} />}
             </section>
             {/* 미리보기 & 추가 버튼 */}
 
@@ -203,7 +212,10 @@ export default function Admin() {
                 <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
                     미리보기
                 </button>
-                <button className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4">
+                <button
+                    className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4"
+                    onClick={handleBlockLink}
+                >
                     <Image
                         src={'/assets/icons/icon_plus.png'}
                         alt="plus icon"
