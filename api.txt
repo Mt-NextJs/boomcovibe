@@ -121,6 +121,7 @@
             "code": 200,
             "data": [
                 {
+                    "id": 64,
                     "type": 2,
                     "sequence": 0,
                     "style": null,
@@ -137,6 +138,7 @@
                     "dateUpdate": null
                 },
                 {
+                    "id": 65,
                     "type": 1,
                     "sequence": 1,
                     "style": 1,
@@ -323,6 +325,21 @@
         },
         "PARAM": {
             "id": 1 // 블록 id(필수)
+        },
+        "RES": {
+            "code": 200,
+            "data": {}
+        }
+    },
+    {
+        "API": "/api/user/private",
+        "METHOD": POST,
+        "목적": "유저 private 모드 저장",
+        "HEADER": {
+            "Authorization": "Bearer {token}"
+        },
+        "PARAM": {
+            "privateYn": "Y" // "Y", "N" 값만 허용(필수)
         },
         "RES": {
             "code": 200,
