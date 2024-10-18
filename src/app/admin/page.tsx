@@ -10,10 +10,12 @@ import {
     fetchBlockList,
     fetchUserInfo,
     fetchVisitorInfo,
+    updateBlockOrder,
 } from 'service/admin-api';
 import Skeleton from './components/skeleton';
 
 export default function Admin() {
+    const [token, setToken] = useState<string | null>(null);
     const [blocks, setBlocks] = useState<Block[] | null>(null);
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
@@ -29,6 +31,7 @@ export default function Admin() {
         if (!token) {
             router.push(ClientRoute.LOGIN as string);
         }
+        setToken(token);
         const fetchData = async () => {
             if (token) {
                 try {
@@ -52,13 +55,25 @@ export default function Admin() {
         fetchData();
     }, []);
 
-    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
-        setBlocks((arr) => {
-            if (!arr) return null;
-            let list = [...arr];
-            const item = list.splice(index, 1)[0];
-            return action === 'UP' ? [item, ...list] : [...list, item];
+    const updateBlock = (blocks: Block[], from: number, to: number) => {
+        const list = [...blocks];
+        const item = list.splice(from, 1);
+        list.splice(to, 0, ...item);
+        const sortedList = list.map((block, i) => {
+            block.sequence = i;
+            return block;
         });
+        token && updateBlockOrder(token, sortedList);
+        setBlocks(sortedList);
+    };
+
+    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
+        if (!blocks) return null;
+        updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
+    };
+    const dragEnd = (e: SortableEvent) => {
+        if (!blocks) return;
+        updateBlock(blocks, e.oldIndex as number, e.newIndex as number);
     };
     const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
         if (!blocks) return;
@@ -69,13 +84,7 @@ export default function Admin() {
             setMovingState({ index: null, action: null });
         }
     };
-    const dragEnd = (e: SortableEvent) => {
-        if (!blocks) return;
-        const list = [...blocks];
-        const obj = list.splice(e.oldIndex as number, 1);
-        list.splice(e.newIndex as number, 0, ...obj);
-        setBlocks(list);
-    };
+
     if (loading)
         return (
             <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
