@@ -1,10 +1,11 @@
 'use client';
 import Image from 'next/image';
 import { useState } from 'react';
-import Empty from './components/empty ';
+import Empty from './components/empty';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
 import data from 'types/dummy';
 import Block from './components/block';
+import BlockLink from './components/block-link';
 
 export default function Admin() {
     const [array, setArray] = useState<Block[]>(data);
@@ -12,6 +13,7 @@ export default function Admin() {
     const [movingAction, setMovingAction] = useState<'UP' | 'DOWN' | null>(
         null,
     );
+    const [isBlockLinkOpen, setIsBlockLinkOpen] = useState(false);
 
     const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
         setArray((arr) => {
@@ -31,12 +33,18 @@ export default function Admin() {
             setMovingAction(null);
         }
     };
+
     const dragEnd = (e: SortableEvent) => {
         const list = [...array];
         const obj = list.splice(e.oldIndex as number, 1);
         list.splice(e.newIndex as number, 0, ...obj);
         setArray(list);
     };
+
+    const handleBlockLink = () => {
+        setIsBlockLinkOpen(!isBlockLinkOpen);
+    };
+
     return (
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-5 bg-white">
             {/* 프로필 */}
@@ -126,13 +134,17 @@ export default function Admin() {
                     ))}
                 </ReactSortable>
                 <Empty />
+                {isBlockLinkOpen && <BlockLink handleBlockLink={handleBlockLink} />}
             </section>
             {/* 미리보기 & 추가 버튼 */}
             <footer className="pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between bg-gradient-to-b from-transparent to-white p-3">
                 <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
                     미리보기
                 </button>
-                <button className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4">
+                <button
+                    className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4"
+                    onClick={handleBlockLink}
+                >
                     <Image
                         src={'/assets/icons/icon_plus.png'}
                         alt="plus icon"
