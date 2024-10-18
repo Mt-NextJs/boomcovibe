@@ -37,3 +37,18 @@ type BlockFormAction = {
     type: string,
     payload:Partial<Block>,
 }
+
+interface UserInfo {
+    name: string;
+    userId: string;
+    email: string | null;
+    countryCode: string;
+    dateCreate: string;
+    dateUpdate: string;
+}
+
+interface Visitor {
+    today: number;
+    realTime: number;
+    total: number;
+}

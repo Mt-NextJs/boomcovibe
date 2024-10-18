@@ -1,49 +1,109 @@
 'use client';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Empty from './components/empty';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
-import data from 'types/dummy';
 import Block from './components/block';
 import BlockLink from './components/block-link';
+import { ClientRoute } from '@config/route';
+import { useRouter } from 'next/navigation';
+import {
+    fetchBlockList,
+    fetchUserInfo,
+    fetchVisitorInfo,
+    updateBlockOrder,
+} from 'service/admin-api';
+import Skeleton from './components/skeleton';
+
+
 
 export default function Admin() {
-    const [array, setArray] = useState<Block[]>(data);
-    const [movingIndex, setMovingIndex] = useState<number | null>(null);
-    const [movingAction, setMovingAction] = useState<'UP' | 'DOWN' | null>(
-        null,
-    );
+    const [token, setToken] = useState<string | null>(null);
+    const [blocks, setBlocks] = useState<Block[] | null>(null);
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
+    const [loading, setLoading] = useState<boolean>(true);
     const [isBlockLinkOpen, setIsBlockLinkOpen] = useState(false);
+    const [movingState, setMovingState] = useState<{
+        index: number | null;
+        action: 'UP' | 'DOWN' | null;
+    }>({ index: null, action: null });
+    const router = useRouter();
+    useEffect(() => {
+        const token = localStorage.getItem('token');
+        if (!token) {
+            router.push(ClientRoute.LOGIN as string);
+        }
+        setToken(token);
+        const fetchData = async () => {
+            if (token) {
+                try {
+                    const [userData, blockData, visitorData] =
+                        await Promise.all([
+                            fetchUserInfo(token),
+                            fetchBlockList(token),
+                            fetchVisitorInfo(token),
+                        ]);
+
+                    setBlocks(blockData);
+                    setUserInfo(userData);
+                    setVisitorInfo(visitorData);
+                } catch (error) {
+                    console.error(error);
+                } finally {
+                    setLoading(false);
+                }
+            }
+        };
+        fetchData();
+    }, []);
+
+    const updateBlock = (blocks: Block[], from: number, to: number) => {
+        const list = [...blocks];
+        const item = list.splice(from, 1);
+        list.splice(to, 0, ...item);
+        const sortedList = list.map((block, i) => {
+            block.sequence = i;
+            return block;
+        });
+        token && updateBlockOrder(token, sortedList);
+        setBlocks(sortedList);
+    };
 
     const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
-        setArray((arr) => {
-            let list = [...arr];
-            const item = list.splice(index, 1);
-            return action === 'UP' ? [...item, ...list] : [...list, ...item];
-        });
+        if (!blocks) return null;
+        updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
     };
-
+    const dragEnd = (e: SortableEvent) => {
+        if (!blocks) return;
+        updateBlock(blocks, e.oldIndex as number, e.newIndex as number);
+    };
     const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
-        if (action === 'DOWN' && index === array.length - 1) return true;
+        if (!blocks) return;
+        if (action === 'DOWN' && index === blocks.length - 1) return true;
         if (index !== undefined && action) {
-            setMovingIndex(index);
-            setMovingAction(action);
+            setMovingState({ index, action });
         } else {
-            setMovingIndex(null);
-            setMovingAction(null);
+            setMovingState({ index: null, action: null });
         }
     };
-
-    const dragEnd = (e: SortableEvent) => {
-        const list = [...array];
-        const obj = list.splice(e.oldIndex as number, 1);
-        list.splice(e.newIndex as number, 0, ...obj);
-        setArray(list);
-    };
-
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
+  
+    if (loading)
+        return (
+            <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
+                <Skeleton width="w-full" height="h-52" />;
+                <Skeleton width="w-full" height="h-20" />;
+                <Skeleton
+                    width="w-full"
+                    height="min-h-1/2"
+                    className="flex-1"
+                />
+                ;
+            </main>
+        );
 
     return (
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-5 bg-white">
@@ -56,7 +116,7 @@ export default function Admin() {
                     height={64}
                 />
                 <p className="mt-2 font-semibold text-black underline">
-                    user name
+                    {userInfo?.name}
                 </p>
                 <button className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md">
                     <Image
@@ -75,15 +135,21 @@ export default function Admin() {
                         <div className="flex items-center justify-start gap-2 text-gray-500">
                             <p>
                                 전체
-                                <span className="text-red-500"> 0</span>
+                                <span className="text-red-500">
+                                    {visitorInfo?.total}
+                                </span>
                             </p>
                             <p>
                                 오늘
-                                <span className="text-red-500"> 0</span>
+                                <span className="text-red-500">
+                                    {visitorInfo?.today}
+                                </span>
                             </p>
                             <p>
                                 실시간
-                                <span className="text-red-500"> 0</span>
+                                <span className="text-red-500">
+                                    {visitorInfo?.realTime}
+                                </span>
                             </p>
                         </div>
                     </div>
@@ -112,31 +178,36 @@ export default function Admin() {
                         />
                     </a>
                 </h2>
-                <ReactSortable
-                    list={array}
-                    tag={'ul'}
-                    handle=".drag-button"
-                    setList={setArray}
-                    animation={300}
-                    onEnd={dragEnd}
-                >
-                    {array.map((el, i) => (
-                        <Block
-                            {...el}
-                            index={i}
-                            key={el.sequence}
-                            handleBlock={handleBlock}
-                            toggleMove={toggleMove}
-                            isMoving={movingIndex !== null}
-                            movingIndex={movingIndex}
-                            movingAction={movingAction}
-                        />
-                    ))}
-                </ReactSortable>
-                <Empty />
+              
+                {blocks ? (
+                    <ReactSortable
+                        list={blocks}
+                        tag={'ul'}
+                        handle=".drag-button"
+                        setList={setBlocks}
+                        animation={300}
+                        onEnd={dragEnd}
+                    >
+                        {blocks.map((block, i) => (
+                            <Block
+                                {...block}
+                                index={i}
+                                key={block.sequence}
+                                handleBlock={handleBlock}
+                                toggleMove={toggleMove}
+                                isMoving={movingState.index !== null}
+                                movingIndex={movingState.index}
+                                movingAction={movingState.action}
+                            />
+                        ))}
+                    </ReactSortable>
+                ) : (
+                    <Empty />
+                )}
                 {isBlockLinkOpen && <BlockLink handleBlockLink={handleBlockLink} />}
             </section>
             {/* 미리보기 & 추가 버튼 */}
+
             <footer className="pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between bg-gradient-to-b from-transparent to-white p-3">
                 <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
                     미리보기
