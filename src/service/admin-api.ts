@@ -18,6 +18,7 @@ export async function fetchBlockList(token: string): Promise<Block[]> {
         },
     });
     const { data } = await response.json();
+    data.sort((a: Block, b: Block) => a.sequence - b.sequence);
     return data;
 }
 
@@ -27,6 +28,28 @@ export async function fetchVisitorInfo(token: string): Promise<Visitor> {
         headers: {
             Authorization: `Bearer ${token}`,
         },
+    });
+    const { data } = await response.json();
+    return data;
+}
+
+interface SortableBlock extends Block {
+    chosen?: boolean;
+}
+
+export async function updateBlockOrder(
+    token: string,
+    blocks: SortableBlock[],
+): Promise<Block[]> {
+    //sortableJs로 드래그한 block에서 chosen 속성 제거
+    const cleanedBlocks = blocks.map(({ chosen, ...block }) => block);
+    const response = await fetch('/api/link/update/order', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ order: cleanedBlocks }),
     });
     const { data } = await response.json();
     return data;
