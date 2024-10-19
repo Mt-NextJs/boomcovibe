@@ -27,14 +27,14 @@ export const blockTypeMap: Record<
         src: '/assets/icons/icon_link.png',
         href: '/admin/block/link',
         description: '연결하고 싶은 url은 무엇이든 추가하세요',
-        bgColor: 'bg-orange-600',
+        bgColor: 'bg-orange-500',
     },
     4: {
         title: '이미지',
         src: '/assets/icons/icon_image.png',
         href: '/admin/block/image',
         description: '보여주고 싶은 이미지로 표현하세요',
-        bgColor: 'bg-sky-400',
+        bgColor: 'bg-sky-500',
     },
     5: {
         title: '이벤트',
