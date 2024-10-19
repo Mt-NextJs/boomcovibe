@@ -4,16 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import Menu from './menu';
 import Schedule from './schedule';
 import Event from './event';
-
-const blockTitleMap: Record<number, { title: string; src: string }> = {
-    1: { title: '구분선', src: '/assets/icons/icon_divide.png' },
-    2: { title: '동영상', src: '/assets/icons/icon_video.png' },
-    3: { title: '링크', src: '/assets/icons/icon_link.png' },
-    4: { title: '이미지', src: '/assets/icons/icon_image.png' },
-    5: { title: '이벤트', src: '/assets/icons/icon_gift.png' },
-    6: { title: '텍스트', src: '/assets/icons/icon_text.png' },
-    7: { title: '캘린더', src: '/assets/icons/icon_calendar.png' },
-};
+import { blockTypeMap } from 'service/constants/block-types';
 
 interface BlockProps extends Block {
     index: number;
@@ -138,12 +129,12 @@ export default function Block({
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
                     {/* 블록 타입 */}
                     <Image
-                        src={blockTitleMap[type].src}
+                        src={blockTypeMap[type].src}
                         alt="type image"
                         width={15}
                         height={15}
                     />
-                    {blockTitleMap[type].title}
+                    {blockTypeMap[type].title}
                 </div>
                 <div className={`flex gap-2`}>
                     {/* content */}

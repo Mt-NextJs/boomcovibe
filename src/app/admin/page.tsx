@@ -11,7 +11,7 @@ import {
     fetchUserInfo,
     fetchVisitorInfo,
     updateBlockOrder,
-} from 'service/admin-api';
+} from 'service/api/admin-api';
 import Skeleton from './components/skeleton';
 
 export default function Admin() {
@@ -84,6 +84,12 @@ export default function Admin() {
             setMovingState({ index: null, action: null });
         }
     };
+<<<<<<< Updated upstream
+=======
+    const handleBlockLink = () => {
+        setIsBlockLinkOpen(!isBlockLinkOpen);
+    };
+>>>>>>> Stashed changes
 
     if (loading)
         return (
@@ -171,6 +177,10 @@ export default function Admin() {
                         />
                     </a>
                 </h2>
+<<<<<<< Updated upstream
+=======
+
+>>>>>>> Stashed changes
                 {blocks ? (
                     <ReactSortable
                         list={blocks}
@@ -196,11 +206,22 @@ export default function Admin() {
                 ) : (
                     <Empty />
                 )}
+<<<<<<< Updated upstream
+=======
+                {isBlockLinkOpen && (
+                    <BlockLink handleBlockLink={handleBlockLink} />
+                )}
+>>>>>>> Stashed changes
             </section>
             {/* 미리보기 & 추가 버튼 */}
 
-            <footer className="pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between bg-gradient-to-b from-transparent to-white p-3">
-                <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
+            <footer
+                className={`pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between p-3 ${!isBlockLinkOpen && 'bg-gradient-to-b from-transparent to-white'}`}
+            >
+                <button
+                    className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg"
+                    onClick={() => setIsBlockLinkOpen(true)}
+                >
                     미리보기
                 </button>
                 <button className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4">
