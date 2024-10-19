@@ -33,6 +33,11 @@ interface Block {
     schedule?: Schedule[]; // type이 7일 때만 포함되는 일정 데이터
 }
 
+type BlockFormAction = {
+    type: string,
+    payload:Partial<Block>,
+}
+
 interface UserInfo {
     name: string;
     userId: string;
