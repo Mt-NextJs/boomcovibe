@@ -19,8 +19,9 @@ export default function BlockHeader({
                     <Image
                         src={windowIcon}
                         alt="close"
-                        layout="fill"
-                        objectFit="cover"
+                        width={24}
+                        height={24}
+                        style={{ objectFit: 'cover' }}
                     />
                 </Link>
             </div>

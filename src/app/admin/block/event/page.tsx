@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Datepicker from 'react-tailwindcss-datepicker';
 import BlockHeader from '../components/block-header';
 import SelectTime from '../calendar/component/select-time';
+import { addBlock } from 'service/block-api';
 
 export default function EventBlock() {
     const [eventTitle, setEventTitle] = useState('');
@@ -17,6 +18,27 @@ export default function EventBlock() {
     console.log(startDateValue);
     const [startTimeValue, setStartTimeValue] = useState('');
     const [endTimeValue, setEndTimeValue] = useState('');
+
+    // 블록 추가 호출
+    const addNewBlock = async () => {
+        const accessToken = 'your-access-token'; // 사용자 토큰
+
+        try {
+            const blockData = {
+                type: 3, // 링크 블록
+                sequence: 4,
+                style: 1,
+                title: '링크 블록',
+                url: 'https://www.naver.com',
+                imgUrl: '',
+            };
+
+            const result = await addBlock(accessToken, blockData);
+            console.log('Block added successfully:', result);
+        } catch (error) {
+            console.error('Error adding block:', error);
+        }
+    };
 
     return (
         <div>
