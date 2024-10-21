@@ -12,10 +12,8 @@ import {
     fetchUserInfo,
     fetchVisitorInfo,
     updateBlockOrder,
-} from 'service/admin-api';
+} from 'service/api/admin-api';
 import Skeleton from './components/skeleton';
-
-
 
 export default function Admin() {
     const [token, setToken] = useState<string | null>(null);
@@ -90,7 +88,7 @@ export default function Admin() {
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
-  
+
     if (loading)
         return (
             <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
@@ -178,7 +176,7 @@ export default function Admin() {
                         />
                     </a>
                 </h2>
-              
+
                 {blocks ? (
                     <ReactSortable
                         list={blocks}
@@ -204,11 +202,15 @@ export default function Admin() {
                 ) : (
                     <Empty />
                 )}
-                {isBlockLinkOpen && <BlockLink handleBlockLink={handleBlockLink} />}
+                {isBlockLinkOpen && (
+                    <BlockLink handleBlockLink={handleBlockLink} />
+                )}
             </section>
             {/* 미리보기 & 추가 버튼 */}
 
-            <footer className="pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between bg-gradient-to-b from-transparent to-white p-3">
+            <footer
+                className={`pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between p-3 ${!isBlockLinkOpen && 'bg-gradient-to-b from-transparent to-white'}`}
+            >
                 <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
                     미리보기
                 </button>

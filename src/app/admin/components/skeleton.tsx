@@ -9,7 +9,7 @@ export default function Skeleton({
 }) {
     return (
         <div
-            className={`animate-[pulse_1s_ease-in-out_infinite] animate-pulse rounded bg-gray-200 ${width} ${height} ${className}`}
+            className={`animate-[pulse_1s_ease-in-out_infinite] rounded bg-gray-200 ${width} ${height} ${className}`}
         />
     );
 }
