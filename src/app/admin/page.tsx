@@ -15,8 +15,6 @@ import {
 } from 'service/admin-api';
 import Skeleton from './components/skeleton';
 
-
-
 export default function Admin() {
     const [token, setToken] = useState<string | null>(null);
     const [blocks, setBlocks] = useState<Block[] | null>(null);
@@ -90,7 +88,7 @@ export default function Admin() {
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
-  
+
     if (loading)
         return (
             <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
@@ -178,7 +176,7 @@ export default function Admin() {
                         />
                     </a>
                 </h2>
-              
+
                 {blocks ? (
                     <ReactSortable
                         list={blocks}
@@ -204,7 +202,9 @@ export default function Admin() {
                 ) : (
                     <Empty />
                 )}
-                {isBlockLinkOpen && <BlockLink handleBlockLink={handleBlockLink} />}
+                {isBlockLinkOpen && (
+                    <BlockLink handleBlockLink={handleBlockLink} />
+                )}
             </section>
             {/* 미리보기 & 추가 버튼 */}
 

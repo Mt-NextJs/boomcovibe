@@ -1,7 +1,7 @@
 // 블록 추가 API 파라미터 인터페이스
 interface AddBlockParams {
     accessToken: string;
-    blockData: BlockType;
+    blockData: BlocksUnionType;
 }
 
 // 구분선 블록 타입
@@ -48,6 +48,11 @@ interface EventBlock {
     dateEnd: string; // ISO 날짜 형식
 }
 
+interface StartDateValue {
+    startDate: string | null;
+    endDate: string | null;
+}
+
 // 텍스트 블록 타입
 interface TextBlock {
     type: 6;
@@ -77,7 +82,7 @@ interface MapBlock {
 }
 
 // 전체 블록 타입을 합친 BlockType 유니온 타입
-type BlockType =
+type BlocksUnionType =
     | DividerBlock
     | VideoBlock
     | LinkBlock

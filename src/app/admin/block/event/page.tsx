@@ -1,82 +1,82 @@
 'use client';
 
-import React, { useState } from 'react';
-import Datepicker from 'react-tailwindcss-datepicker';
+import React, { useState, useEffect } from 'react';
+import Datepicker, { DateValueType } from 'react-tailwindcss-datepicker';
 import BlockHeader from '../components/block-header';
 import SelectTime from '../calendar/component/select-time';
 import { addBlock } from 'service/block-api';
+import PreblockEvent from '../components/Preblock-event';
 
 export default function EventBlock() {
-    const [eventTitle, setEventTitle] = useState('');
-    const [eventContent, setEventContent] = useState('');
-    const [eventGuide, setEventGuide] = useState('');
-
-    const [startDateValue, setStartDateValue] = useState({
+    const [eventTitle, setEventTitle] = useState<string>('');
+    const [eventContent, setEventContent] = useState<string>('');
+    const [eventGuide, setEventGuide] = useState<string>('');
+    const [startDateValue, setStartDateValue] = useState<DateValueType>({
         startDate: null,
         endDate: null,
     });
-    console.log(startDateValue);
-    const [startTimeValue, setStartTimeValue] = useState('');
-    const [endTimeValue, setEndTimeValue] = useState('');
+    const [startTimeValue, setStartTimeValue] = useState<string>('');
+    const [endTimeValue, setEndTimeValue] = useState<string>('');
+    const [startISO, setStartISO] = useState<string | null>(null);
+    const [endISO, setEndISO] = useState<string | null>(null);
+    console.log('startISO', startISO, 'endISO', endISO);
 
     // 블록 추가 호출
-    const addNewBlock = async () => {
-        const accessToken = 'your-access-token'; // 사용자 토큰
+    const addNewBlock = async (): Promise<void> => {
+        const accessToken = AC; // 사용자 토큰
 
         try {
-            const blockData = {
-                type: 3, // 링크 블록
+            const blockData: EventBlock = {
+                type: 5, // 링크 블록
                 sequence: 4,
-                style: 1,
-                title: '링크 블록',
-                url: 'https://www.naver.com',
-                imgUrl: '',
+                title: eventTitle,
+                subText01: eventContent,
+                subText02: eventGuide,
+                dateStart: startISO ?? '', // ISO 날짜 형식
+                dateEnd: endISO ?? '', // ISO 날짜 형식
             };
 
-            const result = await addBlock(accessToken, blockData);
+            const result = await addBlock({ accessToken, blockData });
             console.log('Block added successfully:', result);
         } catch (error) {
             console.error('Error adding block:', error);
         }
     };
 
+    useEffect(() => {
+        const offset = new Date().getTimezoneOffset() * 60000;
+
+        if (startDateValue?.startDate && startTimeValue) {
+            const startDate = new Date(
+                new Date(startDateValue.startDate as Date).getTime() - offset,
+            ); // Convert to Date and apply offset
+            console.log('startdate', startDate);
+            startDate.setHours(parseInt(startTimeValue), 0, 0);
+            setStartISO(startDate.toISOString());
+        }
+
+        if (startDateValue?.endDate && endTimeValue) {
+            const endDate = new Date(startDateValue.endDate as Date);
+            endDate.setHours(parseInt(endTimeValue), 0, 0);
+            setEndISO(endDate.toISOString());
+        }
+    }, [startDateValue, startTimeValue, endTimeValue]);
+
     return (
         <div>
             <BlockHeader
                 windowIcon={'/assets/icons/icon_close.png'}
-                iconLink={'/block'}
+                iconLink={'/admin'}
                 blockTitle={'이벤트 블록'}
                 blockDescription={''}
             />
             <div className="px-10">
                 <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
-                    <div className="w-full max-w-[450px] rounded-xl bg-white shadow-lg">
-                        <div className="text-md p-4 text-gray-200">event</div>
-                        <div className="flex flex-col items-center px-4">
-                            <div>
-                                {eventTitle.length > 0 ? (
-                                    <>{eventTitle}</>
-                                ) : (
-                                    <>타이틀을 입력해주세요</>
-                                )}
-                            </div>
-                            <div className="mb-4 font-light text-gray-400">
-                                {eventContent.length > 0 ? (
-                                    <>{eventContent}</>
-                                ) : (
-                                    <>이벤트 설명을 입력해보세요</>
-                                )}
-                            </div>
-                        </div>
-                        <div className="flex items-center justify-between rounded-b-lg bg-gray-100 px-4 py-3 text-sm">
-                            <span className="text-gray-400">
-                                24.09.11 16:00 ~ 24.09.11 16:00
-                            </span>
-                            <button className="flex items-center text-gray-400 transition-colors hover:text-gray-700">
-                                80일 남음
-                            </button>
-                        </div>
-                    </div>
+                    <PreblockEvent
+                        eventTitle={eventTitle}
+                        eventContent={eventContent}
+                        eventDate={'w3efcds'}
+                    />
                 </div>
 
                 <div className="my-10 w-full border-b" />
@@ -157,9 +157,10 @@ export default function EventBlock() {
                                 useRange={true}
                                 value={startDateValue}
                                 showShortcuts={true}
-                                onChange={(newValue) =>
-                                    setStartDateValue(newValue)
-                                }
+                                onChange={(newValue) => {
+                                    console.log('여기', newValue?.startDate);
+                                    setStartDateValue(newValue);
+                                }}
                             />
                             <SelectTime
                                 selectedTime={startTimeValue}
@@ -173,13 +174,14 @@ export default function EventBlock() {
                             <Datepicker
                                 primaryColor="orange"
                                 i18n={'ko'}
+                                asSingle={false}
                                 placeholder={'날짜 선택'}
                                 displayFormat="YYYY. MM. DD"
-                                asSingle={false}
+                                // asSingle={false}
                                 useRange={true}
                                 value={startDateValue}
                                 showShortcuts={true}
-                                onChange={(newValue) =>
+                                onChange={(newValue: DateValueType) =>
                                     setStartDateValue(newValue)
                                 }
                             />
@@ -192,6 +194,9 @@ export default function EventBlock() {
                 </div>
                 <button
                     className={`button color ${!eventTitle ? 'disable' : ''}`}
+                    onClick={() => {
+                        addNewBlock();
+                    }}
                 >
                     추가 완료
                 </button>

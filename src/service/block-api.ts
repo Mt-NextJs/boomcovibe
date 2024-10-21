@@ -1,9 +1,7 @@
-const BASE_URL = process.env.API_URL;
-
 // 블록 추가 API 호출 함수
 export const addBlock = async (params: AddBlockParams) => {
     const { accessToken, blockData } = params;
-    const response = await fetch(`${BASE_URL}/api/link/add`, {
+    const response = await fetch('/api/link/add', {
         method: 'POST',
         headers: {
             Authorization: `Bearer ${accessToken}`,
