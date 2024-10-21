@@ -1,26 +1,33 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import Datepicker, { DateValueType } from 'react-tailwindcss-datepicker';
-import BlockHeader from '../components/block-header';
-import SelectTime from '../calendar/component/select-time';
+import { useRouter } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
 import { addBlock } from 'service/block-api';
+import BlockHeader from '../components/block-header';
 import PreblockEvent from '../components/Preblock-event';
+import Calendar from '../components/calendar';
+import TimePicker from '../components/time-picker';
 
 export default function EventBlock() {
+    const router = useRouter();
     const [eventTitle, setEventTitle] = useState<string>('');
     const [eventContent, setEventContent] = useState<string>('');
     const [eventGuide, setEventGuide] = useState<string>('');
-    const [startDateValue, setStartDateValue] = useState<DateValueType>({
-        startDate: null,
-        endDate: null,
-    });
+    const [startDate, setStartDate] = useState<string>('');
+    const [endDate, setEndDate] = useState<string>('');
+    const [startCalendar, setStartCalendar] = useState<boolean>(false);
+    const [endCalendar, setEndCalendar] = useState<boolean>(false);
+    const [startTime, setStartTime] = useState<boolean>(false);
+    const [endTime, setEndTime] = useState<boolean>(false);
     const [startTimeValue, setStartTimeValue] = useState<string>('');
+    const [dateTimeCheck, setDateTimeCheck] = useState<boolean>(false);
     const [endTimeValue, setEndTimeValue] = useState<string>('');
-    const [startISO, setStartISO] = useState<string | null>(null);
-    const [endISO, setEndISO] = useState<string | null>(null);
-    console.log('startISO', startISO, 'endISO', endISO);
+    const [startISO, setStartISO] = useState<string>('');
+    const [endISO, setEndISO] = useState<string>('');
+    console.log(startISO, 'startIso', endISO, 'endISO');
 
+    const AC =
+        '6MSwibmeyJpZCIFtZSI6IsF0IiwidXNlcklkIjoibGlua2xlIiwiam9pblR5cGUiOiIxIiwicGFzc293cmQiOiIxMjM0IiwiZW1haWwiOm51bGwsImNvdW50cnlDb2RlIjoiS1IiLCJwaG9uZU51bWJlciI6bnVsbCwicGxhbiI6Ik4iLCJwbXNMaW5rIjoiWSIsInBtc0J1c2luZXNzIjoiTiIsInBtc01hcmtldCI6Ik4iLCJhbGFybVRhbGsiOiJOIiwiY2F0ZWdvcmllcyI6bnVsbCwiZGF0ZUNyZWF0ZSI6IjIwMjQtMTAtMDhUMTk6NDE6MjYuMDAwWiIsImRhdGVVcGRhdGUiOiIyMDI0LTEwLTExVDA0OjQxOjMzLjAwMFoiLCJhY3RpdmUiOjF9';
     // 블록 추가 호출
     const addNewBlock = async (): Promise<void> => {
         const accessToken = AC; // 사용자 토큰
@@ -28,39 +35,54 @@ export default function EventBlock() {
         try {
             const blockData: EventBlock = {
                 type: 5, // 링크 블록
-                sequence: 4,
+                sequence: 38,
                 title: eventTitle,
                 subText01: eventContent,
                 subText02: eventGuide,
-                dateStart: startISO ?? '', // ISO 날짜 형식
-                dateEnd: endISO ?? '', // ISO 날짜 형식
+                dateStart: startISO, // ISO 날짜 형식
+                dateEnd: endISO, // ISO 날짜 형식
             };
 
             const result = await addBlock({ accessToken, blockData });
-            console.log('Block added successfully:', result);
+            // console.log('Block added successfully:', result);
+            router.push('/admin');
         } catch (error) {
             console.error('Error adding block:', error);
         }
     };
 
     useEffect(() => {
-        const offset = new Date().getTimezoneOffset() * 60000;
-
-        if (startDateValue?.startDate && startTimeValue) {
-            const startDate = new Date(
-                new Date(startDateValue.startDate as Date).getTime() - offset,
-            ); // Convert to Date and apply offset
-            console.log('startdate', startDate);
-            startDate.setHours(parseInt(startTimeValue), 0, 0);
-            setStartISO(startDate.toISOString());
+        if (startDate && startTimeValue) {
+            // 한국 시간의 오프셋 적용 (UTC+9)
+            const combinedDateTime = `${startDate}T${startTimeValue}:00`; // T로 날짜와 시간을 구분
+            const dateObj = new Date(combinedDateTime.replace(/\./g, '-'));
+            const koreanISO = new Date(
+                dateObj.getTime() + 9 * 60 * 60 * 1000,
+            ).toISOString();
+            setStartISO(koreanISO);
         }
 
-        if (startDateValue?.endDate && endTimeValue) {
-            const endDate = new Date(startDateValue.endDate as Date);
-            endDate.setHours(parseInt(endTimeValue), 0, 0);
-            setEndISO(endDate.toISOString());
+        if (endTimeValue) {
+            // endTime의 처리
+            const combinedEndDateTime = `${endDate}T${endTimeValue}:00`;
+            const endDateObj = new Date(
+                combinedEndDateTime.replace(/\./g, '-'),
+            );
+            const koreanISOEnd = new Date(
+                endDateObj.getTime() + 9 * 60 * 60 * 1000,
+            ).toISOString();
+            setEndISO(koreanISOEnd);
         }
-    }, [startDateValue, startTimeValue, endTimeValue]);
+    }, [dateTimeCheck]);
+
+    useEffect(() => {
+        if (startDate.trim() !== '' && startTimeValue.trim() !== '') {
+            setDateTimeCheck(!dateTimeCheck);
+        }
+        if (endDate.trim() !== '' && endTimeValue.trim() !== '') {
+            setDateTimeCheck(!dateTimeCheck);
+        }
+    }, [startDate, startTimeValue, endDate, endTimeValue]);
 
     return (
         <div>
@@ -75,7 +97,8 @@ export default function EventBlock() {
                     <PreblockEvent
                         eventTitle={eventTitle}
                         eventContent={eventContent}
-                        eventDate={'w3efcds'}
+                        startDate={startDate}
+                        endDate={endDate}
                     />
                 </div>
 
@@ -138,64 +161,110 @@ export default function EventBlock() {
                             <div className="flex min-w-9 items-center">
                                 시작{' '}
                             </div>
-                            <Datepicker
-                                primaryColor="orange"
-                                i18n={'ko'}
-                                configs={{
-                                    shortcuts: {
-                                        today: '오늘',
-                                        yesterday: '어제',
-                                        past: (period) =>
-                                            '지난 ' + period + ' 일 동안',
-                                        currentMonth: '이번달 내내',
-                                        pastMonth: '지난달',
-                                    },
-                                }}
-                                placeholder={'날짜 선택'}
-                                displayFormat="YYYY. MM. DD"
-                                asSingle={false}
-                                useRange={true}
-                                value={startDateValue}
-                                showShortcuts={true}
-                                onChange={(newValue) => {
-                                    console.log('여기', newValue?.startDate);
-                                    setStartDateValue(newValue);
-                                }}
-                            />
-                            <SelectTime
-                                selectedTime={startTimeValue}
-                                setSelectedTime={setStartTimeValue}
-                            />
+                            <div className="relative w-full text-gray-700">
+                                <input
+                                    type="text"
+                                    className="relative w-full cursor-pointer rounded-lg border-gray-300 bg-white py-2.5 pl-4 pr-14 text-sm font-light tracking-wide placeholder-gray-400 transition-all duration-300 focus:border-orange-500 focus:ring focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 dark:text-white/80"
+                                    placeholder="날짜 선택"
+                                    value={startDate}
+                                    readOnly={true}
+                                    onClick={() => {
+                                        {
+                                            startCalendar === true
+                                                ? setStartCalendar(false)
+                                                : setStartCalendar(true);
+                                            setStartTime(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className="relative w-full text-gray-700">
+                                <input
+                                    type="text"
+                                    className="relative w-full cursor-pointer rounded-lg border-gray-300 bg-white py-2.5 pl-4 pr-14 text-sm font-light tracking-wide placeholder-gray-400 transition-all duration-300 focus:border-orange-500 focus:ring focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 dark:text-white/80"
+                                    placeholder="시간 선택"
+                                    value={startTimeValue}
+                                    readOnly={true}
+                                    onClick={() => {
+                                        startTime === true
+                                            ? setStartTime(false)
+                                            : setStartTime(true);
+                                        setStartCalendar(false);
+                                    }}
+                                />
+                            </div>
                         </div>
+                        {startCalendar ? (
+                            <Calendar
+                                setValue={setStartDate}
+                                value={startDate}
+                            />
+                        ) : null}
+                        {startTime ? (
+                            <TimePicker
+                                startTimeValue={startTimeValue}
+                                setStartTimeValue={setStartTimeValue}
+                            />
+                        ) : null}
+
                         <div className="flex gap-2">
                             <div className="flex min-w-9 items-center">
                                 종료
                             </div>
-                            <Datepicker
-                                primaryColor="orange"
-                                i18n={'ko'}
-                                asSingle={false}
-                                placeholder={'날짜 선택'}
-                                displayFormat="YYYY. MM. DD"
-                                // asSingle={false}
-                                useRange={true}
-                                value={startDateValue}
-                                showShortcuts={true}
-                                onChange={(newValue: DateValueType) =>
-                                    setStartDateValue(newValue)
-                                }
-                            />
-                            <SelectTime
-                                selectedTime={endTimeValue}
-                                setSelectedTime={setEndTimeValue}
-                            />
+
+                            <div className="relative w-full text-gray-700">
+                                <input
+                                    type="text"
+                                    className="relative w-full cursor-pointer rounded-lg border-gray-300 bg-white py-2.5 pl-4 pr-14 text-sm font-light tracking-wide placeholder-gray-400 transition-all duration-300 focus:border-orange-500 focus:ring focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 dark:text-white/80"
+                                    placeholder="날짜 선택"
+                                    value={endDate}
+                                    readOnly={true}
+                                    onClick={() => {
+                                        {
+                                            endCalendar === true
+                                                ? setEndCalendar(false)
+                                                : setEndCalendar(true);
+                                            setEndTime(false);
+                                        }
+                                    }}
+                                />
+                            </div>
+                            <div className="relative w-full text-gray-700">
+                                <input
+                                    type="text"
+                                    className="relative w-full cursor-pointer rounded-lg border-gray-300 bg-white py-2.5 pl-4 pr-14 text-sm font-light tracking-wide placeholder-gray-400 transition-all duration-300 focus:border-orange-500 focus:ring focus:ring-orange-500/20 disabled:cursor-not-allowed disabled:opacity-40 dark:border-slate-600 dark:bg-slate-800 dark:text-white/80"
+                                    placeholder="시간 선택"
+                                    value={endTimeValue}
+                                    readOnly={true}
+                                    onClick={() => {
+                                        endTime === true
+                                            ? setEndTime(false)
+                                            : setEndTime(true);
+                                        setEndCalendar(false);
+                                    }}
+                                />
+                            </div>
                         </div>
+                        {endCalendar ? (
+                            <Calendar setValue={setEndDate} value={endDate} />
+                        ) : null}
+                        {endTime ? (
+                            <TimePicker
+                                startTimeValue={endTimeValue}
+                                setStartTimeValue={setEndTimeValue}
+                            />
+                        ) : null}
                     </div>
                 </div>
                 <button
-                    className={`button color ${!eventTitle ? 'disable' : ''}`}
+                    className={`button color ${
+                        eventTitle && startISO && endISO ? '' : 'disable'
+                    }`}
+                    disabled={!(eventTitle && startISO && endISO)} // 세 값 모두가 true일 때만 활성화
                     onClick={() => {
-                        addNewBlock();
+                        if (eventTitle && startISO && endISO) {
+                            addNewBlock();
+                        }
                     }}
                 >
                     추가 완료
