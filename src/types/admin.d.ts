@@ -34,9 +34,9 @@ interface Block {
 }
 
 type BlockFormAction = {
-    type: string,
-    payload:Partial<Block>,
-}
+    type: string;
+    payload: Partial<Block>;
+};
 
 interface UserInfo {
     name: string;
@@ -45,6 +45,7 @@ interface UserInfo {
     countryCode: string;
     dateCreate: string;
     dateUpdate: string;
+    privateYn: 'Y' | 'N';
 }
 
 interface Visitor {

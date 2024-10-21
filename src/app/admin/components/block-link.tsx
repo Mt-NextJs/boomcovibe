@@ -11,8 +11,8 @@ export default function BlockLink({
 }) {
     return (
         <div className="fixed inset-0 z-10 flex items-center justify-center bg-gray-900 bg-opacity-50">
-            <div className="flex h-full w-1/3 min-w-[350px] flex-col rounded-lg bg-white p-6 pb-0 shadow-lg">
-                <div className="mb-6 flex items-center justify-between">
+            <div className="flex h-full w-1/3 min-w-[350px] flex-col rounded-lg bg-white pt-6 shadow-lg">
+                <div className="mb-6 flex items-center justify-between px-6">
                     <p className="text-xl font-bold">블록 선택하기</p>
                     <Image
                         src={'/assets/icons/icon_close.png'}
@@ -23,7 +23,7 @@ export default function BlockLink({
                         onClick={handleBlockLink}
                     />
                 </div>
-                <p className="mb-6 text-base font-bold text-gray-400">
+                <p className="mb-6 px-6 text-base font-bold text-gray-400">
                     블록 타입
                 </p>
 
@@ -32,7 +32,7 @@ export default function BlockLink({
                         <Link
                             href={value.href}
                             key={key}
-                            className="flex flex-1 items-center border-b border-gray-200 text-sm hover:bg-gray-100"
+                            className="flex flex-1 items-center border-b border-gray-200 px-6 text-sm hover:bg-gray-100"
                         >
                             <div
                                 className={`flex h-10 w-10 items-center justify-center rounded-xl ${value.bgColor}`}
