@@ -222,6 +222,14 @@
                 "dateEnd": "2024-10-31T12:26:44.000Z" // 일정 종료일자
             }]
         },
+        // *** 지도 ***
+            "PARMA": {
+            "type": 8, // 블록 타입(필수)
+            "sequence": 9, // 블록 순서(필수)
+            “title”: 1, // 타이틀
+        	"subText01": “서울시 강남구 도산대로 10“, // 주소(adress)
+        	"subText02": “선택사항”, // 콘텐츠(content)
+            },
         "RES": {
             "code": 200,
             "data": {}
@@ -326,6 +334,21 @@
         },
         "PARAM": {
             "id": 1 // 블록 id(필수)
+        },
+        "RES": {
+            "code": 200,
+            "data": {}
+        }
+    },
+    {
+        "API": "/api/user/private",
+        "METHOD": POST,
+        "목적": "유저 private 모드 저장",
+        "HEADER": {
+            "Authorization": "Bearer {token}"
+        },
+        "PARAM": {
+            "privateYn": "Y" // "Y", "N" 값만 허용(필수)
         },
         "RES": {
             "code": 200,
