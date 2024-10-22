@@ -18,8 +18,7 @@ export function useBlockSubmit() {
 
         const formData = new FormData(e.currentTarget);
         const formEntries = Object.fromEntries(formData.entries());
-
-        console.log(blocks, 'submit');
+        console.log(formEntries, 'formEntries');
         const maxSequence = blocks
             ? Math.max(...blocks.map((b) => b.sequence), 0)
             : 0;
@@ -29,6 +28,10 @@ export function useBlockSubmit() {
             type: blockType,
             sequence: maxSequence + 1,
         } as T;
+        if ('style' in newBlock) {
+            newBlock.style = Number(newBlock.style);
+        }
+        console.log(blocks, 'submit', newBlock);
 
         try {
             if (id) {
