@@ -5,7 +5,7 @@ import Datepicker, { DateValueType } from 'react-tailwindcss-datepicker';
 import dayjs from 'dayjs';
 import BlockHeader from '../../components/block-header';
 import SelectTime from '../component/select-time';
-import { addBlock } from 'service/block-api';
+import { addBlock } from 'service/api/block-api';
 
 export default function CalendarFormBlock() {
     const now = dayjs().format('YYYY. MM. DD');
@@ -24,7 +24,6 @@ export default function CalendarFormBlock() {
     const [linkAddress, setLinkAddress] = useState<string>('');
     const [startISO, setStartISO] = useState<string>('');
     const [endISO, setEndISO] = useState<string>('');
-    const blockSequence: number = 7890;
 
     // 경고 문구 상태
     const [dateError, setDateError] = useState<string>('');

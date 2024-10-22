@@ -20,7 +20,7 @@ export default function CalendarBlock() {
         <>
             <BlockHeader
                 windowIcon={'/assets/icons/icon_close.png'}
-                iconLink={'/block'}
+                iconLink={'/admin'}
                 blockTitle={'캘린더 블록'}
                 blockDescription={`진행/예정된 일정이 1개 이상이어야
                   <br>

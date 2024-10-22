@@ -2,7 +2,7 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { addBlock } from 'service/block-api';
+import { addBlock } from 'service/api/block-api';
 import BlockHeader from '../components/block-header';
 import PreblockEvent from '../components/preview/preblock-event';
 import Calendar from '../components/calendar';

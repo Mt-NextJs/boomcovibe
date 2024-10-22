@@ -10,29 +10,29 @@ interface Props {
     townAddress: string;
 }
 
-export interface postMapDataType {
-    address: string;
-    title: string;
-    content: string;
-}
-
 export default function MapBlock() {
+    // const sequence: number = 9999;
     const [addressObj, setAddressObj] = useState<Props>({
         areaAddress: '',
         townAddress: '',
     });
-    const [totalValue, setTotalValue] = useState<postMapDataType>({
-        address: '',
+
+    const [totalValue, setTotalValue] = useState<MapBlock>({
+        type: 8,
+        sequence: sequence,
         title: '',
-        content: '',
+        subText01: '',
+        subText02: '',
     });
 
+    console.log(addressObj);
+    console.log(totalValue.subText01);
     const handleInputFunction = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
         const name = event.target.name;
         const value = event.target.value;
-        setTotalValue((prev: postMapDataType) => ({
+        setTotalValue((prev: MapBlock) => ({
             ...prev,
             [name]: value,
         }));
@@ -40,9 +40,9 @@ export default function MapBlock() {
 
     // 주소 데이터 입력 함수
     useEffect(() => {
-        setTotalValue((prev: postMapDataType) => ({
+        setTotalValue((prev: MapBlock) => ({
             ...prev,
-            address: JSON.stringify(addressObj),
+            subText01: JSON.stringify(addressObj),
         }));
     }, [addressObj]);
 
@@ -72,13 +72,9 @@ export default function MapBlock() {
                                 )}
                             </div>
                         </div>
-                        <KakaoMap
-                            address={
-                                addressObj.areaAddress +
-                                ' ' +
-                                addressObj.townAddress
-                            }
-                        />
+                        {totalValue.subText01 && (
+                            <KakaoMap address={totalValue.subText01} />
+                        )}
 
                         <div className="m-2 flex items-center justify-center font-light text-gray-400">
                             {addressObj.areaAddress} {addressObj.townAddress}
@@ -113,7 +109,7 @@ export default function MapBlock() {
                         type="text"
                         name="title"
                         id="title"
-                        value={totalValue.content}
+                        value={totalValue.subText02}
                         onChange={handleInputFunction}
                         placeholder="장소를 알아보기 쉬운 설명을 덧붙이면 좋아요"
                         className="input"

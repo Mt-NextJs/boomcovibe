@@ -76,9 +76,10 @@ interface CalendarBlock {
 // 지도 블록 타입
 interface MapBlock {
     type: 8;
-    address: string;
+    sequence: number;
     title: string;
-    content: string;
+    subText01: string; // 주소
+    subText02: string; // 콘텐츠
 }
 
 // 전체 블록 타입을 합친 BlockType 유니온 타입
