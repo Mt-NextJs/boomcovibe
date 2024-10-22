@@ -5,6 +5,10 @@ import Menu from './menu';
 import Schedule from './schedule';
 import Event from './event';
 import { blockTypeMap } from 'service/constants/block-types';
+import { useRouter } from 'next/navigation';
+
+import useToken from 'store/useToken';
+import { deleteBlock } from 'service/api/admin-api';
 
 interface BlockProps extends Block {
     index: number;
@@ -16,11 +20,7 @@ interface BlockProps extends Block {
 }
 
 export default function Block({
-    type,
-    imgUrl,
     index,
-    title,
-    schedule,
     handleBlock,
     toggleMove,
     isMoving,
@@ -31,7 +31,8 @@ export default function Block({
     const [isToggled, setIsToggled] = useState(rest.active === 1);
     const [menuToggle, setMenuToggle] = useState(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
-
+    const router = useRouter();
+    const { token } = useToken();
     const blockStyle = () => {
         if (isMoving && movingAction === 'UP' && index < movingIndex!)
             return 'translate-y-full';
@@ -85,6 +86,17 @@ export default function Block({
         setMenuToggle(!menuToggle);
     };
 
+    const handleClick = (path: string) => {
+        router.push(path);
+    };
+    const blockDelete = async () => {
+        console.log(rest.id, token, 'block component');
+        if (!token) return;
+        setMenuToggle(false);
+        await deleteBlock(token, rest.id);
+        alert('삭제되었습니다.');
+        router.refresh();
+    };
     return (
         <li
             className={`relative mb-3 flex min-h-32 rounded-lg border border-gray-200 bg-white shadow-lg ${isMoving && 'transform transition-transform duration-500'} ${blockStyle()}`}
@@ -125,39 +137,49 @@ export default function Block({
                     />
                 </button>
             </div>
-            <div className="relative flex-1 p-3">
+            <div
+                className="relative flex-1 p-3"
+                onClick={(e) => {
+                    if (e.target === e.currentTarget)
+                        handleClick(
+                            blockTypeMap[rest.type].href + `?id=${rest.id}`,
+                        );
+                }}
+            >
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
                     {/* 블록 타입 */}
                     <Image
-                        src={blockTypeMap[type].src}
+                        src={blockTypeMap[rest.type].src}
                         alt="type image"
                         width={15}
                         height={15}
                     />
-                    {blockTypeMap[type].title}
+                    {blockTypeMap[rest.type].title}
                 </div>
                 <div className={`flex gap-2`}>
                     {/* content */}
-                    {type === 5 && (
+                    {rest.type === 5 && (
                         <Event
-                            title={title}
+                            title={rest.title}
                             dateStart={rest.dateStart}
                             dateEnd={rest.dateEnd}
                         />
                     )}
-                    {schedule && <Schedule schedule={schedule} />}
-                    {type !== 5 && type !== 7 && (
+                    {rest.schedule.length > 0 && (
+                        <Schedule schedule={rest.schedule} />
+                    )}
+                    {rest.type !== 5 && rest.type !== 7 && (
                         <>
-                            {imgUrl && (
+                            {rest.imgUrl && (
                                 <Image
-                                    src={imgUrl}
+                                    src={rest.imgUrl}
                                     alt={''}
                                     width={56}
                                     height={56}
                                     className="rounded-md"
                                 />
                             )}
-                            <div>{title}</div>
+                            <div>{rest.title}</div>
                         </>
                     )}
                 </div>
@@ -165,7 +187,10 @@ export default function Block({
                 <div className="absolute right-0 top-0 flex p-3">
                     <div className="flex items-center">
                         <button
-                            onClick={toggle}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                toggle();
+                            }}
                             className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${isToggled ? 'bg-blue-500' : 'bg-gray-300'}`}
                         >
                             <span
@@ -173,7 +198,12 @@ export default function Block({
                             />
                         </button>
                     </div>
-                    <button onClick={handleMenu}>
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            handleMenu();
+                        }}
+                    >
                         <Image
                             src={'/assets/icons/icon_menu_dot.png'}
                             alt="menu button"
@@ -184,7 +214,7 @@ export default function Block({
                 </div>
                 {menuToggle && (
                     <div ref={menuRef}>
-                        <Menu />
+                        <Menu blockDelete={blockDelete} />
                     </div>
                 )}
             </div>
