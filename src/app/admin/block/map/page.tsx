@@ -43,7 +43,7 @@ export default function MapBlock() {
         <>
             <BlockHeader
                 windowIcon={'/assets/icons/icon_close.png'}
-                iconLink={'/block'}
+                iconLink={'/admin'}
                 blockTitle={'지도 블록'}
                 blockDescription={`주소를 검색하여 등록해주세요`}
             />

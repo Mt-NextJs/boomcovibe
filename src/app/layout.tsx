@@ -25,7 +25,7 @@ export default function RootLayout({
                     strategy="beforeInteractive"
                     src={process.env.NEXT_PUBLIC_KAKAO_URL}
                 />
-                {/* <CheckAuth /> */}
+                <CheckAuth />
                 <div className={'mx-auto max-w-screen-md'}>{children}</div>
             </body>
         </html>
