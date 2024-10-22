@@ -1,19 +1,20 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import Datepicker from 'react-tailwindcss-datepicker';
+import Datepicker, { DateValueType } from 'react-tailwindcss-datepicker';
 import dayjs from 'dayjs';
 import BlockHeader from '../../components/block-header';
 import SelectTime from '../component/select-time';
+import { addBlock } from 'service/block-api';
 
 export default function CalendarFormBlock() {
     const now = dayjs().format('YYYY. MM. DD');
-    const [startDateValue, setStartDateValue] = useState<StartDateValue>({
+    const [startDateValue, setStartDateValue] = useState<DateValueType>({
         startDate: null,
         endDate: null,
     });
     const MIN_DATE = new Date();
-    const [endDateValue, setEndDateValue] = useState<StartDateValue>({
+    const [endDateValue, setEndDateValue] = useState<DateValueType>({
         startDate: null,
         endDate: null,
     });
@@ -34,8 +35,8 @@ export default function CalendarFormBlock() {
     useEffect(() => {
         // 시작일이 종료일보다 늦을 때
         if (
-            startDateValue.startDate &&
-            endDateValue.startDate &&
+            startDateValue?.startDate &&
+            endDateValue?.startDate &&
             dayjs(startDateValue.startDate).isAfter(
                 dayjs(endDateValue.startDate),
             )
@@ -47,7 +48,7 @@ export default function CalendarFormBlock() {
 
         // 날짜가 같고 시작 시간이 종료 시간보다 늦을 때
         if (
-            startDateValue.startDate === endDateValue.startDate &&
+            startDateValue?.startDate === endDateValue?.startDate &&
             startTimeValue &&
             endTimeValue &&
             parseInt(startTimeValue) > parseInt(endTimeValue)
@@ -72,7 +73,7 @@ export default function CalendarFormBlock() {
     }, [linkAddress]);
 
     useEffect(() => {
-        if (startDateValue.startDate && startTimeValue) {
+        if (startDateValue?.startDate && startTimeValue) {
             const combinedDateTime = `${startDateValue.startDate.toISOString().split('T')[0]}T${startTimeValue}:00`;
             const dateObj = new Date(combinedDateTime);
             const koreanISO = new Date(
@@ -81,7 +82,7 @@ export default function CalendarFormBlock() {
             setStartISO(koreanISO);
         }
 
-        if (endDateValue.startDate && endTimeValue) {
+        if (endDateValue?.startDate && endTimeValue) {
             const combinedEndDateTime = `${endDateValue.startDate.toISOString().split('T')[0]}T${endTimeValue}:00`;
             const endDateObj = new Date(combinedEndDateTime);
             const koreanISOEnd = new Date(
@@ -145,7 +146,9 @@ export default function CalendarFormBlock() {
                             asSingle={true}
                             useRange={false}
                             value={startDateValue}
-                            onChange={(newValue) => setStartDateValue(newValue)}
+                            onChange={(newValue: DateValueType) =>
+                                setStartDateValue(newValue)
+                            }
                         />
                         <SelectTime
                             selectedTime={startTimeValue}
@@ -171,7 +174,9 @@ export default function CalendarFormBlock() {
                             useRange={false}
                             minDate={MIN_DATE}
                             value={endDateValue}
-                            onChange={(newValue) => setEndDateValue(newValue)}
+                            onChange={(newValue: DateValueType) =>
+                                setEndDateValue(newValue)
+                            }
                         />
                         <SelectTime
                             selectedTime={endTimeValue}
@@ -231,6 +236,9 @@ export default function CalendarFormBlock() {
                             ? 'disable'
                             : ''
                     }`}
+                    onClick={() => {
+                        addNewBlock();
+                    }}
                 >
                     추가 완료
                 </button>
