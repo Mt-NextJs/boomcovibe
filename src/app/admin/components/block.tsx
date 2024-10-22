@@ -8,6 +8,7 @@ import { blockTypeMap } from 'service/constants/block-types';
 import { useRouter } from 'next/navigation';
 
 import useToken from 'store/useToken';
+import useBlockStore from 'store/useBlockStore';
 import { deleteBlock } from 'service/api/admin-api';
 
 interface BlockProps extends Block {
@@ -33,6 +34,7 @@ export default function Block({
     const menuRef = useRef<HTMLDivElement | null>(null);
     const router = useRouter();
     const { token } = useToken();
+    const { setBlock } = useBlockStore();
     const blockStyle = () => {
         if (isMoving && movingAction === 'UP' && index < movingIndex!)
             return 'translate-y-full';
@@ -57,13 +59,12 @@ export default function Block({
         };
 
         if (menuToggle) {
-            document.addEventListener('mousedown', handleClickOutside);
+            document.addEventListener('click', handleClickOutside);
         } else {
-            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('click', handleClickOutside);
         }
 
-        return () =>
-            document.removeEventListener('mousedown', handleClickOutside);
+        return () => document.removeEventListener('click', handleClickOutside);
     }, [menuToggle]);
 
     // 블록 최 상하단 버튼
@@ -87,10 +88,10 @@ export default function Block({
     };
 
     const handleClick = (path: string) => {
+        setBlock(rest);
         router.push(path);
     };
     const blockDelete = async () => {
-        console.log(rest.id, token, 'block component');
         if (!token) return;
         setMenuToggle(false);
         await deleteBlock(token, rest.id);
@@ -138,12 +139,11 @@ export default function Block({
                 </button>
             </div>
             <div
-                className="relative flex-1 p-3"
-                onClick={(e) => {
-                    if (e.target === e.currentTarget)
-                        handleClick(
-                            blockTypeMap[rest.type].href + `?id=${rest.id}`,
-                        );
+                className="relative flex-1 cursor-pointer p-3"
+                onClick={() => {
+                    handleClick(
+                        blockTypeMap[rest.type].href + `?id=${rest.id}`,
+                    );
                 }}
             >
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
@@ -183,40 +183,41 @@ export default function Block({
                         </>
                     )}
                 </div>
-                {/* 활성화 버튼 & 메뉴 */}
-                <div className="absolute right-0 top-0 flex p-3">
-                    <div className="flex items-center">
-                        <button
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                toggle();
-                            }}
-                            className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${isToggled ? 'bg-blue-500' : 'bg-gray-300'}`}
-                        >
-                            <span
-                                className={`absolute left-1 top-1/2 h-3 w-3 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${isToggled ? 'translate-x-3' : 'translate-x-0'}`}
-                            />
-                        </button>
-                    </div>
-                    <button
-                        onClick={(e) => {
-                            e.stopPropagation();
-                            handleMenu();
-                        }}
-                    >
-                        <Image
-                            src={'/assets/icons/icon_menu_dot.png'}
-                            alt="menu button"
-                            width={20}
-                            height={20}
-                        />
-                    </button>
-                </div>
+
                 {menuToggle && (
                     <div ref={menuRef}>
                         <Menu blockDelete={blockDelete} />
                     </div>
                 )}
+            </div>
+            {/* 활성화 버튼 & 메뉴 */}
+            <div className="absolute right-0 top-0 flex p-3">
+                <div className="flex items-center">
+                    <button
+                        onClick={(e) => {
+                            e.stopPropagation();
+                            toggle();
+                        }}
+                        className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${isToggled ? 'bg-blue-500' : 'bg-gray-300'}`}
+                    >
+                        <span
+                            className={`absolute left-1 top-1/2 h-3 w-3 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${isToggled ? 'translate-x-3' : 'translate-x-0'}`}
+                        />
+                    </button>
+                </div>
+                <button
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleMenu();
+                    }}
+                >
+                    <Image
+                        src={'/assets/icons/icon_menu_dot.png'}
+                        alt="menu button"
+                        width={20}
+                        height={20}
+                    />
+                </button>
             </div>
         </li>
     );

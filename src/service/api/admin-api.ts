@@ -35,6 +35,8 @@ export async function fetchVisitorInfo(token: string): Promise<Visitor> {
 
 interface SortableBlock extends Block {
     chosen?: boolean;
+    className?: string;
+    'data-id'?: string;
 }
 
 export async function updateBlockOrder(
@@ -42,7 +44,10 @@ export async function updateBlockOrder(
     blocks: SortableBlock[],
 ): Promise<Block[]> {
     //sortableJs로 드래그한 block에서 chosen 속성 제거
-    const cleanedBlocks = blocks.map(({ chosen, ...block }) => block);
+    const cleanedBlocks = blocks.map(
+        ({ chosen, className, 'data-id': _, ...block }) => block,
+    );
+    console.log(cleanedBlocks, 'cleanedBlocks');
     const response = await fetch('/api/link/update/order', {
         method: 'POST',
         headers: {
