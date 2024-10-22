@@ -54,3 +54,14 @@ export async function updateBlockOrder(
     const { data } = await response.json();
     return data;
 }
+
+export async function deleteBlock(token: string, id: number): Promise<void> {
+    const response = await fetch('/api/link/delete', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ id }),
+    });
+}
