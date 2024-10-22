@@ -1,9 +1,8 @@
 'use client';
-
+import CalendarDateComponent from '../../calendar/component/calendar-date';
 import React, { useState, useEffect } from 'react';
-import CalendarDateComponent from './calendar-date';
 
-export default function Calendar() {
+export default function PreblockCalendarTwo() {
     const today = new Date();
     const [year, setYear] = useState<number>(today.getFullYear());
     const [month, setMonth] = useState<number>(today.getMonth() + 1);

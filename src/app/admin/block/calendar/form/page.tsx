@@ -8,24 +8,27 @@ import SelectTime from '../component/select-time';
 
 export default function CalendarFormBlock() {
     const now = dayjs().format('YYYY. MM. DD');
-    const [startDateValue, setStartDateValue] = useState({
+    const [startDateValue, setStartDateValue] = useState<StartDateValue>({
         startDate: null,
         endDate: null,
     });
     const MIN_DATE = new Date();
-    const [endDateValue, setEndDateValue] = useState({
+    const [endDateValue, setEndDateValue] = useState<StartDateValue>({
         startDate: null,
         endDate: null,
     });
-    const [startTimeValue, setStartTimeValue] = useState('');
-    const [endTimeValue, setEndTimeValue] = useState('');
-    const [scheduleName, setScheduleName] = useState('');
-    const [linkAddress, setLinkAddress] = useState('');
+    const [startTimeValue, setStartTimeValue] = useState<string>('');
+    const [endTimeValue, setEndTimeValue] = useState<string>('');
+    const [scheduleName, setScheduleName] = useState<string>('');
+    const [linkAddress, setLinkAddress] = useState<string>('');
+    const [startISO, setStartISO] = useState<string>('');
+    const [endISO, setEndISO] = useState<string>('');
+    const blockSequence: number = 7890;
 
     // 경고 문구 상태
-    const [dateError, setDateError] = useState('');
-    const [timeError, setTimeError] = useState('');
-    const [linkError, setLinkError] = useState('');
+    const [dateError, setDateError] = useState<string>('');
+    const [timeError, setTimeError] = useState<string>('');
+    const [linkError, setLinkError] = useState<string>('');
 
     // 날짜와 시간을 체크하는 함수
     useEffect(() => {
@@ -67,6 +70,53 @@ export default function CalendarFormBlock() {
             setLinkError('');
         }
     }, [linkAddress]);
+
+    useEffect(() => {
+        if (startDateValue.startDate && startTimeValue) {
+            const combinedDateTime = `${startDateValue.startDate.toISOString().split('T')[0]}T${startTimeValue}:00`;
+            const dateObj = new Date(combinedDateTime);
+            const koreanISO = new Date(
+                dateObj.getTime() + 9 * 60 * 60 * 1000,
+            ).toISOString();
+            setStartISO(koreanISO);
+        }
+
+        if (endDateValue.startDate && endTimeValue) {
+            const combinedEndDateTime = `${endDateValue.startDate.toISOString().split('T')[0]}T${endTimeValue}:00`;
+            const endDateObj = new Date(combinedEndDateTime);
+            const koreanISOEnd = new Date(
+                endDateObj.getTime() + 9 * 60 * 60 * 1000,
+            ).toISOString();
+            setEndISO(koreanISOEnd);
+        }
+    }, [startTimeValue, endTimeValue, startDateValue, endDateValue]);
+
+    // 블록 추가 호출
+    const addNewBlock = async (): Promise<void> => {
+        const accessToken = AC; // 사용자 토큰
+
+        try {
+            const blockData: CalendarBlock = {
+                type: 7, // 캘린더
+                sequence: blockSequence,
+                style: 1, // 우선 리스트로 표기
+                schedule: [
+                    {
+                        title: scheduleName,
+                        url: linkAddress,
+                        dateStart: startISO, // ISO
+                        dateEnd: endISO, // ISO
+                    },
+                ],
+            };
+
+            const result = await addBlock({ accessToken, blockData });
+            // console.log('Block added successfully:', result);
+            router.push('/admin');
+        } catch (error) {
+            console.error('Error adding block:', error);
+        }
+    };
 
     return (
         <>

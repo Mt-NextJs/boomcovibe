@@ -4,10 +4,10 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
 import './component/schedule.css';
-import Calendar from './component/calendar';
 import ScheduleList from './component/schedule-list';
 import BlockHeader from '../components/block-header';
-import PreblockCalendarOne from '../components/preview/Preblock-cal-one';
+import PreblockCalendarOne from '../components/preview/preblock-cal-one';
+import PreblockCalendarTwo from '../components/preview/preblock-cal-two';
 
 export default function CalendarBlock() {
     // 추후 데이터 세트 들어오면 이 부분 수정
@@ -93,7 +93,7 @@ export default function CalendarBlock() {
                             <PreblockCalendarOne />
                         </div>
                     ) : (
-                        <Calendar />
+                        <PreblockCalendarTwo />
                     )}
                 </div>
             </div>

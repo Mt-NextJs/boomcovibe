@@ -24,7 +24,7 @@ export default function EventBlock() {
     const [endTimeValue, setEndTimeValue] = useState<string>('');
     const [startISO, setStartISO] = useState<string>('');
     const [endISO, setEndISO] = useState<string>('');
-    console.log(startISO, 'startIso', endISO, 'endISO');
+    // console.log(startISO, 'startIso', endISO, 'endISO');
 
     // 블록 추가 호출
     const addNewBlock = async (): Promise<void> => {
