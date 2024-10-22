@@ -1,4 +1,4 @@
-import {ClientRouteType} from "@config/types";
+import { ClientRouteType } from '@config/types';
 
 export const ClientRoute: ClientRouteType = {
     MAIN: '/',
@@ -9,5 +9,5 @@ export const ClientRoute: ClientRouteType = {
     PROFILE: {
         DETAIL: '/admin/profile/detail',
         EDIT: '/admin/profile/edit',
-    }
+    },
 };
