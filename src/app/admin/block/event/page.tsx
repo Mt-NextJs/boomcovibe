@@ -4,7 +4,7 @@ import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { addBlock } from 'service/block-api';
 import BlockHeader from '../components/block-header';
-import PreblockEvent from '../components/Preblock-event';
+import PreblockEvent from '../components/preview/preblock-event';
 import Calendar from '../components/calendar';
 import TimePicker from '../components/time-picker';
 
@@ -26,8 +26,6 @@ export default function EventBlock() {
     const [endISO, setEndISO] = useState<string>('');
     console.log(startISO, 'startIso', endISO, 'endISO');
 
-    const AC =
-        '6MSwibmeyJpZCIFtZSI6IsF0IiwidXNlcklkIjoibGlua2xlIiwiam9pblR5cGUiOiIxIiwicGFzc293cmQiOiIxMjM0IiwiZW1haWwiOm51bGwsImNvdW50cnlDb2RlIjoiS1IiLCJwaG9uZU51bWJlciI6bnVsbCwicGxhbiI6Ik4iLCJwbXNMaW5rIjoiWSIsInBtc0J1c2luZXNzIjoiTiIsInBtc01hcmtldCI6Ik4iLCJhbGFybVRhbGsiOiJOIiwiY2F0ZWdvcmllcyI6bnVsbCwiZGF0ZUNyZWF0ZSI6IjIwMjQtMTAtMDhUMTk6NDE6MjYuMDAwWiIsImRhdGVVcGRhdGUiOiIyMDI0LTEwLTExVDA0OjQxOjMzLjAwMFoiLCJhY3RpdmUiOjF9';
     // 블록 추가 호출
     const addNewBlock = async (): Promise<void> => {
         const accessToken = AC; // 사용자 토큰

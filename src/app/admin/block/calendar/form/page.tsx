@@ -72,7 +72,7 @@ export default function CalendarFormBlock() {
         <>
             <BlockHeader
                 windowIcon={'/assets/icons/icon_back.png'}
-                iconLink={'/block/calendar'}
+                iconLink={'/admin/block/calendar'}
                 blockTitle={'일정 추가하기'}
                 blockDescription={`입력하는 전체 기간에 따라
                   <br>

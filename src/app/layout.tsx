@@ -19,7 +19,7 @@ export default function RootLayout({
 }>) {
     return (
         <html lang="en">
-            <CheckAuth />
+            {/* <CheckAuth /> */}
             <body className={'mx-auto max-w-screen-md'}>{children}</body>
         </html>
     );
