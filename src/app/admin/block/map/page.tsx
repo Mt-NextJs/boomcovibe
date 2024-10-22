@@ -3,30 +3,23 @@
 import React, { useState, useEffect } from 'react';
 import BlockHeader from '../components/block-header';
 import DaumPost from './components/address';
-import KakaoMap from './components/kakaomap';
-
-interface Props {
-    areaAddress: string;
-    townAddress: string;
-}
+import PreblockMap from '../components/preview/preblock-map';
 
 export default function MapBlock() {
     // const sequence: number = 9999;
-    const [addressObj, setAddressObj] = useState<Props>({
+    const [addressObj, setAddressObj] = useState<AddressProps>({
         areaAddress: '',
         townAddress: '',
     });
 
     const [totalValue, setTotalValue] = useState<MapBlock>({
         type: 8,
-        sequence: sequence,
+        sequence: 0,
         title: '',
         subText01: '',
         subText02: '',
     });
 
-    console.log(addressObj);
-    console.log(totalValue.subText01);
     const handleInputFunction = (
         event: React.ChangeEvent<HTMLInputElement>,
     ) => {
@@ -61,25 +54,10 @@ export default function MapBlock() {
 
             <div className="px-10 pt-10">
                 <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
-                    <div className="w-full max-w-[450px] rounded-xl bg-white shadow-lg">
-                        <div className="text-md p-4 text-gray-200">장소</div>
-                        <div className="flex flex-col items-center px-4">
-                            <div>
-                                {totalValue.title.length > 0 ? (
-                                    <>{totalValue.title}</>
-                                ) : (
-                                    <>장소명을 입력해주세요</>
-                                )}
-                            </div>
-                        </div>
-                        {totalValue.subText01 && (
-                            <KakaoMap address={totalValue.subText01} />
-                        )}
-
-                        <div className="m-2 flex items-center justify-center font-light text-gray-400">
-                            {addressObj.areaAddress} {addressObj.townAddress}
-                        </div>
-                    </div>
+                    <PreblockMap
+                        totalValue={totalValue}
+                        addressObj={addressObj}
+                    />
                 </div>
 
                 <div className="my-10 w-full border-b" />

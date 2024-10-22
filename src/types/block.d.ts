@@ -82,6 +82,11 @@ interface MapBlock {
     subText02: string; // 콘텐츠
 }
 
+interface AddressProps {
+    areaAddress: string;
+    townAddress: string;
+}
+
 // 전체 블록 타입을 합친 BlockType 유니온 타입
 type BlocksUnionType =
     | DividerBlock

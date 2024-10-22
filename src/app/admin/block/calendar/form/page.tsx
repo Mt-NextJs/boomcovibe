@@ -1,13 +1,23 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import Datepicker, { DateValueType } from 'react-tailwindcss-datepicker';
 import dayjs from 'dayjs';
+import useToken from 'store/useToken';
+import useBlockStore from 'store/useBlockStore';
 import BlockHeader from '../../components/block-header';
 import SelectTime from '../component/select-time';
 import { addBlock } from 'service/api/block-api';
 
 export default function CalendarFormBlock() {
+    const { token } = useToken();
+    const { blocks } = useBlockStore();
+    const maxSequence = blocks
+        ? Math.max(...blocks.map((b) => b.sequence), 0)
+        : 0;
+    const router = useRouter();
+
     const now = dayjs().format('YYYY. MM. DD');
     const [startDateValue, setStartDateValue] = useState<DateValueType>({
         startDate: null,
@@ -93,12 +103,14 @@ export default function CalendarFormBlock() {
 
     // 블록 추가 호출
     const addNewBlock = async (): Promise<void> => {
-        const accessToken = AC; // 사용자 토큰
-
+        if (!token) {
+            console.error('Token is not available');
+            return;
+        }
         try {
             const blockData: CalendarBlock = {
                 type: 7, // 캘린더
-                sequence: blockSequence,
+                sequence: maxSequence + 1,
                 style: 1, // 우선 리스트로 표기
                 schedule: [
                     {
@@ -110,9 +122,11 @@ export default function CalendarFormBlock() {
                 ],
             };
 
-            const result = await addBlock({ accessToken, blockData });
+            const result = await addBlock({ accessToken: token, blockData });
+            if (result) {
+                router.push('/admin');
+            }
             // console.log('Block added successfully:', result);
-            router.push('/admin');
         } catch (error) {
             console.error('Error adding block:', error);
         }
@@ -128,10 +142,10 @@ export default function CalendarFormBlock() {
                   <br>
                   전체 일정이 최근 날짜 순서로 자동 정렬됩니다.`}
             />
-            <div className="px-10">
+            <div className="px-10 pt-10">
                 <div className="mb-10 flex flex-col gap-2">
                     <div className="flex">
-                        <label htmlFor="title">오픈 일시</label>
+                        <label>오픈 일시</label>
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
                             *
                         </span>
@@ -158,7 +172,7 @@ export default function CalendarFormBlock() {
 
                 <div className="mb-10 flex flex-col gap-2">
                     <div className="flex">
-                        <label htmlFor="title">종료 일시</label>
+                        <label>종료 일시</label>
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
                             *
                         </span>
@@ -192,7 +206,7 @@ export default function CalendarFormBlock() {
 
                 <div className="mb-10 flex flex-col gap-2">
                     <div className="flex">
-                        <label htmlFor="title">일정 이름</label>
+                        <label>일정 이름</label>
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
                             *
                         </span>
@@ -209,7 +223,7 @@ export default function CalendarFormBlock() {
                 </div>
 
                 <div className="mb-10 flex flex-col gap-2">
-                    <label htmlFor="link">연결할 주소</label>
+                    <label>연결할 주소</label>
                     <input
                         type="text"
                         name="link"

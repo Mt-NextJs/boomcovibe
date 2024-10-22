@@ -2,6 +2,8 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
+import useToken from 'store/useToken';
+import useBlockStore from 'store/useBlockStore';
 import { addBlock } from 'service/api/block-api';
 import BlockHeader from '../components/block-header';
 import PreblockEvent from '../components/preview/preblock-event';
@@ -10,6 +12,11 @@ import TimePicker from '../components/time-picker';
 
 export default function EventBlock() {
     const router = useRouter();
+    const { token } = useToken();
+    const { blocks } = useBlockStore();
+    const maxSequence = blocks
+        ? Math.max(...blocks.map((b) => b.sequence), 0)
+        : 0;
     const [eventTitle, setEventTitle] = useState<string>('');
     const [eventContent, setEventContent] = useState<string>('');
     const [eventGuide, setEventGuide] = useState<string>('');
@@ -28,12 +35,14 @@ export default function EventBlock() {
 
     // 블록 추가 호출
     const addNewBlock = async (): Promise<void> => {
-        const accessToken = AC; // 사용자 토큰
-
+        if (!token) {
+            console.error('Token is not available');
+            return;
+        }
         try {
             const blockData: EventBlock = {
                 type: 5, // 링크 블록
-                sequence: 38,
+                sequence: maxSequence + 1,
                 title: eventTitle,
                 subText01: eventContent,
                 subText02: eventGuide,
@@ -41,9 +50,10 @@ export default function EventBlock() {
                 dateEnd: endISO, // ISO 날짜 형식
             };
 
-            const result = await addBlock({ accessToken, blockData });
-            // console.log('Block added successfully:', result);
-            router.push('/admin');
+            const result = await addBlock({ accessToken: token, blockData });
+            if (result.ok) {
+                router.push('/admin');
+            }
         } catch (error) {
             console.error('Error adding block:', error);
         }

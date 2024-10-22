@@ -89,6 +89,15 @@ export default function Admin() {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
 
+    async function handleLogout() {
+        try {
+            localStorage.removeItem('token');
+            await router.push('/login');
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     if (loading)
         return (
             <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
@@ -116,7 +125,10 @@ export default function Admin() {
                 <p className="mt-2 font-semibold text-black underline">
                     {userInfo?.name}
                 </p>
-                <button className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md">
+                <button
+                    onClick={handleLogout}
+                    className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md"
+                >
                     <Image
                         src={'/assets/icons/icon_menu.png'}
                         alt="menu image"
