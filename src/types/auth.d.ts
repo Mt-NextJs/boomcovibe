@@ -1,6 +1,12 @@
-export interface RegisterFormData {
-    id: string;
-    password: string;
-    confirmPassword: string;
+interface LoginFormData {
+    userId: string;
+    password: number;
+}
+
+export interface JoinFormData {
+    name: string;
+    userId: string;
+    password: number;
+    confirmPassword: number;
     email: string;
 }

@@ -1,17 +1,10 @@
 import { z } from 'zod';
 
-export const registerFormSchema = z
+export const joinFormSchema = z
     .object({
         // login, join 폴더를 위한 유효성 검사
-
-        userId: z
-            .string({
-                required_error: '아이디가 요구됩니다.',
-            })
-            .email({
-                message: '유효하지 않은 아이디입니다.',
-            }),
-
+        name: z.string().min(4, 'Username is required').max(100),
+        userId: z.string(),
         password: z
             .string()
             .refine(
@@ -25,7 +18,6 @@ export const registerFormSchema = z
                 },
             ),
         confirmPassword: z.string(),
-
         email: z.string().trim().email(),
     })
     .superRefine((val, ctx) => {
@@ -37,3 +29,5 @@ export const registerFormSchema = z
             });
         }
     });
+
+// export type LoginFormData = z.infer<typeof loginFormSchema>;
