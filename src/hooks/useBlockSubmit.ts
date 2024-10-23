@@ -20,14 +20,14 @@ export function useBlockSubmit() {
         try {
             // 블록 수정
             if (id) {
-                if (validateURL(block?.url)) {
+                if (block.url && !validateURL(block?.url)) {
+                    return alert('올바른 URL을 입력해주세요');
+                } else {
+                    console.log(blocks, 'update', block);
                     await updateBlock({
                         accessToken: token,
                         blockData: block!,
                     });
-                    console.log(blocks, 'update', block);
-                } else {
-                    return alert('올바른 URL을 입력해주세요');
                 }
             } else {
                 // 블록 추가

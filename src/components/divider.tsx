@@ -22,9 +22,7 @@ export default function Divider({
             )}
             {style === 4 && (
                 <div className={className}>
-                    <span className="absoluteright-0 text-2xl text-black">
-                        • • •
-                    </span>
+                    <span className="text-xl text-black">• • •</span>
                 </div>
             )}
             {style === 5 && (
