@@ -44,8 +44,6 @@ export default function VideoForm() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputUrl = e.target.value;
         setUrl(inputUrl);
-        if (!validateURL(inputUrl) && inputUrl !== '')
-            return alert('올바른 주소를 입력해주세요');
 
         const cleanVideoId = getVideoId(inputUrl);
 
@@ -88,7 +86,11 @@ export default function VideoForm() {
             <input type="hidden" name="title" value={title} />
             <input type="hidden" name="imgUrl" value={thumbnail} />
             <VideoEmbed url={embedUrl} />
-            <button className="button color">추가 완료</button>
+            <button
+                className={`button color ${!validateURL(url) && 'disable'}`}
+            >
+                {paramsId ? '수정 완료' : '추가 완료'}
+            </button>
         </form>
     );
 }

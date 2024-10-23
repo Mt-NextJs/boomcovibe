@@ -14,12 +14,7 @@ export default function DivideForm({
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
 }) {
     return (
-        <form
-            method="POST"
-            action="/api/link/add"
-            onSubmit={onSubmit}
-            className="mb-10 flex flex-col gap-2"
-        >
+        <form onSubmit={onSubmit} className="mb-10 flex flex-col gap-2">
             <DivideSelector state={state} dispatch={dispatch} />
             <button type="submit" className="button color">
                 추가 완료

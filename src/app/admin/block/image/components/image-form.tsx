@@ -1,8 +1,9 @@
 'use client';
 
+import { useBlockSubmit } from 'hooks/useBlockSubmit';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
-import { checkImageOrientation } from 'service/validation';
+import { checkImageOrientation, validateURL } from 'service/validation';
 
 export default function ImageForm({
     onSubmit,
@@ -20,6 +21,7 @@ export default function ImageForm({
     imgUrl: string;
     handleTitleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }) {
+    const { paramsId } = useBlockSubmit();
     const [imgOrientation, setImgOrientation] = useState(false);
     useEffect(() => {
         if (imgUrl) {
@@ -95,7 +97,11 @@ export default function ImageForm({
                 />
             </div>
 
-            <button className="button color">추가 완료</button>
+            <button
+                className={`button color ${!validateURL(imgUrl) && 'disable'}`}
+            >
+                {paramsId ? '수정 완료' : '추가 완료'}
+            </button>
         </form>
     );
 }

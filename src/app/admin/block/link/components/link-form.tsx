@@ -127,7 +127,9 @@ export default function LinkForm({
                 </div>
             </div>
 
-            <button className="button color">
+            <button
+                className={`button color ${(!validateURL(url) || !title) && 'disable'}`}
+            >
                 {paramsId ? '수정 완료' : '추가 완료'}
             </button>
         </form>
