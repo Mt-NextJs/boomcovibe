@@ -14,10 +14,11 @@ import {
     updateBlockOrder,
 } from 'service/api/admin-api';
 import Skeleton from './components/skeleton';
+import useBlockStore from 'store/useBlockStore';
 
 export default function Admin() {
+    const { blocks, setBlocks } = useBlockStore();
     const [token, setToken] = useState<string | null>(null);
-    const [blocks, setBlocks] = useState<Block[] | null>(null);
     const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
     const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
@@ -55,7 +56,6 @@ export default function Admin() {
         };
         fetchData();
     }, []);
-
     const updateBlock = (blocks: Block[], from: number, to: number) => {
         const list = [...blocks];
         const item = list.splice(from, 1);
@@ -64,12 +64,17 @@ export default function Admin() {
             block.sequence = i;
             return block;
         });
-        token && updateBlockOrder(token, sortedList);
+        if (token) {
+            const result = updateBlockOrder(token, sortedList); // 결과를 처리할 수 있도록 수정
+            if (result) {
+                console.log('Block order updated');
+            }
+        }
         setBlocks(sortedList);
     };
 
     const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
-        if (!blocks) return null;
+        if (!blocks) return;
         updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
     };
     const dragEnd = (e: SortableEvent) => {

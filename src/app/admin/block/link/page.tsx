@@ -1,65 +1,85 @@
 'use client';
 
-import { useReducer } from 'react';
-import { useRouter } from 'next/navigation';
-import { blockFormReducer, initialState } from 'reducer/block-form-reducer';
+import { useState } from 'react';
 import CloseButton from '../components/close-button';
 import LinkPreview from './components/link-preview';
 import LinkForm from './components/link-form';
+import { useBlockSubmit } from 'hooks/useBlockSubmit';
+import useBlockStore from 'store/useBlockStore';
 
 export default function LinkBlock() {
-    const [state, dispatch] = useReducer<React.Reducer<Block, BlockFormAction>>(blockFormReducer, initialState);
-    const router = useRouter();
-
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if(state.style === null ){
-            alert("링크 스타일을 선택해주세요.");
-            return;
-        }
-        
-        const formData: FormData = new FormData();
-        formData.set('type', '3');
-        formData.set('style', String(state.style));
-        formData.set('url', state.url || "");
-        formData.set('imgUrl', state.imgUrl || "");
-        formData.set('title', state.title || "");
-        
-        // formData.set('sequence', 전역상태에서 가져오기);
-        // admin에서 api로 블록 리스트 호출하여 저장하고 length+1
-
-        try {
-            const response = await fetch('/api/link/add', {
-                // headers: {
-                //   "Authorization": `Bearer ${token}`,
-                // },
-                // localStorage or 다른 거에 있는 token 가져오기
-                method: 'POST',
-                body: formData,
+    const { handleSubmit, block: blockState, paramsId } = useBlockSubmit();
+    const [selectedStyle, setSelectedStyle] = useState<number>(
+        paramsId ? blockState?.style || 1 : 1,
+    );
+    const [title, setTitle] = useState<string>(
+        paramsId ? blockState?.title || '' : '',
+    );
+    const [url, setUrl] = useState<string>(
+        paramsId ? blockState?.url || '' : '',
+    );
+    const [imgUrl, setImgUrl] = useState<string>(
+        paramsId ? blockState?.imgUrl || '' : '',
+    );
+    const { updateBlock } = useBlockStore();
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const selectedFile = e.target.files?.[0];
+        setImgUrl(selectedFile ? URL.createObjectURL(selectedFile) : '');
+        if (paramsId && blockState)
+            updateBlock(blockState.id, {
+                imgUrl: selectedFile ? URL.createObjectURL(selectedFile) : '',
             });
-            const result = await response.json();
+    };
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { name, value } = e.target;
+        if (name === 'title') {
+            setTitle(value);
+        }
 
-            if (result.code !== 200) {
-                throw new Error('이미지 블록 등록 실패');
+        if (name === 'url') {
+            setUrl(value);
+        }
+
+        if (paramsId && blockState) {
+            if (name === 'title') {
+                updateBlock(blockState.id, { title: value });
             }
 
-            // 필요하다면 flash message 구현
-            router.push('/admin');
-        } catch (error) {
-            console.error(error);
-
-            // flash message 구현
+            if (name === 'url') {
+                updateBlock(blockState.id, { url: value });
+            }
         }
-    
-
-    }
-
+    };
+    const handleDeleteImg = () => {
+        setImgUrl('');
+        if (paramsId && blockState) updateBlock(blockState.id, { imgUrl: '' });
+    };
+    const handleStyleChange = (index: number) => {
+        setSelectedStyle(index + 1);
+        if (paramsId && blockState)
+            updateBlock(blockState.id, { style: index + 1 });
+    };
     return (
         <div className="p-10">
             <CloseButton />
             <p className="pageName mb-10">링크 블록</p>
-            <LinkPreview title={state.title||null} />
-            <LinkForm state={state} dispatch={dispatch} onSubmit={handleSubmit} />
+            <LinkPreview
+                title={title}
+                selectedStyle={selectedStyle}
+                imgUrl={imgUrl}
+            />
+            <LinkForm
+                onSubmit={(e) => handleSubmit(e, 3)}
+                selectedStyle={selectedStyle}
+                handleInputChange={handleInputChange}
+                handleStyleChange={handleStyleChange}
+                title={title}
+                url={url}
+                paramsId={paramsId}
+                imgUrl={imgUrl}
+                handleFileChange={handleFileChange}
+                handleDeleteImg={handleDeleteImg}
+            />
         </div>
     );
 }
