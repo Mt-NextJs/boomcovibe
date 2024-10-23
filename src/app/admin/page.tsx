@@ -177,7 +177,7 @@ export default function Admin() {
                     </a>
                 </h2>
 
-                {blocks ? (
+                {blocks && blocks.length > 0 ? (
                     <ReactSortable
                         list={blocks}
                         tag={'ul'}

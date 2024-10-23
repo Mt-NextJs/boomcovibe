@@ -16,7 +16,10 @@ export default function LinkBlock() {
         <div className="p-10">
             <CloseButton />
             <p className="pageName mb-10">링크 블록</p>
-            <LinkPreview title={blockState?.title || null} />
+            <LinkPreview
+                title={blockState?.title || null}
+                selectedStyle={selectedStyle}
+            />
             <LinkForm
                 state={paramsId ? blockState : null}
                 onSubmit={(e) => handleSubmit(e, 3)}

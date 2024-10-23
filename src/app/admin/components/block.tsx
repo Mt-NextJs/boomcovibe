@@ -34,7 +34,7 @@ export default function Block({
     const menuRef = useRef<HTMLDivElement | null>(null);
     const router = useRouter();
     const { token } = useToken();
-    const { setBlock } = useBlockStore();
+    const { setBlock, deleteBlock: removeBlock, resetBlock } = useBlockStore();
     const blockStyle = () => {
         if (isMoving && movingAction === 'UP' && index < movingIndex!)
             return 'translate-y-full';
@@ -96,7 +96,8 @@ export default function Block({
         setMenuToggle(false);
         await deleteBlock(token, rest.id);
         alert('삭제되었습니다.');
-        router.refresh();
+        removeBlock(rest.id);
+        resetBlock();
     };
     return (
         <li
@@ -141,6 +142,7 @@ export default function Block({
             <div
                 className="relative flex-1 cursor-pointer p-3"
                 onClick={() => {
+                    console.log('click!!');
                     handleClick(
                         blockTypeMap[rest.type].href + `?id=${rest.id}`,
                     );
@@ -165,9 +167,7 @@ export default function Block({
                             dateEnd={rest.dateEnd}
                         />
                     )}
-                    {rest.schedule.length > 0 && (
-                        <Schedule schedule={rest.schedule} />
-                    )}
+                    {rest.schedule && <Schedule schedule={rest.schedule} />}
                     {rest.type !== 5 && rest.type !== 7 && (
                         <>
                             {rest.imgUrl && (

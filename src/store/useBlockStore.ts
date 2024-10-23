@@ -6,23 +6,20 @@ interface BlockStore {
     block: Block | null;
     setBlocks: (blocks: Block[]) => void;
     setBlock: (block: Block | null) => void;
-    getBlockById: (id: number) => Block | undefined;
     resetBlock: () => void;
     updateBlock: (id: number, updates: Partial<Block>) => void;
+    deleteBlock: (id: number) => void;
 }
 
 const useBlockStore = create<BlockStore>()(
     persist(
-        (set, get) => ({
+        (set) => ({
             blocks: [],
             block: null,
             setBlocks: (blocks) => set({ blocks }),
             setBlock: (block) => {
-                console.log(block, 'block set');
                 set({ block });
             },
-            getBlockById: (id) =>
-                get().blocks?.find((block) => block.id === id),
             resetBlock: () => set({ block: null }),
             updateBlock: (id, updates) =>
                 set((state) => ({
@@ -33,6 +30,10 @@ const useBlockStore = create<BlockStore>()(
                         state.block?.id === id
                             ? { ...state.block, ...updates }
                             : state.block,
+                })),
+            deleteBlock: (id) =>
+                set((state) => ({
+                    blocks: state.blocks?.filter((block) => block.id !== id),
                 })),
         }),
         {

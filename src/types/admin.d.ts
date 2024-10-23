@@ -30,7 +30,7 @@ interface Block {
     dateCreate: string;
     dateUpdate: string | null;
     active: number;
-    schedule: Schedule[]; // type이 7일 때만 포함되는 일정 데이터
+    schedule?: Schedule[]; // type이 7일 때만 포함되는 일정 데이터
 }
 
 type BlockFormAction = {
