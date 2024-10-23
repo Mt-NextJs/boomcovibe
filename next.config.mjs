@@ -12,6 +12,9 @@ const nextConfig = {
     env: {
         CUSTOM_URL: process.env.NEXT_PUBLIC_KAKAO_URL, // CUSTOM_URL 추가
     },
+    images: {
+        domains: ['img.youtube.com'],
+    },
 };
 
 export default nextConfig;

@@ -4,6 +4,12 @@ interface AddBlockParams {
     blockData: BlocksUnionType;
 }
 
+// 블록수정 API 파라미터 인터페이스
+interface UpdateBlockParams {
+    accessToken: string;
+    blockData: Block;
+}
+
 // 구분선 블록 타입
 interface DividerBlock {
     type: 1;

@@ -2,7 +2,13 @@
 
 export default function Menu({ blockDelete }: { blockDelete: () => void }) {
     return (
-        <ul className="absolute -bottom-8 right-5 z-10 w-fit overflow-hidden rounded-lg border border-gray-300 bg-white text-center shadow-xl">
+        <ul
+            className="absolute -bottom-8 right-5 z-10 w-fit overflow-hidden rounded-lg border border-gray-300 bg-white text-center shadow-xl"
+            onClick={(e) => {
+                e.stopPropagation();
+                console.log('menu click');
+            }}
+        >
             <li className="border-b border-gray-300 p-2 hover:bg-gray-50">
                 <button className="w-full">상단에 고정</button>
             </li>

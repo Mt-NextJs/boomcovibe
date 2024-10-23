@@ -61,7 +61,7 @@ export const addBlock = async (params: AddBlockParams) => {
 };
 
 // 블록 업데이트 API 호출 함수
-export const updateBlock = async (params: AddBlockParams) => {
+export const updateBlock = async (params: UpdateBlockParams) => {
     const { accessToken, blockData } = params;
     const response = await fetch('/api/link/update', {
         method: 'POST',
