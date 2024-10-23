@@ -2,6 +2,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import useBlockStore from 'store/useBlockStore';
 import useToken from 'store/useToken';
 import { addBlock, updateBlock } from 'service/api/block-api';
+import { validateURL } from 'service/validation';
 
 export function useBlockSubmit() {
     const router = useRouter();
@@ -17,13 +18,19 @@ export function useBlockSubmit() {
         if (!token) return;
 
         try {
+            // 블록 수정
             if (id) {
-                await updateBlock({
-                    accessToken: token,
-                    blockData: block!,
-                });
-                console.log(blocks, 'update', block);
+                if (validateURL(block?.url)) {
+                    await updateBlock({
+                        accessToken: token,
+                        blockData: block!,
+                    });
+                    console.log(blocks, 'update', block);
+                } else {
+                    return alert('올바른 URL을 입력해주세요');
+                }
             } else {
+                // 블록 추가
                 const formData = new FormData(e.currentTarget);
                 const formEntries = Object.fromEntries(formData.entries());
                 console.log(formEntries, 'formEntries');
@@ -39,8 +46,11 @@ export function useBlockSubmit() {
                 if ('style' in newBlock) {
                     newBlock.style = Number(newBlock.style);
                 }
-                console.log(blocks, 'add', newBlock);
 
+                if ('url' in newBlock) {
+                    if (newBlock.url && !validateURL(newBlock.url))
+                        return alert('올바른 URL을 입력해주세요');
+                }
                 await addBlock({
                     accessToken: token,
                     blockData: newBlock,

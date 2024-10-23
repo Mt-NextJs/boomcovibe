@@ -13,14 +13,10 @@ export default function LinkForm({
     url,
     paramsId,
     imgUrl,
-    file,
     handleFileChange,
     handleDeleteImg,
 }: {
-    onSubmit: (
-        e: React.FormEvent<HTMLFormElement>,
-        type: BlockType,
-    ) => Promise<void>;
+    onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
     selectedStyle: number;
     handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleStyleChange: (index: number) => void;
@@ -28,17 +24,11 @@ export default function LinkForm({
     url: string;
     paramsId: string | null;
     imgUrl: string;
-    file: File | null;
     handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleDeleteImg: () => void;
 }) {
-    const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (!validateURL(url)) return alert('올바른 URL을 입력해주세요');
-        onSubmit(e, 3);
-    };
     return (
-        <form onSubmit={handleSubmit}>
+        <form onSubmit={onSubmit}>
             <LinkStyleSelector
                 selectedStyle={selectedStyle}
                 handleStyleChange={handleStyleChange}
@@ -85,7 +75,7 @@ export default function LinkForm({
                 </label>
                 <div className="flex items-center justify-center gap-4">
                     <div className="relative flex h-48 w-48 items-center justify-center rounded-lg border-2 border-gray-300 bg-gray-300">
-                        {file || imgUrl ? (
+                        {imgUrl ? (
                             <Image
                                 src={imgUrl}
                                 alt="Uploaded"

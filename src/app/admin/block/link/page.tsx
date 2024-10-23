@@ -18,7 +18,6 @@ export default function LinkBlock() {
     const [url, setUrl] = useState<string>(
         paramsId ? blockState?.url || '' : '',
     );
-    const [file, setFile] = useState<File | null>(null);
     const [imgUrl, setImgUrl] = useState<string>(
         paramsId ? blockState?.imgUrl || '' : '',
     );
@@ -78,7 +77,6 @@ export default function LinkBlock() {
                 url={url}
                 paramsId={paramsId}
                 imgUrl={imgUrl}
-                file={file}
                 handleFileChange={handleFileChange}
                 handleDeleteImg={handleDeleteImg}
             />
