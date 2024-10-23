@@ -167,17 +167,21 @@ export default function Block({
                             dateEnd={rest.dateEnd}
                         />
                     )}
-                    {rest.schedule && <Schedule schedule={rest.schedule} />}
+                    {rest.schedule && rest.schedule.length > 0 && (
+                        <Schedule schedule={rest.schedule} />
+                    )}
                     {rest.type !== 5 && rest.type !== 7 && (
                         <>
                             {rest.imgUrl && (
-                                <Image
-                                    src={rest.imgUrl}
-                                    alt={''}
-                                    width={56}
-                                    height={56}
-                                    className="rounded-md"
-                                />
+                                <div className="relative aspect-square h-16 overflow-hidden rounded-md">
+                                    <Image
+                                        src={rest.imgUrl}
+                                        alt={''}
+                                        layout="fill"
+                                        className="rounded-md"
+                                        objectFit="cover"
+                                    />
+                                </div>
                             )}
                             <div>{rest.title}</div>
                         </>

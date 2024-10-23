@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import VideoEmbed from './video-embed';
 import useBlockStore from 'store/useBlockStore';
 import { useBlockSubmit } from 'hooks/useBlockSubmit';
+import { validateURL } from 'service/validation';
 
 export default function VideoForm() {
     const { block, updateBlock } = useBlockStore();
@@ -12,10 +13,7 @@ export default function VideoForm() {
     const [embedUrl, setEmbedUrl] = useState<string>('');
     const [thumbnail, setThumbnail] = useState<string>('');
     const [title, setTitle] = useState<string>('');
-    const validateURL = (url: string) => {
-        const regex = /^(ftp|http|https):\/\/[^ "]+$/;
-        return regex.test(url);
-    };
+
     const getVideoId = (url: string) => {
         const videoId = url.split('v=')[1];
         const ampersandPosition = videoId ? videoId.indexOf('&') : -1;
