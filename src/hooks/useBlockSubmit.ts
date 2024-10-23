@@ -1,7 +1,7 @@
 import { useRouter, useSearchParams } from 'next/navigation';
 import useBlockStore from 'store/useBlockStore';
 import useToken from 'store/useToken';
-import { addBlock, updateBlockApi } from 'service/block-api';
+import { addBlock, updateBlock } from 'service/api/block-api';
 
 export function useBlockSubmit() {
     const router = useRouter();
@@ -35,7 +35,10 @@ export function useBlockSubmit() {
 
         try {
             if (id) {
-                await updateBlockApi({ accessToken: token, blockData: block! });
+                await updateBlock({
+                    accessToken: token,
+                    blockData: block!,
+                });
             } else {
                 await addBlock({
                     accessToken: token,

@@ -3,28 +3,21 @@
 import React, { useState, useEffect } from 'react';
 import BlockHeader from '../components/block-header';
 import DaumPost from './components/address';
-import KakaoMap from './components/kakaomap';
-
-interface Props {
-    areaAddress: string;
-    townAddress: string;
-}
-
-export interface postMapDataType {
-    address: string;
-    title: string;
-    content: string;
-}
+import PreblockMap from '../components/preview/preblock-map';
 
 export default function MapBlock() {
-    const [addressObj, setAddressObj] = useState<Props>({
+    // const sequence: number = 9999;
+    const [addressObj, setAddressObj] = useState<AddressProps>({
         areaAddress: '',
         townAddress: '',
     });
-    const [totalValue, setTotalValue] = useState<postMapDataType>({
-        address: '',
+
+    const [totalValue, setTotalValue] = useState<MapBlock>({
+        type: 8,
+        sequence: 0,
         title: '',
-        content: '',
+        subText01: '',
+        subText02: '',
     });
 
     const handleInputFunction = (
@@ -32,7 +25,7 @@ export default function MapBlock() {
     ) => {
         const name = event.target.name;
         const value = event.target.value;
-        setTotalValue((prev: postMapDataType) => ({
+        setTotalValue((prev: MapBlock) => ({
             ...prev,
             [name]: value,
         }));
@@ -40,9 +33,9 @@ export default function MapBlock() {
 
     // 주소 데이터 입력 함수
     useEffect(() => {
-        setTotalValue((prev: postMapDataType) => ({
+        setTotalValue((prev: MapBlock) => ({
             ...prev,
-            address: JSON.stringify(addressObj),
+            subText01: JSON.stringify(addressObj),
         }));
     }, [addressObj]);
 
@@ -50,7 +43,7 @@ export default function MapBlock() {
         <>
             <BlockHeader
                 windowIcon={'/assets/icons/icon_close.png'}
-                iconLink={'/block'}
+                iconLink={'/admin'}
                 blockTitle={'지도 블록'}
                 blockDescription={`주소를 검색하여 등록해주세요`}
             />
@@ -61,29 +54,10 @@ export default function MapBlock() {
 
             <div className="px-10 pt-10">
                 <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
-                    <div className="w-full max-w-[450px] rounded-xl bg-white shadow-lg">
-                        <div className="text-md p-4 text-gray-200">장소</div>
-                        <div className="flex flex-col items-center px-4">
-                            <div>
-                                {totalValue.title.length > 0 ? (
-                                    <>{totalValue.title}</>
-                                ) : (
-                                    <>장소명을 입력해주세요</>
-                                )}
-                            </div>
-                        </div>
-                        <KakaoMap
-                            address={
-                                addressObj.areaAddress +
-                                ' ' +
-                                addressObj.townAddress
-                            }
-                        />
-
-                        <div className="m-2 flex items-center justify-center font-light text-gray-400">
-                            {addressObj.areaAddress} {addressObj.townAddress}
-                        </div>
-                    </div>
+                    <PreblockMap
+                        totalValue={totalValue}
+                        addressObj={addressObj}
+                    />
                 </div>
 
                 <div className="my-10 w-full border-b" />
@@ -113,7 +87,7 @@ export default function MapBlock() {
                         type="text"
                         name="title"
                         id="title"
-                        value={totalValue.content}
+                        value={totalValue.subText02}
                         onChange={handleInputFunction}
                         placeholder="장소를 알아보기 쉬운 설명을 덧붙이면 좋아요"
                         className="input"

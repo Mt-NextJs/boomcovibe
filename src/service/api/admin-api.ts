@@ -1,5 +1,5 @@
 export async function fetchUserInfo(token: string): Promise<UserInfo> {
-    console.log(token);
+    // console.log(token);
     const response = await fetch('/api/user/info', {
         method: 'GET',
         headers: {
