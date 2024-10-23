@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import VideoEmbed from './video-embed';
 import useBlockStore from 'store/useBlockStore';
 import { useBlockSubmit } from 'hooks/useBlockSubmit';
+import { validateURL } from 'service/validation';
 
 export default function VideoForm() {
     const { block, updateBlock } = useBlockStore();
@@ -12,10 +13,7 @@ export default function VideoForm() {
     const [embedUrl, setEmbedUrl] = useState<string>('');
     const [thumbnail, setThumbnail] = useState<string>('');
     const [title, setTitle] = useState<string>('');
-    const validateURL = (url: string) => {
-        const regex = /^(ftp|http|https):\/\/[^ "]+$/;
-        return regex.test(url);
-    };
+
     const getVideoId = (url: string) => {
         const videoId = url.split('v=')[1];
         const ampersandPosition = videoId ? videoId.indexOf('&') : -1;
@@ -46,8 +44,6 @@ export default function VideoForm() {
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const inputUrl = e.target.value;
         setUrl(inputUrl);
-        if (!validateURL(inputUrl) && inputUrl !== '')
-            return alert('올바른 주소를 입력해주세요');
 
         const cleanVideoId = getVideoId(inputUrl);
 
@@ -90,7 +86,11 @@ export default function VideoForm() {
             <input type="hidden" name="title" value={title} />
             <input type="hidden" name="imgUrl" value={thumbnail} />
             <VideoEmbed url={embedUrl} />
-            <button className="button color">추가 완료</button>
+            <button
+                className={`button color ${!validateURL(url) && 'disable'}`}
+            >
+                {paramsId ? '수정 완료' : '추가 완료'}
+            </button>
         </form>
     );
 }

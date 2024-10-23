@@ -10,11 +10,12 @@ import { useRouter } from 'next/navigation';
 import useToken from 'store/useToken';
 import useBlockStore from 'store/useBlockStore';
 import { deleteBlock } from 'service/api/admin-api';
+import Divider from '@components/divider';
 
 interface BlockProps extends Block {
     index: number;
     handleBlock: (index: number, action: 'UP' | 'DOWN') => void;
-    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => boolean | undefined;
+    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => boolean;
     isMoving: boolean;
     movingIndex: number | null;
     movingAction: 'UP' | 'DOWN' | null;
@@ -142,7 +143,6 @@ export default function Block({
             <div
                 className="relative flex-1 cursor-pointer p-3"
                 onClick={() => {
-                    console.log('click!!');
                     handleClick(
                         blockTypeMap[rest.type].href + `?id=${rest.id}`,
                     );
@@ -160,6 +160,15 @@ export default function Block({
                 </div>
                 <div className={`flex gap-2`}>
                     {/* content */}
+                    {rest.type === 1 && (
+                        <div className="flex h-full w-full flex-col gap-3">
+                            <p className="">{rest.title}</p>
+                            <Divider
+                                className="flex h-full items-center justify-center"
+                                style={rest.style}
+                            />
+                        </div>
+                    )}
                     {rest.type === 5 && (
                         <Event
                             title={rest.title}
@@ -167,17 +176,21 @@ export default function Block({
                             dateEnd={rest.dateEnd}
                         />
                     )}
-                    {rest.schedule && <Schedule schedule={rest.schedule} />}
-                    {rest.type !== 5 && rest.type !== 7 && (
+                    {rest.schedule && rest.schedule.length > 0 && (
+                        <Schedule schedule={rest.schedule} />
+                    )}
+                    {rest.type !== 1 && rest.type !== 5 && rest.type !== 7 && (
                         <>
                             {rest.imgUrl && (
-                                <Image
-                                    src={rest.imgUrl}
-                                    alt={''}
-                                    width={56}
-                                    height={56}
-                                    className="rounded-md"
-                                />
+                                <div className="relative aspect-square h-16 overflow-hidden rounded-md">
+                                    <Image
+                                        src={rest.imgUrl}
+                                        alt={''}
+                                        layout="fill"
+                                        className="rounded-md"
+                                        objectFit="cover"
+                                    />
+                                </div>
                             )}
                             <div>{rest.title}</div>
                         </>

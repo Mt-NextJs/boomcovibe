@@ -2,6 +2,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import useBlockStore from 'store/useBlockStore';
 import useToken from 'store/useToken';
 import { addBlock, updateBlock } from 'service/api/block-api';
+import { validateURL } from 'service/validation';
 
 export function useBlockSubmit() {
     const router = useRouter();
@@ -16,30 +17,40 @@ export function useBlockSubmit() {
         e.preventDefault();
         if (!token) return;
 
-        const formData = new FormData(e.currentTarget);
-        const formEntries = Object.fromEntries(formData.entries());
-        console.log(formEntries, 'formEntries');
-        const maxSequence = blocks
-            ? Math.max(...blocks.map((b) => b.sequence), 0)
-            : 0;
-
-        const newBlock: T = {
-            ...formEntries,
-            type: blockType,
-            sequence: maxSequence + 1,
-        } as T;
-        if ('style' in newBlock) {
-            newBlock.style = Number(newBlock.style);
-        }
-        console.log(blocks, 'submit', newBlock);
-
         try {
+            // 블록 수정
             if (id) {
-                await updateBlock({
-                    accessToken: token,
-                    blockData: block!,
-                });
+                if (block.url && !validateURL(block?.url)) {
+                    return alert('올바른 URL을 입력해주세요');
+                } else {
+                    console.log(blocks, 'update', block);
+                    await updateBlock({
+                        accessToken: token,
+                        blockData: block!,
+                    });
+                }
             } else {
+                // 블록 추가
+                const formData = new FormData(e.currentTarget);
+                const formEntries = Object.fromEntries(formData.entries());
+                console.log(formEntries, 'formEntries');
+                const maxSequence = blocks
+                    ? Math.max(...blocks.map((b) => b.sequence), 0)
+                    : 0;
+
+                const newBlock: T = {
+                    ...formEntries,
+                    type: blockType,
+                    sequence: maxSequence + 1,
+                } as T;
+                if ('style' in newBlock) {
+                    newBlock.style = Number(newBlock.style);
+                }
+
+                if ('url' in newBlock) {
+                    if (newBlock.url && !validateURL(newBlock.url))
+                        return alert('올바른 URL을 입력해주세요');
+                }
                 await addBlock({
                     accessToken: token,
                     blockData: newBlock,
