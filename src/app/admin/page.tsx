@@ -64,7 +64,12 @@ export default function Admin() {
             block.sequence = i;
             return block;
         });
-        token && updateBlockOrder(token, sortedList);
+        if (token) {
+            const result = updateBlockOrder(token, sortedList); // 결과를 처리할 수 있도록 수정
+            if (result) {
+                console.log('Block order updated');
+            }
+        }
         setBlocks(sortedList);
     };
 

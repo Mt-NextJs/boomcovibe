@@ -22,11 +22,17 @@ export default function LinkForm({
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        name === 'title' && setTitle(value);
-        name === 'url' && setUrl(value);
+        if (name === 'title') {
+            setTitle(value);
+        } else if (name === 'url') {
+            setUrl(value);
+        }
         if (state) {
-            name === 'title' && updateBlock(state.id, { title: value });
-            name === 'url' && updateBlock(state.id, { url: value });
+            if (name === 'title') {
+                updateBlock(state.id, { title: value });
+            } else if (name === 'url') {
+                updateBlock(state.id, { url: value });
+            }
         }
     };
     const handleStyleChange = (index: number) => {
