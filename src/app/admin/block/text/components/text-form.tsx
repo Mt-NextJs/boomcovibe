@@ -13,8 +13,11 @@ export default function TextForm({
 
     useEffect(() => {
         console.log(state, 'state', state?.title);
-        state && setInputValue(state.title || '');
+        if (state) {
+            setInputValue(state.title || '');
+        }
     }, [state]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
         if (state) updateBlock(state?.id, { title: e.target.value });

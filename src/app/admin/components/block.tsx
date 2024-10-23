@@ -14,7 +14,7 @@ import { deleteBlock } from 'service/api/admin-api';
 interface BlockProps extends Block {
     index: number;
     handleBlock: (index: number, action: 'UP' | 'DOWN') => void;
-    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => true | undefined;
+    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => boolean;
     isMoving: boolean;
     movingIndex: number | null;
     movingAction: 'UP' | 'DOWN' | null;

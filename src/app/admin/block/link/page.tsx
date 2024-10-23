@@ -1,10 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import CloseButton from '../components/close-button';
 import LinkPreview from './components/link-preview';
 import LinkForm from './components/link-form';
 import { useBlockSubmit } from 'hooks/useBlockSubmit';
-import { useState } from 'react';
 import useBlockStore from 'store/useBlockStore';
 
 export default function LinkBlock() {
@@ -33,11 +33,22 @@ export default function LinkBlock() {
     };
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        name === 'title' && setTitle(value);
-        name === 'url' && setUrl(value);
+        if (name === 'title') {
+            setTitle(value);
+        }
+
+        if (name === 'url') {
+            setUrl(value);
+        }
+
         if (paramsId && blockState) {
-            name === 'title' && updateBlock(blockState.id, { title: value });
-            name === 'url' && updateBlock(blockState.id, { url: value });
+            if (name === 'title') {
+                updateBlock(blockState.id, { title: value });
+            }
+
+            if (name === 'url') {
+                updateBlock(blockState.id, { url: value });
+            }
         }
     };
     const handleDeleteImg = () => {

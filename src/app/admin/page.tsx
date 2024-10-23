@@ -64,7 +64,12 @@ export default function Admin() {
             block.sequence = i;
             return block;
         });
-        token && updateBlockOrder(token, sortedList);
+        if (token) {
+            const result = updateBlockOrder(token, sortedList); // 결과를 처리할 수 있도록 수정
+            if (result) {
+                console.log('Block order updated');
+            }
+        }
         setBlocks(sortedList);
     };
 
@@ -76,14 +81,16 @@ export default function Admin() {
         if (!blocks) return;
         updateBlock(blocks, e.oldIndex as number, e.newIndex as number);
     };
-    const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
-        if (!blocks) return;
+    const toggleMove = (index?: number, action?: 'UP' | 'DOWN'): boolean => {
+        if (!blocks) return false;
         if (action === 'DOWN' && index === blocks.length - 1) return true;
+        console.log('move function');
         if (index !== undefined && action) {
             setMovingState({ index, action });
         } else {
             setMovingState({ index: null, action: null });
         }
+        return false;
     };
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);

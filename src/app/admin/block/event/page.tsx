@@ -177,12 +177,12 @@ export default function EventBlock() {
                                     value={startDate}
                                     readOnly={true}
                                     onClick={() => {
-                                        {
-                                            startCalendar === true
-                                                ? setStartCalendar(false)
-                                                : setStartCalendar(true);
-                                            setStartTime(false);
+                                        if (startCalendar) {
+                                            setStartCalendar(false);
+                                        } else {
+                                            setStartCalendar(true);
                                         }
+                                        setStartTime(false);
                                     }}
                                 />
                             </div>
@@ -194,9 +194,11 @@ export default function EventBlock() {
                                     value={startTimeValue}
                                     readOnly={true}
                                     onClick={() => {
-                                        startTime === true
-                                            ? setStartTime(false)
-                                            : setStartTime(true);
+                                        if (startTime) {
+                                            setStartTime(false);
+                                        } else {
+                                            setStartTime(true);
+                                        }
                                         setStartCalendar(false);
                                     }}
                                 />
@@ -228,12 +230,12 @@ export default function EventBlock() {
                                     value={endDate}
                                     readOnly={true}
                                     onClick={() => {
-                                        {
-                                            endCalendar === true
-                                                ? setEndCalendar(false)
-                                                : setEndCalendar(true);
-                                            setEndTime(false);
+                                        if (endCalendar) {
+                                            setEndCalendar(false);
+                                        } else {
+                                            setEndCalendar(true);
                                         }
+                                        setEndTime(false);
                                     }}
                                 />
                             </div>
@@ -245,9 +247,11 @@ export default function EventBlock() {
                                     value={endTimeValue}
                                     readOnly={true}
                                     onClick={() => {
-                                        endTime === true
-                                            ? setEndTime(false)
-                                            : setEndTime(true);
+                                        if (endTime) {
+                                            setEndTime(false);
+                                        } else {
+                                            setEndTime(true);
+                                        }
                                         setEndCalendar(false);
                                     }}
                                 />
