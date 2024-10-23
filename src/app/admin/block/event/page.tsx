@@ -2,14 +2,21 @@
 
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
-import { addBlock } from 'service/block-api';
+import useToken from 'store/useToken';
+import useBlockStore from 'store/useBlockStore';
+import { addBlock } from 'service/api/block-api';
 import BlockHeader from '../components/block-header';
-import PreblockEvent from '../components/Preblock-event';
+import PreblockEvent from '../components/preview/preblock-event';
 import Calendar from '../components/calendar';
 import TimePicker from '../components/time-picker';
 
 export default function EventBlock() {
     const router = useRouter();
+    const { token } = useToken();
+    const { blocks } = useBlockStore();
+    const maxSequence = blocks
+        ? Math.max(...blocks.map((b) => b.sequence), 0)
+        : 0;
     const [eventTitle, setEventTitle] = useState<string>('');
     const [eventContent, setEventContent] = useState<string>('');
     const [eventGuide, setEventGuide] = useState<string>('');
@@ -24,18 +31,18 @@ export default function EventBlock() {
     const [endTimeValue, setEndTimeValue] = useState<string>('');
     const [startISO, setStartISO] = useState<string>('');
     const [endISO, setEndISO] = useState<string>('');
-    console.log(startISO, 'startIso', endISO, 'endISO');
+    // console.log(startISO, 'startIso', endISO, 'endISO');
 
-    const AC =
-        '6MSwibmeyJpZCIFtZSI6IsF0IiwidXNlcklkIjoibGlua2xlIiwiam9pblR5cGUiOiIxIiwicGFzc293cmQiOiIxMjM0IiwiZW1haWwiOm51bGwsImNvdW50cnlDb2RlIjoiS1IiLCJwaG9uZU51bWJlciI6bnVsbCwicGxhbiI6Ik4iLCJwbXNMaW5rIjoiWSIsInBtc0J1c2luZXNzIjoiTiIsInBtc01hcmtldCI6Ik4iLCJhbGFybVRhbGsiOiJOIiwiY2F0ZWdvcmllcyI6bnVsbCwiZGF0ZUNyZWF0ZSI6IjIwMjQtMTAtMDhUMTk6NDE6MjYuMDAwWiIsImRhdGVVcGRhdGUiOiIyMDI0LTEwLTExVDA0OjQxOjMzLjAwMFoiLCJhY3RpdmUiOjF9';
     // 블록 추가 호출
     const addNewBlock = async (): Promise<void> => {
-        const accessToken = AC; // 사용자 토큰
-
+        if (!token) {
+            console.error('Token is not available');
+            return;
+        }
         try {
             const blockData: EventBlock = {
                 type: 5, // 링크 블록
-                sequence: 38,
+                sequence: maxSequence + 1,
                 title: eventTitle,
                 subText01: eventContent,
                 subText02: eventGuide,
@@ -43,9 +50,10 @@ export default function EventBlock() {
                 dateEnd: endISO, // ISO 날짜 형식
             };
 
-            const result = await addBlock({ accessToken, blockData });
-            // console.log('Block added successfully:', result);
-            router.push('/admin');
+            const result = await addBlock({ accessToken: token, blockData });
+            if (result.ok) {
+                router.push('/admin');
+            }
         } catch (error) {
             console.error('Error adding block:', error);
         }

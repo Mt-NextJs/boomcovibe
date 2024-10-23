@@ -3,10 +3,11 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { useState } from 'react';
-import BlockHeader from '../components/block-header';
-import Calendar from './component/calendar';
-import Schedule from './component/schedule';
 import './component/schedule.css';
+import ScheduleList from './component/schedule-list';
+import BlockHeader from '../components/block-header';
+import PreblockCalendarOne from '../components/preview/preblock-cal-one';
+import PreblockCalendarTwo from '../components/preview/preblock-cal-two';
 
 export default function CalendarBlock() {
     // 추후 데이터 세트 들어오면 이 부분 수정
@@ -19,14 +20,14 @@ export default function CalendarBlock() {
         <>
             <BlockHeader
                 windowIcon={'/assets/icons/icon_close.png'}
-                iconLink={'/block'}
+                iconLink={'/admin'}
                 blockTitle={'캘린더 블록'}
                 blockDescription={`진행/예정된 일정이 1개 이상이어야
                   <br>
                   캘린더 블록을 공개할 수 있습니다`}
             />
             <div className="px-10">
-                <Link href={'/block/calendar/form'}>
+                <Link href={'/admin/block/calendar/form'}>
                     <button className="button color">
                         + 캘린더에 일정을 추가하세요
                     </button>
@@ -89,19 +90,10 @@ export default function CalendarBlock() {
 
                     {isListView ? (
                         <div className="relative z-20 mx-auto flex w-full flex-col gap-10">
-                            <div className="h-64 w-full overflow-y-scroll rounded-xl bg-[#FFFFFF] p-5 shadow-[0px_8px_20px_#ced4da] [&::-webkit-scrollbar]:hidden">
-                                <div className="schedule-last flex flex-col justify-center gap-1 p-5">
-                                    <Schedule flag={1} />
-                                    <Schedule flag={1} />
-                                    <Schedule flag={1} />
-                                    <Schedule flag={1} />
-                                    <Schedule flag={1} />
-                                    <Schedule flag={1} />
-                                </div>
-                            </div>
+                            <PreblockCalendarOne />
                         </div>
                     ) : (
-                        <Calendar />
+                        <PreblockCalendarTwo />
                     )}
                 </div>
             </div>
@@ -140,7 +132,7 @@ export default function CalendarBlock() {
                     {viewTypeNow === true ? (
                         //  데이터세트 들어오면 로직 수정
                         dataSet === true ? (
-                            <Schedule flag={2} />
+                            <ScheduleList flag={2} />
                         ) : (
                             <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
                                 <p className="text-center">

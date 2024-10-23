@@ -10,6 +10,7 @@ import { useState } from 'react';
 // import { useForm } from 'react-hook-form';
 // import { registerFormSchema } from 'schemas/schema';
 // import { RegisterFormData } from 'types/auth';
+import useToken from 'store/useToken';
 
 export default function LoginForm() {
     const [token, setToken] = useState(null);
@@ -17,7 +18,7 @@ export default function LoginForm() {
     const [password, setPassword] = useState('');
 
     const router = useRouter();
-
+    const setACToken = useToken((state) => state.setToken);
     // const {
     //     register,
     //     handleSubmit,
@@ -58,6 +59,7 @@ export default function LoginForm() {
                 const token = fetchData.data.token;
                 localStorage.setItem('token', token);
                 setToken(token);
+                setACToken(token);
                 router.push('/admin');
                 return fetchData;
             }
