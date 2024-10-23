@@ -1,10 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import CloseButton from '../components/close-button';
 import LinkPreview from './components/link-preview';
 import LinkForm from './components/link-form';
 import { useBlockSubmit } from 'hooks/useBlockSubmit';
-import { useState } from 'react';
 
 export default function LinkBlock() {
     const { handleSubmit, block: blockState, paramsId } = useBlockSubmit();
