@@ -2,28 +2,40 @@ import Image from 'next/image';
 import Link from 'next/link';
 import BlockStack from '@components/main-stack';
 import { ClientRoute } from '@config/route';
+import BlockLogo from '@components/main-logo';
 
 export default function Intro() {
     return (
-        <div className="flex h-dvh flex-col justify-between bg-primary-100 py-[20%]">
+        <div className="flex h-dvh flex-col bg-primary-100 py-[20%]">
             <div className="flex h-full items-center">
-                <div className="flex w-full items-center gap-[2rem]">
+                <div className="grid grid-cols-2">
                     <BlockStack />
-                    <div className="flex w-[12rem] flex-col justify-center gap-[1rem]">
-                        <div className="logo-desc text-foreground w-full text-xl">
-                            <div className="transform text-left transition duration-500 hover:translate-x-2 hover:text-red-300">
-                                블록으로
-                            </div>
-                            <div className="transform text-center transition duration-500 hover:scale-105 hover:text-red-300">
-                                표현하는
+                    <div className="z-30 grid grid-flow-col grid-rows-2 gap-4">
+                        <div className="logo-desc text-foreground w-full pr-2 text-xl">
+                            <Image
+                                src="/assets/icons/main1.png"
+                                alt="블록으로"
+                                width={694}
+                                height={163}
+                            />
+                            <div className="flex flex-col">
+                                <Image
+                                    src="/assets/icons/main2.png"
+                                    alt="표현하는"
+                                    width={700}
+                                    height={400}
+                                />
+                                <BlockLogo />
                             </div>
                         </div>
-                        <div className="logo-inmylink w-full text-center">
-                            <div className="text-foreground p-2 text-2xl font-extrabold tracking-wider duration-500 hover:scale-105 hover:text-red-300">
-                                인마이링크
-                            </div>
-                            <div className="text-lg text-primary-250">
-                                In My Link
+                        <div className="logo-inmylink text-center">
+                            <div>
+                                <Image
+                                    src="/assets/icons/main3.png"
+                                    alt="인마이링크"
+                                    width={700}
+                                    height={400}
+                                />
                             </div>
                         </div>
                     </div>
