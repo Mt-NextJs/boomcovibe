@@ -2,17 +2,13 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import Menu from './menu';
-import Schedule from './schedule';
-import Event from './event';
 import { blockTypeMap } from 'service/constants/block-types';
 import { useRouter } from 'next/navigation';
-
 import useToken from 'store/useToken';
 import useBlockStore from 'store/useBlockStore';
 import { deleteBlock } from 'service/api/admin-api';
-import Divider from '@components/divider';
-import MapAdmin from './map';
 import { FaMapMarkedAlt } from 'react-icons/fa';
+import { useBlockContent } from 'hooks/useBlockContent';
 
 interface BlockProps extends Block {
     index: number;
@@ -38,16 +34,20 @@ export default function Block({
     const router = useRouter();
     const { token } = useToken();
     const { setBlock, deleteBlock: removeBlock, resetBlock } = useBlockStore();
-    const blockStyle = () => {
-        if (isMoving && movingAction === 'UP' && index < movingIndex!)
-            return 'translate-y-full';
-        if (isMoving && movingAction === 'DOWN' && index > movingIndex!)
-            return '-translate-y-full';
-        if (isMoving && movingAction === 'UP' && index === movingIndex)
-            return '-translate-y-full z-10';
-        if (isMoving && movingAction === 'DOWN' && index === movingIndex)
-            return 'translate-y-full z-10';
 
+    // 블록 상 하 이동 스타일 ( movingIndex : 이동하려는 블록의 인덱스 )
+    const blockStyle = () => {
+        if (!isMoving) return '';
+        if (movingAction === 'UP') {
+            return index < movingIndex
+                ? 'translate-y-full'
+                : '-translate-y-full z-10';
+        }
+        if (movingAction === 'DOWN') {
+            return index > movingIndex
+                ? '-translate-y-full'
+                : 'translate-y-full z-10';
+        }
         return '';
     };
     useEffect(() => {
@@ -73,12 +73,12 @@ export default function Block({
     // 블록 최 상하단 버튼
     const handleMove = (index: number, action: 'UP' | 'DOWN') => {
         if (action === 'UP' && index === 0) return;
-        if (toggleMove(index, action)) return;
-        toggleMove(index, action);
-        setTimeout(() => {
-            handleBlock(index, action);
-            toggleMove();
-        }, 300);
+        if (!toggleMove(index, action)) {
+            setTimeout(() => {
+                handleBlock(index, action);
+                toggleMove();
+            }, 300);
+        }
     };
 
     //활성화 버튼
@@ -166,51 +166,7 @@ export default function Block({
                 </div>
                 <div className={`flex gap-2`}>
                     {/* content */}
-                    {rest.type === 1 && (
-                        <div className="flex h-full w-full flex-col gap-3">
-                            <p className="">{rest.title}</p>
-                            <Divider
-                                className="flex h-full items-center justify-center"
-                                style={rest.style}
-                            />
-                        </div>
-                    )}
-                    {rest.type === 5 && (
-                        <Event
-                            title={rest.title}
-                            dateStart={rest.dateStart}
-                            dateEnd={rest.dateEnd}
-                        />
-                    )}
-                    {rest.type === 8 && (
-                        <MapAdmin
-                            title={rest.title}
-                            subText01={rest.subText01}
-                            subText02={rest.subText02}
-                        />
-                    )}
-                    {rest.schedule && rest.schedule.length > 0 && (
-                        <Schedule schedule={rest.schedule} />
-                    )}
-                    {rest.type !== 1 &&
-                        rest.type !== 5 &&
-                        rest.type !== 7 &&
-                        rest.type !== 8 && (
-                            <>
-                                {rest.imgUrl && (
-                                    <div className="relative aspect-square h-16 overflow-hidden rounded-md">
-                                        <Image
-                                            src={rest.imgUrl}
-                                            alt={''}
-                                            layout="fill"
-                                            className="rounded-md"
-                                            objectFit="cover"
-                                        />
-                                    </div>
-                                )}
-                                <div>{rest.title}</div>
-                            </>
-                        )}
+                    {useBlockContent(rest)}
                 </div>
 
                 {menuToggle && (
