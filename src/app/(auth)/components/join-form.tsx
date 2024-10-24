@@ -1,13 +1,14 @@
 'use client';
 
 import { ClientRoute } from '@config/route';
-import { zodResolver } from '@hookform/resolvers/zod';
+// import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-import { useForm } from 'react-hook-form';
-import { joinFormSchema } from 'schemas/schema';
-import { JoinFormData } from 'types/auth';
+// import { useForm } from 'react-hook-form';
+// import { joinFormSchema } from 'schemas/schema';
+import useToken from 'store/useToken';
+// import { JoinFormData } from 'types/auth';
 
 export default function JoinForm() {
     const [name, setName] = useState('');
@@ -16,37 +17,85 @@ export default function JoinForm() {
     const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
+    const setACToken = useToken((state) => state.setToken);
 
-    const {
-        register,
-        handleSubmit,
-        reset,
-        formState: { errors },
-    } = useForm<JoinFormData>({
-        resolver: zodResolver(joinFormSchema),
-    });
+    // const {
+    //     register,
+    //     handleSubmit,
+    //     reset,
+    //     formState: { errors },
+    // } = useForm<JoinFormData>({
+    //     resolver: zodResolver(joinFormSchema),
+    // });
 
-    async function handleRegister(data: JoinFormData) {
+    // async function handleRegister(data: JoinFormData) {
+    //     setIsLoading(true);
+
+    //     try {
+    //         const response = await fetch('/api/user/add', {
+    //             method: 'POST',
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //             body: JSON.stringify({
+    //                 name: data.name,
+    //                 userId: data.userId,
+    //                 password: data.password,
+    //                 email: data.email,
+    //             }),
+    //         });
+
+    //         const fetchData = await response.json();
+
+    //         if (!response.ok) {
+    //             alert('실패');
+    //         } else {
+    //             alert('성공');
+    //             router.push('/login');
+    //             return fetchData;
+    //         }
+    //     } catch (error) {
+    //         console.log(error);
+    //     } finally {
+    //         setIsLoading(false);
+    //     }
+    //     reset();
+    // }
+
+    async function handleJoin(e: React.FormEvent<HTMLFormElement>) {
+        e.preventDefault();
+        setIsLoading(true);
+
         try {
-            const response = await fetch('/api/user/add', {
+            const formData = new FormData(e.currentTarget);
+            const name = formData.get('name');
+            const userId = formData.get('userId');
+            const password = formData.get('password');
+            const email = formData.get('email');
+
+            const response = await fetch('/api/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    name: data.name,
-                    userId: data.userId,
-                    password: data.password,
-                    email: data.email,
+                    formData,
+                    name: name,
+                    userId: userId,
+                    password: password,
+                    email: email,
                 }),
             });
-
             const fetchData = await response.json();
 
             if (!response.ok) {
                 alert('실패');
             } else {
                 alert('성공');
+                console.log(fetchData);
+                const token = fetchData.data.token;
+                localStorage.setItem('token', token);
+                setACToken(token);
                 router.push('/login');
                 return fetchData;
             }
@@ -55,7 +104,6 @@ export default function JoinForm() {
         } finally {
             setIsLoading(false);
         }
-        // reset();
     }
 
     return (
@@ -74,7 +122,7 @@ export default function JoinForm() {
                     </div>
                 </div>
 
-                <form className="mt-8" onSubmit={handleSubmit(handleRegister)}>
+                <form className="mt-8" onSubmit={handleJoin}>
                     <label htmlFor="name" className="title">
                         이름
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
@@ -82,7 +130,7 @@ export default function JoinForm() {
                         </span>
                     </label>
                     <input
-                        {...register('name')}
+                        // {...register('name')}
                         id="name"
                         name="name"
                         type="text"
@@ -103,7 +151,7 @@ export default function JoinForm() {
                         </span>
                     </label>
                     <input
-                        {...register('userId')}
+                        // {...register('userId')}
                         id="userId"
                         name="userId"
                         type="text"
@@ -124,7 +172,7 @@ export default function JoinForm() {
                         </span>
                     </label>
                     <input
-                        {...register('password')}
+                        // {...register('password')}
                         id="password"
                         name="password"
                         type="password"
@@ -136,7 +184,7 @@ export default function JoinForm() {
                         onChange={(e) => setPassword(e.target.value)}
                     ></input>
 
-                    <label htmlFor="confirmPassword" className="title">
+                    {/* <label htmlFor="confirmPassword" className="title">
                         비밀번호 확인
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
                             *
@@ -152,8 +200,8 @@ export default function JoinForm() {
                         placeholder="********"
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) => (e.target.placeholder = '********')}
-                        onChange={(e) => setPassword(e.target.value)}
-                    ></input>
+                        onChange={(data) => setPassword(data.target.value)}
+                    ></input> */}
 
                     <label htmlFor="email" className="title">
                         이메일
@@ -162,7 +210,7 @@ export default function JoinForm() {
                         </span>
                     </label>
                     <input
-                        {...register('email')}
+                        // {...register('email')}
                         id="email"
                         name="email"
                         type="text"

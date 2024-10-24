@@ -8,13 +8,11 @@ import { useState } from 'react';
 import useToken from 'store/useToken';
 
 export default function LoginForm() {
-    const [token, setToken] = useState<string | null>(null);
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
-
-    const router = useRouter();
     const setACToken = useToken((state) => state.setToken);
+    const router = useRouter();
 
     async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -44,7 +42,6 @@ export default function LoginForm() {
                 alert('성공');
                 const token = fetchData.data.token;
                 localStorage.setItem('token', token);
-                setToken(token);
                 setACToken(token);
                 router.push('/admin');
                 return fetchData;
