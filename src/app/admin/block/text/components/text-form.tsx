@@ -13,8 +13,11 @@ export default function TextForm({
 
     useEffect(() => {
         console.log(state, 'state', state?.title);
-        state && setInputValue(state.title || '');
+        if (state) {
+            setInputValue(state.title || '');
+        }
     }, [state]);
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setInputValue(e.target.value);
         if (state) updateBlock(state?.id, { title: e.target.value });
@@ -22,12 +25,7 @@ export default function TextForm({
         }
     };
     return (
-        <form
-            onSubmit={onSubmit}
-            method="POST"
-            action="/api/admin/add"
-            className="mb-10 flex flex-col gap-2"
-        >
+        <form onSubmit={onSubmit} className="mb-10 flex flex-col gap-2">
             <div className="flex justify-between">
                 <label htmlFor="content">
                     내용 입력
@@ -49,7 +47,7 @@ export default function TextForm({
                 onChange={handleChange}
             />
 
-            <button className="button color">
+            <button className={`button color ${!inputValue && 'disable'}`}>
                 {state ? '수정 완료' : '추가 완료'}
             </button>
         </form>

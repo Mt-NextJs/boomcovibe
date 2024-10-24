@@ -1,12 +1,16 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import useToken from 'store/useToken';
+import { addBlock } from 'service/api/block-api';
 import BlockHeader from '../components/block-header';
 import DaumPost from './components/address';
 import PreblockMap from '../components/preview/preblock-map';
 
 export default function MapBlock() {
-    // const sequence: number = 9999;
+    const { token } = useToken();
+    const router = useRouter();
     const [addressObj, setAddressObj] = useState<AddressProps>({
         areaAddress: '',
         townAddress: '',
@@ -38,6 +42,25 @@ export default function MapBlock() {
             subText01: JSON.stringify(addressObj),
         }));
     }, [addressObj]);
+    console.log(totalValue);
+
+    const handleSubmitFunction = async (): Promise<void> => {
+        if (!token) {
+            console.error('Token is not available');
+            return;
+        }
+        try {
+            const result = await addBlock({
+                accessToken: token,
+                blockData: totalValue,
+            });
+            if (result) {
+                router.push('/admin');
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     return (
         <>
@@ -85,8 +108,8 @@ export default function MapBlock() {
                     </div>
                     <input
                         type="text"
-                        name="title"
-                        id="title"
+                        name="subText02"
+                        id="subText02"
                         value={totalValue.subText02}
                         onChange={handleInputFunction}
                         placeholder="장소를 알아보기 쉬운 설명을 덧붙이면 좋아요"
@@ -96,6 +119,8 @@ export default function MapBlock() {
 
                 <button
                     className={`button color ${totalValue.title.length === 0 ? 'disable' : ''}`}
+                    disabled={!(totalValue.title && totalValue.subText01)} // 세 값 모두가 true일 때만 활성화
+                    onClick={handleSubmitFunction}
                 >
                     추가 완료
                 </button>

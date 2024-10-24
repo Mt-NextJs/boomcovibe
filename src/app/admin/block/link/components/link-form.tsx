@@ -1,43 +1,32 @@
 import Image from 'next/image';
 import LinkStyleSelector from './link-style-selector';
-import { Dispatch, useState } from 'react';
-import useBlockStore from 'store/useBlockStore';
+import { RiDeleteBin6Line } from 'react-icons/ri';
+import { LuPen } from 'react-icons/lu';
+import { validateURL } from 'service/validation';
 
 export default function LinkForm({
-    state,
     onSubmit,
     selectedStyle,
-    setSelectedStyle,
+    handleInputChange,
+    handleStyleChange,
+    title,
+    url,
+    paramsId,
+    imgUrl,
+    handleFileChange,
+    handleDeleteImg,
 }: {
-    state: Block | null;
     onSubmit: (e: React.FormEvent<HTMLFormElement>) => Promise<void>;
     selectedStyle: number;
-    setSelectedStyle: Dispatch<React.SetStateAction<number>>;
+    handleInputChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleStyleChange: (index: number) => void;
+    title: string;
+    url: string;
+    paramsId: string | null;
+    imgUrl: string;
+    handleFileChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleDeleteImg: () => void;
 }) {
-    const [file, setFile] = useState<File | null>(null);
-    const [fileUrl, setFileUrl] = useState<string>('');
-    const [title, setTitle] = useState<string>('');
-    const [url, setUrl] = useState<string>('');
-    const { updateBlock } = useBlockStore();
-
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        name === 'title' && setTitle(value);
-        name === 'url' && setUrl(value);
-        if (state) {
-            name === 'title' && updateBlock(state.id, { title: value });
-            name === 'url' && updateBlock(state.id, { url: value });
-        }
-    };
-    const handleStyleChange = (index: number) => {
-        setSelectedStyle(index + 1);
-        if (state) updateBlock(state.id, { style: index });
-    };
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const selectedFile = e.target.files?.[0];
-        setFile(selectedFile || null);
-        setFileUrl(selectedFile ? URL.createObjectURL(selectedFile) : '');
-    };
     return (
         <form onSubmit={onSubmit}>
             <LinkStyleSelector
@@ -57,7 +46,7 @@ export default function LinkForm({
                     id="url"
                     placeholder="연결하고 싶은 링크 주소 전체를 입력해주세요"
                     className="input"
-                    value={state?.url || url}
+                    value={url}
                     onChange={handleInputChange}
                 />
             </div>
@@ -75,7 +64,7 @@ export default function LinkForm({
                     id="title"
                     placeholder="링크는 잘 나타낼 수 있는 이름으로 입력해주세요"
                     className="input"
-                    value={state?.title || title}
+                    value={title}
                     onChange={handleInputChange}
                 />
             </div>
@@ -86,9 +75,9 @@ export default function LinkForm({
                 </label>
                 <div className="flex items-center justify-center gap-4">
                     <div className="relative flex h-48 w-48 items-center justify-center rounded-lg border-2 border-gray-300 bg-gray-300">
-                        {file ? (
+                        {imgUrl ? (
                             <Image
-                                src={URL.createObjectURL(file)}
+                                src={imgUrl}
                                 alt="Uploaded"
                                 className="h-full w-full rounded-lg object-cover"
                                 width={100}
@@ -106,22 +95,42 @@ export default function LinkForm({
                         )}
                         <input
                             type="file"
+                            id="file"
                             className="absolute inset-0 h-full w-full cursor-pointer opacity-0"
                             onChange={handleFileChange}
                         />
-                        <input type="hidden" name="imgUrl" value={fileUrl} />
+                        <input type="hidden" name="imgUrl" value={imgUrl} />
                     </div>
                     <div className="text-sm">
-                        <p>
-                            이미지를 직접 끌어오거나 <br />
-                            파일을 선택하여 업로드 해주세요
-                        </p>
+                        {!imgUrl ? (
+                            <p>
+                                이미지를 직접 끌어오거나 <br />
+                                파일을 선택하여 업로드 해주세요
+                            </p>
+                        ) : (
+                            <div className="flex items-center gap-2">
+                                <label
+                                    htmlFor="file"
+                                    className="aspect-square w-14 cursor-pointer overflow-hidden rounded-full"
+                                >
+                                    <LuPen className="h-full w-full bg-primary p-2" />
+                                </label>
+                                <button
+                                    className="aspect-square w-14 cursor-pointer overflow-hidden rounded-full"
+                                    onClick={handleDeleteImg}
+                                >
+                                    <RiDeleteBin6Line className="h-full w-full bg-slate-500 p-2" />
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
 
-            <button className="button color">
-                {state ? '수정 완료' : '추가 완료'}
+            <button
+                className={`button color ${(!validateURL(url) || !title) && 'disable'}`}
+            >
+                {paramsId ? '수정 완료' : '추가 완료'}
             </button>
         </form>
     );

@@ -2,20 +2,27 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './component/schedule.css';
 import ScheduleList from './component/schedule-list';
 import BlockHeader from '../components/block-header';
 import PreblockCalendarOne from '../components/preview/preblock-cal-one';
 import PreblockCalendarTwo from '../components/preview/preblock-cal-two';
+import useBlockStore from 'store/useBlockStore';
 
 export default function CalendarBlock() {
-    // 추후 데이터 세트 들어오면 이 부분 수정
-    const dataSet = true;
-
+    const [dataSet, setDataSet] = useState<boolean>(false);
+    const { blocks } = useBlockStore();
     const [isListView, setIsListView] = useState(true);
     const [viewTypeNow, setViewTypeNow] = useState(true);
 
+    useEffect(() => {
+        if (blocks) {
+            setDataSet(true);
+        } else {
+            setDataSet(false);
+        }
+    }, [blocks]);
     return (
         <>
             <BlockHeader
@@ -90,7 +97,7 @@ export default function CalendarBlock() {
 
                     {isListView ? (
                         <div className="relative z-20 mx-auto flex w-full flex-col gap-10">
-                            <PreblockCalendarOne />
+                            <PreblockCalendarOne flag={1} />
                         </div>
                     ) : (
                         <PreblockCalendarTwo />
@@ -114,9 +121,8 @@ export default function CalendarBlock() {
                                 : 'text-gray-400'
                         }`}
                     >
-                        진행/예정된
+                        진행/ 정된
                     </div>
-                    {/* 지난 일정 버튼 */}
                     <div
                         onClick={() => setViewTypeNow(false)}
                         className={`cursor-pointer pb-2 ${
@@ -128,11 +134,11 @@ export default function CalendarBlock() {
                         지난
                     </div>
                 </div>
-                <div className="mb-5 px-10 py-5">
+                <div className="mb-5 h-[20rem] overflow-y-scroll px-10 py-5 [&::-webkit-scrollbar]:hidden">
                     {viewTypeNow === true ? (
                         //  데이터세트 들어오면 로직 수정
                         dataSet === true ? (
-                            <ScheduleList flag={2} />
+                            <PreblockCalendarOne flag={2} />
                         ) : (
                             <div className="min-h-1/2 flex w-full flex-1 flex-col items-center justify-center rounded-md bg-gray-100 p-12">
                                 <p className="text-center">

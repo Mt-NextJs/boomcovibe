@@ -1,6 +1,10 @@
-import Divider from "@components/divider";
+import Divider from '@components/divider';
 
-export default function DividePreview({ state }: { state: Block }) {
+export default function DividePreview({
+    divideStyle,
+}: {
+    divideStyle: number;
+}) {
     return (
         <>
             <p className="mb-2">미리보기</p>
@@ -31,8 +35,8 @@ export default function DividePreview({ state }: { state: Block }) {
 
                         <div className="relative flex h-2/5 w-full items-center justify-center">
                             <Divider
-                                style={state.style||1}
-                                className="relative flex justify-center items-center w-[30%]"
+                                style={divideStyle}
+                                className="relative flex w-[30%] items-center justify-center"
                             />
                         </div>
 

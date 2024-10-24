@@ -68,6 +68,7 @@ interface TextBlock {
 
 // 캘린더 블록 타입
 interface CalendarBlock {
+    id?: number;
     type: 7;
     sequence: number;
     style: number;
