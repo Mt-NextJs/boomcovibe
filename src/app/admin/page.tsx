@@ -34,28 +34,31 @@ export default function Admin() {
             router.push(ClientRoute.LOGIN as string);
         }
         setToken(token);
-        const fetchData = async () => {
-            if (token) {
-                try {
-                    const [userData, blockData, visitorData] =
-                        await Promise.all([
-                            fetchUserInfo(token),
-                            fetchBlockList(token),
-                            fetchVisitorInfo(token),
-                        ]);
 
-                    setBlocks(blockData);
-                    setUserInfo(userData);
-                    setVisitorInfo(visitorData);
-                } catch (error) {
-                    console.error(error);
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
-        fetchData();
+        fetchData(token);
     }, []);
+
+    const fetchData = async (token: string) => {
+        if (token) {
+            try {
+                const [userData, blockData, visitorData] = await Promise.all([
+                    fetchUserInfo(token),
+                    fetchBlockList(token),
+                    fetchVisitorInfo(token),
+                ]);
+
+                setBlocks(blockData);
+                setUserInfo(userData);
+                setVisitorInfo(visitorData);
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    // 드래그 중 실행
     const updateBlock = (blocks: Block[], from: number, to: number) => {
         const list = [...blocks];
         const item = list.splice(from, 1);
@@ -73,18 +76,20 @@ export default function Admin() {
         setBlocks(sortedList);
     };
 
-    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
-        if (!blocks) return;
-        updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
-    };
+    // 드래그 끝났을 때 실행
     const dragEnd = (e: SortableEvent) => {
         if (!blocks) return;
         updateBlock(blocks, e.oldIndex as number, e.newIndex as number);
     };
+    // 상하 버튼 클릭 시 실행
+    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
+        if (!blocks) return;
+        updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
+    };
+    // 상하 버튼 클릭 시 실행 (블록 스타일 변경)
     const toggleMove = (index?: number, action?: 'UP' | 'DOWN'): boolean => {
         if (!blocks) return false;
         if (action === 'DOWN' && index === blocks.length - 1) return true;
-        console.log('move function');
         if (index !== undefined && action) {
             setMovingState({ index, action });
         } else {
