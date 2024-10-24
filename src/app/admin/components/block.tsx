@@ -151,8 +151,9 @@ export default function Block({
                 }}
             >
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
+                    {/* 블록 타입 */}
                     {rest.type === 8 ? (
-                        <FaMapMarkedAlt size="30" color="white" />
+                        <FaMapMarkedAlt size="15" className="text-primary" />
                     ) : (
                         <Image
                             src={blockTypeMap[rest.type].src}
@@ -161,13 +162,6 @@ export default function Block({
                             height={15}
                         />
                     )}
-                    {/* 블록 타입 */}
-                    <Image
-                        src={blockTypeMap[rest.type].src}
-                        alt="type image"
-                        width={15}
-                        height={15}
-                    />
                     {blockTypeMap[rest.type].title}
                 </div>
                 <div className={`flex gap-2`}>
