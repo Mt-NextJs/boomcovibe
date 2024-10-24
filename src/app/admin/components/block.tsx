@@ -189,9 +189,7 @@ export default function Block({
                             subText02={rest.subText02}
                         />
                     )}
-                    {rest.schedule && rest.schedule.length > 0 && (
-                        <Schedule schedule={rest.schedule} />
-                    )}
+                    {rest.type === 7 && <Schedule schedule={rest.schedule} />}
                     {rest.type !== 1 &&
                         rest.type !== 5 &&
                         rest.type !== 7 &&
