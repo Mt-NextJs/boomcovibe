@@ -9,7 +9,7 @@ export const useBlockContent = (block: Block) => {
         case 1:
             return (
                 <div className="flex h-full w-full flex-col gap-3">
-                    <p className="">{block.title}</p>
+                    <p className="mb-2">{block.title}</p>
                     <Divider
                         className="flex h-full items-center justify-center"
                         style={block.style}
