@@ -81,14 +81,16 @@ export default function Admin() {
         if (!blocks) return;
         updateBlock(blocks, e.oldIndex as number, e.newIndex as number);
     };
-    const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
-        if (!blocks) return;
+    const toggleMove = (index?: number, action?: 'UP' | 'DOWN'): boolean => {
+        if (!blocks) return false;
         if (action === 'DOWN' && index === blocks.length - 1) return true;
+        console.log('move function');
         if (index !== undefined && action) {
             setMovingState({ index, action });
         } else {
             setMovingState({ index: null, action: null });
         }
+        return false;
     };
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);
@@ -194,7 +196,7 @@ export default function Admin() {
                     </a>
                 </h2>
 
-                {blocks ? (
+                {blocks && blocks.length > 0 ? (
                     <ReactSortable
                         list={blocks}
                         tag={'ul'}

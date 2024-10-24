@@ -11,6 +11,8 @@ import useToken from 'store/useToken';
 import useBlockStore from 'store/useBlockStore';
 import { deleteBlock } from 'service/api/admin-api';
 import Divider from '@components/divider';
+import MapAdmin from './map';
+import { FaMapMarkedAlt } from 'react-icons/fa';
 
 interface BlockProps extends Block {
     index: number;
@@ -149,6 +151,16 @@ export default function Block({
                 }}
             >
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
+                    {rest.type === 8 ? (
+                        <FaMapMarkedAlt size="30" color="white" />
+                    ) : (
+                        <Image
+                            src={blockTypeMap[rest.type].src}
+                            alt={blockTypeMap[rest.type].title}
+                            width={15}
+                            height={15}
+                        />
+                    )}
                     {/* 블록 타입 */}
                     <Image
                         src={blockTypeMap[rest.type].src}
@@ -176,25 +188,35 @@ export default function Block({
                             dateEnd={rest.dateEnd}
                         />
                     )}
+                    {rest.type === 8 && (
+                        <MapAdmin
+                            title={rest.title}
+                            subText01={rest.subText01}
+                            subText02={rest.subText02}
+                        />
+                    )}
                     {rest.schedule && rest.schedule.length > 0 && (
                         <Schedule schedule={rest.schedule} />
                     )}
-                    {rest.type !== 1 && rest.type !== 5 && rest.type !== 7 && (
-                        <>
-                            {rest.imgUrl && (
-                                <div className="relative aspect-square h-16 overflow-hidden rounded-md">
-                                    <Image
-                                        src={rest.imgUrl}
-                                        alt={''}
-                                        layout="fill"
-                                        className="rounded-md"
-                                        objectFit="cover"
-                                    />
-                                </div>
-                            )}
-                            <div>{rest.title}</div>
-                        </>
-                    )}
+                    {rest.type !== 1 &&
+                        rest.type !== 5 &&
+                        rest.type !== 7 &&
+                        rest.type !== 8 && (
+                            <>
+                                {rest.imgUrl && (
+                                    <div className="relative aspect-square h-16 overflow-hidden rounded-md">
+                                        <Image
+                                            src={rest.imgUrl}
+                                            alt={''}
+                                            layout="fill"
+                                            className="rounded-md"
+                                            objectFit="cover"
+                                        />
+                                    </div>
+                                )}
+                                <div>{rest.title}</div>
+                            </>
+                        )}
                 </div>
 
                 {menuToggle && (

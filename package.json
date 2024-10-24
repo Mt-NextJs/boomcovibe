@@ -23,7 +23,8 @@
         "sortablejs": "^1.15.3",
         "tailwind-merge": "^2.5.4",
         "zod": "^3.23.8",
-        "zustand": "^5.0.0"
+        "zustand": "^5.0.0",
+        "zustand-persist": "^0.4.0"
     },
     "devDependencies": {
         "@types/node": "^20",

@@ -9,6 +9,7 @@ interface BlockStore {
     getBlockById: (id: number) => Block | undefined;
     resetBlock: () => void;
     updateBlock: (id: number, updates: Partial<Block>) => void;
+    deleteBlock: (id: number) => void;
 }
 
 const useBlockStore = create<BlockStore>()(
@@ -33,6 +34,10 @@ const useBlockStore = create<BlockStore>()(
                         state.block?.id === id
                             ? { ...state.block, ...updates }
                             : state.block,
+                })),
+            deleteBlock: (id) =>
+                set((state) => ({
+                    blocks: state.blocks?.filter((block) => block.id !== id),
                 })),
         }),
         {

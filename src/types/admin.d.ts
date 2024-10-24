@@ -1,4 +1,4 @@
-type BlockType = 1 | 2 | 3 | 4 | 5 | 6 | 7;
+type BlockType = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 interface Schedule {
     id: number;
@@ -30,7 +30,7 @@ interface Block {
     dateCreate: string;
     dateUpdate: string | null;
     active: number;
-    schedule: Schedule[]; // type이 7일 때만 포함되는 일정 데이터
+    schedule?: Schedule[]; // type이 7일 때만 포함되는 일정 데이터
 }
 
 type BlockFormAction = {
