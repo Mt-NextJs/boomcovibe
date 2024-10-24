@@ -1,13 +1,13 @@
 'use client';
 
 import { ClientRoute } from '@config/route';
-// import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import useToken from 'store/useToken';
+// import { zodResolver } from '@hookform/resolvers/zod';
 // import { useForm } from 'react-hook-form';
 // import { joinFormSchema } from 'schemas/schema';
-import useToken from 'store/useToken';
 // import { JoinFormData } from 'types/auth';
 
 export default function JoinForm() {

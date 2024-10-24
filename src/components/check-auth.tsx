@@ -20,7 +20,7 @@ export default function CheckAuth() {
                 router.push('/login');
         } else {
             if (pathname === '/login' || pathname === '/join') {
-                // router.push('/admin');
+                router.push('/admin');
             }
             setToken(token);
         }
