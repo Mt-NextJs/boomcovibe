@@ -3,11 +3,20 @@
 import { ClientRoute } from '@config/route';
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { joinFormSchema } from 'schemas/schema';
 import { JoinFormData } from 'types/auth';
 
 export default function JoinForm() {
+    const [name, setName] = useState('');
+    const [userId, setUserId] = useState('');
+    const [password, setPassword] = useState('');
+    const [email, setEmail] = useState('');
+    const [isLoading, setIsLoading] = useState<boolean>(false);
+    const router = useRouter();
+
     const {
         register,
         handleSubmit,
@@ -18,8 +27,35 @@ export default function JoinForm() {
     });
 
     async function handleRegister(data: JoinFormData) {
-        console.log(data);
-        reset();
+        try {
+            const response = await fetch('/api/user/add', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    name: data.name,
+                    userId: data.userId,
+                    password: data.password,
+                    email: data.email,
+                }),
+            });
+
+            const fetchData = await response.json();
+
+            if (!response.ok) {
+                alert('실패');
+            } else {
+                alert('성공');
+                router.push('/login');
+                return fetchData;
+            }
+        } catch (error) {
+            console.log(error);
+        } finally {
+            setIsLoading(false);
+        }
+        // reset();
     }
 
     return (
@@ -50,12 +86,14 @@ export default function JoinForm() {
                         id="name"
                         name="name"
                         type="text"
+                        value={name}
                         className="input mb-5"
                         placeholder="이름을 입력하세요."
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) =>
                             (e.target.placeholder = '이름을 입력하세요.')
                         }
+                        onChange={(e) => setName(e.target.value)}
                     ></input>
 
                     <label htmlFor="userId" className="title">
@@ -69,12 +107,14 @@ export default function JoinForm() {
                         id="userId"
                         name="userId"
                         type="text"
+                        value={userId}
                         className="input mb-5"
                         placeholder="아이디를 입력하세요."
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) =>
                             (e.target.placeholder = '아이디를 입력하세요.')
                         }
+                        onChange={(e) => setUserId(e.target.value)}
                     ></input>
 
                     <label htmlFor="password" className="title">
@@ -88,10 +128,12 @@ export default function JoinForm() {
                         id="password"
                         name="password"
                         type="password"
+                        value={password}
                         className="input mb-5"
                         placeholder="********"
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) => (e.target.placeholder = '********')}
+                        onChange={(e) => setPassword(e.target.value)}
                     ></input>
 
                     <label htmlFor="confirmPassword" className="title">
@@ -105,10 +147,12 @@ export default function JoinForm() {
                         id="confirmPassword"
                         name="confirmPassword"
                         type="password"
+                        value={password}
                         className="input mb-5"
                         placeholder="********"
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) => (e.target.placeholder = '********')}
+                        onChange={(e) => setPassword(e.target.value)}
                     ></input>
 
                     <label htmlFor="email" className="title">
@@ -122,16 +166,22 @@ export default function JoinForm() {
                         id="email"
                         name="email"
                         type="text"
+                        value={email}
                         className="input mb-5"
                         placeholder="이메일을 입력하세요."
                         onFocus={(e) => (e.target.placeholder = '')}
                         onBlur={(e) =>
                             (e.target.placeholder = '이메일을 입력하세요.')
                         }
+                        onChange={(e) => setEmail(e.target.value)}
                     ></input>
 
-                    <button className="button color" type="submit">
-                        In My Link 가입완료
+                    <button
+                        className="button color"
+                        type="submit"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? '회원가입...' : 'In My Link 가입완료'}
                     </button>
                 </form>
             </div>

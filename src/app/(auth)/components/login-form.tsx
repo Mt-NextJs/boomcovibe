@@ -39,7 +39,7 @@ export default function LoginForm() {
             const fetchData = await response.json();
 
             if (!response.ok) {
-                // alert('실패');
+                alert('실패');
             } else {
                 alert('성공');
                 const token = fetchData.data.token;
