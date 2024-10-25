@@ -9,6 +9,7 @@ import useBlockStore from 'store/useBlockStore';
 import { deleteBlock } from 'service/api/admin-api';
 import { FaMapMarkedAlt } from 'react-icons/fa';
 import { useBlockContent } from 'hooks/useBlockContent';
+import { updateBlock } from 'service/api/block-api';
 
 interface BlockProps extends Block {
     index: number;
@@ -17,6 +18,8 @@ interface BlockProps extends Block {
     isMoving: boolean;
     movingIndex: number | null;
     movingAction: 'UP' | 'DOWN' | null;
+    className?: string; // sortable 사용시 자동추가 되는 타입
+    'data-id'?: string; // sortable 사용시 자동추가 되는 타입
 }
 
 export default function Block({
@@ -26,10 +29,12 @@ export default function Block({
     isMoving,
     movingIndex,
     movingAction,
+    className,
+    'data-id': dataId,
     ...rest
 }: BlockProps) {
-    const [isToggled, setIsToggled] = useState(rest.active === 1);
-    const [menuToggle, setMenuToggle] = useState(false);
+    const [blockOpen, setBlockOpen] = useState<boolean>(rest.openYn === 'Y');
+    const [menuToggle, setMenuToggle] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
     const router = useRouter();
     const { token } = useToken();
@@ -82,8 +87,20 @@ export default function Block({
     };
 
     //활성화 버튼
-    const toggle = () => {
-        setIsToggled(!isToggled);
+    const toggleActive = async () => {
+        setBlockOpen(!blockOpen);
+        try {
+            const res = await updateBlock({
+                accessToken: token,
+                blockData: {
+                    ...rest,
+                    openYn: !blockOpen ? 'Y' : 'N',
+                },
+            });
+        } catch (error) {
+            console.error(error, 'block active 업데이트 실패');
+            setBlockOpen(blockOpen);
+        }
     };
     // 메뉴 버튼
     const handleMenu = () => {
@@ -110,7 +127,10 @@ export default function Block({
             <div className="flex flex-col rounded-l-lg bg-gray-100">
                 <button
                     className="flex-1"
-                    onClick={() => handleMove(index, 'UP')}
+                    onClick={() => {
+                        console.log('onClick', rest);
+                        handleMove(index, 'UP');
+                    }}
                 >
                     <Image
                         className="p-2"
@@ -120,7 +140,10 @@ export default function Block({
                         height={30}
                     />
                 </button>
-                <button className="drag-button flex-1">
+                <button
+                    className="drag-button flex-1"
+                    onMouseDown={() => console.log('onMouseDown', rest)}
+                >
                     <Image
                         className="border-y-1 p-2"
                         src={'/assets/icons/icon_grabber.png'}
@@ -144,7 +167,8 @@ export default function Block({
             </div>
             <div
                 className="relative flex-1 cursor-pointer p-3"
-                onClick={() => {
+                onClick={(e) => {
+                    e.stopPropagation();
                     handleClick(
                         blockTypeMap[rest.type].href + `?id=${rest.id}`,
                     );
@@ -181,12 +205,12 @@ export default function Block({
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            toggle();
+                            toggleActive();
                         }}
-                        className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${isToggled ? 'bg-blue-500' : 'bg-gray-300'}`}
+                        className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${blockOpen ? 'bg-blue-500' : 'bg-gray-300'}`}
                     >
                         <span
-                            className={`absolute left-1 top-1/2 h-3 w-3 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${isToggled ? 'translate-x-3' : 'translate-x-0'}`}
+                            className={`absolute left-1 top-1/2 h-3 w-3 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${blockOpen ? 'translate-x-3' : 'translate-x-0'}`}
                         />
                     </button>
                 </div>
