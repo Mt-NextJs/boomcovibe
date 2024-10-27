@@ -3,6 +3,7 @@ import useBlockStore from 'store/useBlockStore';
 import useToken from 'store/useToken';
 import { addBlock, updateBlock } from 'service/api/block-api';
 import { validateURL } from 'service/validation';
+import { deleteImage } from 'service/firebase';
 
 export function useBlockSubmit() {
     const router = useRouter();
@@ -68,6 +69,10 @@ export function useBlockSubmit() {
             resetBlock();
         } catch (error) {
             console.log(error);
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+            if (imgUrl) {
+                await deleteImage(imgUrl);
+            }
         }
     };
 

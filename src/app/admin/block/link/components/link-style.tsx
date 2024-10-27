@@ -20,10 +20,9 @@ export default function LinkStyle({
                         <Image
                             src={imgUrl}
                             alt="link-image"
-                            layout="fill"
-                            objectFit="cover"
+                            fill
                             objectPosition="center"
-                            className="absolute inset-0 z-0"
+                            className="absolute inset-0 z-0 object-cover"
                         />
                     )}
                 </div>
@@ -34,9 +33,8 @@ export default function LinkStyle({
                         <Image
                             src={imgUrl}
                             alt="link-image"
-                            layout="fill"
-                            objectFit="cover"
-                            className="absolute inset-0 z-0"
+                            fill
+                            className="absolute inset-0 z-0 object-cover"
                         />
                     )}
                 </div>
@@ -48,9 +46,8 @@ export default function LinkStyle({
                         <Image
                             src={imgUrl}
                             alt="link-image"
-                            layout="fill"
-                            objectFit="cover"
-                            className="absolute inset-0 z-0"
+                            fill
+                            className="absolute inset-0 z-0 object-cover"
                         />
                     )}
                 </div>
