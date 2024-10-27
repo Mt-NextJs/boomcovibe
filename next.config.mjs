@@ -16,11 +16,7 @@ const nextConfig = {
         remotePatterns: [
             {
                 protocol: 'https',
-                hostname: 'img.youtube.com',
-            },
-            {
-                protocol: 'https',
-                hostname: 'cdn.pixabay.com',
+                hostname: '**', // 모든 도메인 허용
             },
         ],
     },
