@@ -70,3 +70,17 @@ export async function deleteBlock(token: string, id: number): Promise<void> {
         body: JSON.stringify({ id }),
     });
 }
+
+export async function updatePrivate(
+    token: string,
+    isPrivate: boolean,
+): Promise<void> {
+    const response = await fetch('/api/user/private', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ privateYn: isPrivate ? 'Y' : 'N' }),
+    });
+}
