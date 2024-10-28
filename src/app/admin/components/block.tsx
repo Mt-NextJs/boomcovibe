@@ -10,6 +10,7 @@ import { deleteBlock } from 'service/api/admin-api';
 import { FaMapMarkedAlt } from 'react-icons/fa';
 import { useBlockContent } from 'hooks/useBlockContent';
 import { updateBlock } from 'service/api/block-api';
+import { deleteImage } from 'service/firebase';
 
 interface BlockProps extends Block {
     index: number;
@@ -113,11 +114,19 @@ export default function Block({
     };
     const blockDelete = async () => {
         if (!token) return;
-        setMenuToggle(false);
-        await deleteBlock(token, rest.id);
-        alert('삭제되었습니다.');
-        removeBlock(rest.id);
-        resetBlock();
+        try {
+            await deleteBlock(token, rest.id);
+            alert('삭제되었습니다.');
+            // 링크 이미지 삭제
+            setMenuToggle(false);
+            removeBlock(rest.id);
+            resetBlock();
+            if (rest.type === 3 && rest.imgUrl) {
+                await deleteImage(rest.imgUrl);
+            }
+        } catch {
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
     };
     return (
         <li

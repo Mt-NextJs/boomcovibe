@@ -55,7 +55,7 @@ export default function ImageForm({
                                 src={imgUrl}
                                 alt="Image"
                                 fill
-                                objectFit={`${imgOrientation ? 'cover' : 'contain'}`}
+                                className={` ${imgOrientation ? 'object-cover' : 'object-contain'}`}
                             />
                         </div>
                     )}

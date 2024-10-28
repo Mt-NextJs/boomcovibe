@@ -42,9 +42,9 @@ export const useBlockContent = (block: Block) => {
                             <Image
                                 src={block.imgUrl}
                                 alt={''}
-                                layout="fill"
-                                className="rounded-md"
-                                objectFit="cover"
+                                fill
+                                sizes="700px"
+                                className="rounded-md object-cover"
                             />
                         </div>
                     )}
