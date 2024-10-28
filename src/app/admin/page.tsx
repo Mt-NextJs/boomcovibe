@@ -12,6 +12,7 @@ import {
     fetchUserInfo,
     fetchVisitorInfo,
     updateBlockOrder,
+    updatePrivate,
 } from 'service/api/admin-api';
 import Skeleton from './components/skeleton';
 import useBlockStore from 'store/useBlockStore';
@@ -23,6 +24,7 @@ export default function Admin() {
     const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [isBlockLinkOpen, setIsBlockLinkOpen] = useState(false);
+    const [isPrivate, setIsPrivate] = useState(false);
     const [movingState, setMovingState] = useState<{
         index: number | null;
         action: 'UP' | 'DOWN' | null;
@@ -34,28 +36,31 @@ export default function Admin() {
             router.push(ClientRoute.LOGIN as string);
         }
         setToken(token);
-        const fetchData = async () => {
-            if (token) {
-                try {
-                    const [userData, blockData, visitorData] =
-                        await Promise.all([
-                            fetchUserInfo(token),
-                            fetchBlockList(token),
-                            fetchVisitorInfo(token),
-                        ]);
 
-                    setBlocks(blockData);
-                    setUserInfo(userData);
-                    setVisitorInfo(visitorData);
-                } catch (error) {
-                    console.error(error);
-                } finally {
-                    setLoading(false);
-                }
-            }
-        };
-        fetchData();
+        fetchData(token);
     }, []);
+    const fetchData = async (token: string) => {
+        if (token) {
+            try {
+                const [userData, blockData, visitorData] = await Promise.all([
+                    fetchUserInfo(token),
+                    fetchBlockList(token),
+                    fetchVisitorInfo(token),
+                ]);
+
+                setBlocks(blockData);
+                setUserInfo(userData);
+                setVisitorInfo(visitorData);
+                setIsPrivate(userData.privateYn === 'Y');
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setLoading(false);
+            }
+        }
+    };
+
+    // 드래그 중 실행
     const updateBlock = (blocks: Block[], from: number, to: number) => {
         const list = [...blocks];
         const item = list.splice(from, 1);
@@ -73,27 +78,35 @@ export default function Admin() {
         setBlocks(sortedList);
     };
 
-    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
-        if (!blocks) return;
-        updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
-    };
+    // 드래그 끝났을 때 실행
     const dragEnd = (e: SortableEvent) => {
         if (!blocks) return;
         updateBlock(blocks, e.oldIndex as number, e.newIndex as number);
     };
-    const toggleMove = (index?: number, action?: 'UP' | 'DOWN') => {
+    // 상하 버튼 클릭 시 실행
+    const handleBlock = (index: number, action: 'UP' | 'DOWN') => {
         if (!blocks) return;
+        updateBlock(blocks, index, action === 'UP' ? 0 : blocks.length - 1);
+    };
+    // 상하 버튼 클릭 시 실행 (블록 스타일 변경)
+    const toggleMove = (index?: number, action?: 'UP' | 'DOWN'): boolean => {
+        if (!blocks) return false;
         if (action === 'DOWN' && index === blocks.length - 1) return true;
         if (index !== undefined && action) {
             setMovingState({ index, action });
         } else {
             setMovingState({ index: null, action: null });
         }
+        return false;
     };
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
-
+    const handlePrivate = () => {
+        if (!token) return;
+        setIsPrivate(!isPrivate);
+        updatePrivate(token, !isPrivate);
+    };
     async function handleLogout() {
         try {
             localStorage.removeItem('token');
@@ -127,9 +140,39 @@ export default function Admin() {
                     width={64}
                     height={64}
                 />
-                <p className="mt-2 font-semibold text-black underline">
-                    {userInfo?.name}
-                </p>
+                <div className="flex w-full flex-col items-center">
+                    <p className="mt-2 font-semibold text-black underline">
+                        {userInfo?.name}
+                    </p>
+
+                    <div className="group relative flex w-fit flex-col items-center justify-center gap-1">
+                        {/* 토글 버튼 */}
+                        <button
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                handlePrivate();
+                            }}
+                            className={`relative h-5 w-11 rounded-full duration-300 ease-in-out ${isPrivate ? 'bg-blue-500' : 'bg-gray-300'}`}
+                        >
+                            <span
+                                className={`absolute left-1 top-1/2 h-4 w-4 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${isPrivate ? 'translate-x-5' : 'translate-x-0'}`}
+                            />
+                        </button>
+                        {/* 말풍선 */}
+                        <div
+                            className={`relative items-center opacity-0 transition-all duration-300 ease-in-out group-hover:opacity-100`}
+                        >
+                            {/* 말풍선 꼬리 (위쪽에 뾰족한 부분) */}
+                            <div className="relative left-1/2 top-0 h-2 w-2 -translate-x-1/2 translate-y-1/2 rotate-45 transform bg-black"></div>
+                            {/* 말풍선 본체 */}
+                            <div className="rounded-full bg-black px-2 py-1 text-[0.5rem] text-white">
+                                <p className="z-10">
+                                    프라이빗 설정 버튼 입니다.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <button
                     onClick={handleLogout}
                     className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md"

@@ -2,22 +2,25 @@
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import Menu from './menu';
-import Schedule from './schedule';
-import Event from './event';
 import { blockTypeMap } from 'service/constants/block-types';
 import { useRouter } from 'next/navigation';
-
 import useToken from 'store/useToken';
 import useBlockStore from 'store/useBlockStore';
 import { deleteBlock } from 'service/api/admin-api';
+import { FaMapMarkedAlt } from 'react-icons/fa';
+import { useBlockContent } from 'hooks/useBlockContent';
+import { updateBlock } from 'service/api/block-api';
+import { deleteImage } from 'service/firebase';
 
 interface BlockProps extends Block {
     index: number;
     handleBlock: (index: number, action: 'UP' | 'DOWN') => void;
-    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => boolean | undefined;
+    toggleMove: (index?: number, action?: 'UP' | 'DOWN') => boolean;
     isMoving: boolean;
     movingIndex: number | null;
     movingAction: 'UP' | 'DOWN' | null;
+    className?: string; // sortable 사용시 자동추가 되는 타입
+    'data-id'?: string; // sortable 사용시 자동추가 되는 타입
 }
 
 export default function Block({
@@ -27,24 +30,30 @@ export default function Block({
     isMoving,
     movingIndex,
     movingAction,
+    className,
+    'data-id': dataId,
     ...rest
 }: BlockProps) {
-    const [isToggled, setIsToggled] = useState(rest.active === 1);
-    const [menuToggle, setMenuToggle] = useState(false);
+    const [blockOpen, setBlockOpen] = useState<boolean>(rest.openYn === 'Y');
+    const [menuToggle, setMenuToggle] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement | null>(null);
     const router = useRouter();
     const { token } = useToken();
     const { setBlock, deleteBlock: removeBlock, resetBlock } = useBlockStore();
-    const blockStyle = () => {
-        if (isMoving && movingAction === 'UP' && index < movingIndex!)
-            return 'translate-y-full';
-        if (isMoving && movingAction === 'DOWN' && index > movingIndex!)
-            return '-translate-y-full';
-        if (isMoving && movingAction === 'UP' && index === movingIndex)
-            return '-translate-y-full z-10';
-        if (isMoving && movingAction === 'DOWN' && index === movingIndex)
-            return 'translate-y-full z-10';
 
+    // 블록 상 하 이동 스타일 ( movingIndex : 이동하려는 블록의 인덱스 )
+    const blockStyle = () => {
+        if (!isMoving) return '';
+        if (movingAction === 'UP') {
+            return index < movingIndex
+                ? 'translate-y-full'
+                : '-translate-y-full z-10';
+        }
+        if (movingAction === 'DOWN') {
+            return index > movingIndex
+                ? '-translate-y-full'
+                : 'translate-y-full z-10';
+        }
         return '';
     };
     useEffect(() => {
@@ -70,17 +79,29 @@ export default function Block({
     // 블록 최 상하단 버튼
     const handleMove = (index: number, action: 'UP' | 'DOWN') => {
         if (action === 'UP' && index === 0) return;
-        if (toggleMove(index, action)) return;
-        toggleMove(index, action);
-        setTimeout(() => {
-            handleBlock(index, action);
-            toggleMove();
-        }, 300);
+        if (!toggleMove(index, action)) {
+            setTimeout(() => {
+                handleBlock(index, action);
+                toggleMove();
+            }, 300);
+        }
     };
 
     //활성화 버튼
-    const toggle = () => {
-        setIsToggled(!isToggled);
+    const toggleActive = async () => {
+        setBlockOpen(!blockOpen);
+        try {
+            const res = await updateBlock({
+                accessToken: token,
+                blockData: {
+                    ...rest,
+                    openYn: !blockOpen ? 'Y' : 'N',
+                },
+            });
+        } catch (error) {
+            console.error(error, 'block active 업데이트 실패');
+            setBlockOpen(blockOpen);
+        }
     };
     // 메뉴 버튼
     const handleMenu = () => {
@@ -93,11 +114,19 @@ export default function Block({
     };
     const blockDelete = async () => {
         if (!token) return;
-        setMenuToggle(false);
-        await deleteBlock(token, rest.id);
-        alert('삭제되었습니다.');
-        removeBlock(rest.id);
-        resetBlock();
+        try {
+            await deleteBlock(token, rest.id);
+            alert('삭제되었습니다.');
+            // 링크 이미지 삭제
+            setMenuToggle(false);
+            removeBlock(rest.id);
+            resetBlock();
+            if (rest.type === 3 && rest.imgUrl) {
+                await deleteImage(rest.imgUrl);
+            }
+        } catch {
+            alert('오류가 발생했습니다. 다시 시도해주세요.');
+        }
     };
     return (
         <li
@@ -107,7 +136,10 @@ export default function Block({
             <div className="flex flex-col rounded-l-lg bg-gray-100">
                 <button
                     className="flex-1"
-                    onClick={() => handleMove(index, 'UP')}
+                    onClick={() => {
+                        console.log('onClick', rest);
+                        handleMove(index, 'UP');
+                    }}
                 >
                     <Image
                         className="p-2"
@@ -117,7 +149,10 @@ export default function Block({
                         height={30}
                     />
                 </button>
-                <button className="drag-button flex-1">
+                <button
+                    className="drag-button flex-1"
+                    onMouseDown={() => console.log('onMouseDown', rest)}
+                >
                     <Image
                         className="border-y-1 p-2"
                         src={'/assets/icons/icon_grabber.png'}
@@ -141,8 +176,8 @@ export default function Block({
             </div>
             <div
                 className="relative flex-1 cursor-pointer p-3"
-                onClick={() => {
-                    console.log('click!!');
+                onClick={(e) => {
+                    e.stopPropagation();
                     handleClick(
                         blockTypeMap[rest.type].href + `?id=${rest.id}`,
                     );
@@ -150,38 +185,21 @@ export default function Block({
             >
                 <div className="mb-3 flex items-center gap-1 text-xs font-semibold text-primary">
                     {/* 블록 타입 */}
-                    <Image
-                        src={blockTypeMap[rest.type].src}
-                        alt="type image"
-                        width={15}
-                        height={15}
-                    />
+                    {rest.type === 8 ? (
+                        <FaMapMarkedAlt size="15" className="text-primary" />
+                    ) : (
+                        <Image
+                            src={blockTypeMap[rest.type].src}
+                            alt={blockTypeMap[rest.type].title}
+                            width={15}
+                            height={15}
+                        />
+                    )}
                     {blockTypeMap[rest.type].title}
                 </div>
                 <div className={`flex gap-2`}>
                     {/* content */}
-                    {rest.type === 5 && (
-                        <Event
-                            title={rest.title}
-                            dateStart={rest.dateStart}
-                            dateEnd={rest.dateEnd}
-                        />
-                    )}
-                    {rest.schedule && <Schedule schedule={rest.schedule} />}
-                    {rest.type !== 5 && rest.type !== 7 && (
-                        <>
-                            {rest.imgUrl && (
-                                <Image
-                                    src={rest.imgUrl}
-                                    alt={''}
-                                    width={56}
-                                    height={56}
-                                    className="rounded-md"
-                                />
-                            )}
-                            <div>{rest.title}</div>
-                        </>
-                    )}
+                    {useBlockContent(rest)}
                 </div>
 
                 {menuToggle && (
@@ -196,12 +214,12 @@ export default function Block({
                     <button
                         onClick={(e) => {
                             e.stopPropagation();
-                            toggle();
+                            toggleActive();
                         }}
-                        className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${isToggled ? 'bg-blue-500' : 'bg-gray-300'}`}
+                        className={`relative h-4 w-8 rounded-full duration-300 ease-in-out ${blockOpen ? 'bg-blue-500' : 'bg-gray-300'}`}
                     >
                         <span
-                            className={`absolute left-1 top-1/2 h-3 w-3 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${isToggled ? 'translate-x-3' : 'translate-x-0'}`}
+                            className={`absolute left-1 top-1/2 h-3 w-3 -translate-y-1/2 transform rounded-full bg-white transition-transform duration-300 ease-in-out ${blockOpen ? 'translate-x-3' : 'translate-x-0'}`}
                         />
                     </button>
                 </div>

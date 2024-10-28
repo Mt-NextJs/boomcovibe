@@ -2,7 +2,7 @@ import Image from 'next/image';
 
 export default function BlockStack() {
     return (
-        <div className="relative flex h-[40rem] min-w-[23rem] flex-col">
+        <div className="relative flex h-[40rem] min-w-[16rem] flex-col">
             <Image
                 src="/assets/icons/icon-block1.png"
                 alt="block1"

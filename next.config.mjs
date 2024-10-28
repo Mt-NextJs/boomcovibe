@@ -13,7 +13,12 @@ const nextConfig = {
         CUSTOM_URL: process.env.NEXT_PUBLIC_KAKAO_URL, // CUSTOM_URL 추가
     },
     images: {
-        domains: ['img.youtube.com'],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: '**', // 모든 도메인 허용
+            },
+        ],
     },
 };
 

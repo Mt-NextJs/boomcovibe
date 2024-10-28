@@ -1,7 +1,6 @@
-import { Dispatch, useState } from 'react';
 import { twMerge } from 'tailwind-merge';
 import Image from 'next/image';
-
+import { FaCheckCircle } from 'react-icons/fa';
 export default function LinkStyleSelector({
     selectedStyle,
     handleStyleChange,
@@ -42,6 +41,11 @@ export default function LinkStyleSelector({
                                 style={{ objectFit: 'contain' }}
                                 className="px-8 py-2"
                             />
+                            {selectedStyle === index + 1 && (
+                                <FaCheckCircle
+                                    className={`absolute bottom-1 right-2 rounded-full bg-white text-primary`}
+                                />
+                            )}
                         </div>
                         <p className="text-center">{descriptions[index]}</p>
                     </div>

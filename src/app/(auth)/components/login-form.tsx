@@ -1,40 +1,23 @@
 'use client';
 
 import { ClientRoute } from '@config/route';
-// import { zodResolver } from '@hookform/resolvers/zod';
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
-// import { RegisterFormData } from 'types/auth';
-// import { useForm } from 'react-hook-form';
-// import { registerFormSchema } from 'schemas/schema';
-// import { RegisterFormData } from 'types/auth';
 import useToken from 'store/useToken';
 
 export default function LoginForm() {
-    const [token, setToken] = useState(null);
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
-
-    const router = useRouter();
+    const [isLoading, setIsLoading] = useState<boolean>(false);
     const setACToken = useToken((state) => state.setToken);
-    // const {
-    //     register,
-    //     handleSubmit,
-    //     reset,
-    //     formState: { errors },
-    // } = useForm<RegisterFormData>({
-    //     resolver: zodResolver(registerFormSchema),
-    // });
-
-    // async function handleRegister(data: RegisterFormData) {
-    //     console.log(data);
-    //     reset();
-    // }
+    const router = useRouter();
 
     async function handleLogin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
+        setIsLoading(true);
+
         try {
             const formData = new FormData(e.currentTarget);
             const userId = formData.get('userId');
@@ -46,6 +29,7 @@ export default function LoginForm() {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
+                    formData,
                     userId: userId,
                     password: password,
                 }),
@@ -58,13 +42,14 @@ export default function LoginForm() {
                 alert('성공');
                 const token = fetchData.data.token;
                 localStorage.setItem('token', token);
-                setToken(token);
                 setACToken(token);
                 router.push('/admin');
                 return fetchData;
             }
         } catch (error) {
             console.log(error);
+        } finally {
+            setIsLoading(false);
         }
     }
 
@@ -82,7 +67,7 @@ export default function LoginForm() {
                     </Link>
                 </div>
 
-                <h1 className="pageName">In My Link 로그인</h1>
+                <h1 className="pageName text-primary-250">In My Link 로그인</h1>
 
                 <form className="mt-8" onSubmit={handleLogin}>
                     <label htmlFor="userId" className="title">
@@ -92,7 +77,6 @@ export default function LoginForm() {
                         </span>
                     </label>
                     <input
-                        // {...register('id')}
                         id="userId"
                         name="userId"
                         type="text"
@@ -105,12 +89,6 @@ export default function LoginForm() {
                         }
                         onChange={(e) => setUserId(e.target.value)}
                     ></input>
-                    {/* Login, Join에서 아이디가 유효하지 않을때, 에러처리 */}
-                    {/* {errors.id && (
-                        <p className="text-sm text-red-600">
-                            {errors.id.message as string}
-                        </p>
-                    )} */}
 
                     <label htmlFor="password" className="title">
                         비밀번호
@@ -119,7 +97,6 @@ export default function LoginForm() {
                         </span>
                     </label>
                     <input
-                        // {...register('password')}
                         id="password"
                         name="password"
                         type="password"
@@ -130,19 +107,17 @@ export default function LoginForm() {
                         onBlur={(e) => (e.target.placeholder = '********')}
                         onChange={(e) => setPassword(e.target.value)}
                     ></input>
-                    {/* Login, Join에서 비밀번호가 유효하지 않을때, 에러처리 */}
-                    {/* {errors.password && (
-                        <p className="text-sm text-red-600">
-                            {errors.password.message as string}
-                        </p>
-                    )} */}
 
-                    <button className="button color" type="submit">
-                        In My Link 로그인
+                    <button
+                        className="button color"
+                        type="submit"
+                        disabled={isLoading}
+                    >
+                        {isLoading ? '로그인...' : 'In My Link 로그인'}
                     </button>
                     <Link href={ClientRoute.JOIN as string}>
                         <button className="button gray" type="submit">
-                            In My Link 무료 회원가입
+                            In My Link 회원가입
                         </button>
                     </Link>
                 </form>

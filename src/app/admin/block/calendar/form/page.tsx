@@ -8,16 +8,15 @@ import useToken from 'store/useToken';
 import useBlockStore from 'store/useBlockStore';
 import BlockHeader from '../../components/block-header';
 import SelectTime from '../component/select-time';
-import { addBlock } from 'service/api/block-api';
+import { updateCalBlock } from 'service/api/block-api';
 
 export default function CalendarFormBlock() {
     const { token } = useToken();
-    const { blocks } = useBlockStore();
+    const { blocks, block } = useBlockStore();
     const maxSequence = blocks
         ? Math.max(...blocks.map((b) => b.sequence), 0)
         : 0;
     const router = useRouter();
-
     const now = dayjs().format('YYYY. MM. DD');
     const [startDateValue, setStartDateValue] = useState<DateValueType>({
         startDate: null,
@@ -102,17 +101,19 @@ export default function CalendarFormBlock() {
     }, [startTimeValue, endTimeValue, startDateValue, endDateValue]);
 
     // 블록 추가 호출
-    const addNewBlock = async (): Promise<void> => {
+    const updateNewBlock = async (): Promise<void> => {
         if (!token) {
             console.error('Token is not available');
             return;
         }
         try {
             const blockData: CalendarBlock = {
+                id: block?.id,
                 type: 7, // 캘린더
                 sequence: maxSequence + 1,
                 style: 1, // 우선 리스트로 표기
                 schedule: [
+                    ...(block?.schedule ?? []),
                     {
                         title: scheduleName,
                         url: linkAddress,
@@ -122,7 +123,10 @@ export default function CalendarFormBlock() {
                 ],
             };
 
-            const result = await addBlock({ accessToken: token, blockData });
+            const result = await updateCalBlock({
+                accessToken: token,
+                blockData,
+            });
             if (result) {
                 router.push('/admin');
             }
@@ -250,7 +254,7 @@ export default function CalendarFormBlock() {
                             : ''
                     }`}
                     onClick={() => {
-                        addNewBlock();
+                        updateNewBlock();
                     }}
                 >
                     추가 완료

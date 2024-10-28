@@ -6,6 +6,7 @@ interface BlockStore {
     block: Block | null;
     setBlocks: (blocks: Block[]) => void;
     setBlock: (block: Block | null) => void;
+    getBlockById: (id: number) => Block | undefined;
     resetBlock: () => void;
     updateBlock: (id: number, updates: Partial<Block>) => void;
     deleteBlock: (id: number) => void;
@@ -13,13 +14,16 @@ interface BlockStore {
 
 const useBlockStore = create<BlockStore>()(
     persist(
-        (set) => ({
+        (set, get) => ({
             blocks: [],
             block: null,
             setBlocks: (blocks) => set({ blocks }),
             setBlock: (block) => {
+                console.log(block, 'block set');
                 set({ block });
             },
+            getBlockById: (id) =>
+                get().blocks?.find((block) => block.id === id),
             resetBlock: () => set({ block: null }),
             updateBlock: (id, updates) =>
                 set((state) => ({
