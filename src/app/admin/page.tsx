@@ -15,6 +15,7 @@ import {
 } from 'service/api/admin-api';
 import Skeleton from './components/skeleton';
 import useBlockStore from 'store/useBlockStore';
+import Link from 'next/link';
 
 export default function Admin() {
     const { blocks, setBlocks } = useBlockStore();
@@ -96,15 +97,6 @@ export default function Admin() {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
 
-    async function handleLogout() {
-        try {
-            localStorage.removeItem('token');
-            await router.push('/login');
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     if (loading)
         return (
             <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
@@ -129,13 +121,13 @@ export default function Admin() {
                     width={64}
                     height={64}
                 />
-                <p className="mt-2 font-semibold text-black underline">
-                    {userInfo?.name}
-                </p>
-                <button
-                    onClick={handleLogout}
-                    className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md"
-                >
+                <Link href={'/admin/profile/detail'}>
+                    <p className="mt-2 font-semibold text-black underline">
+                        {userInfo?.name}
+                    </p>
+                </Link>
+
+                <button className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md">
                     <Image
                         src={'/assets/icons/icon_menu.png'}
                         alt="menu image"

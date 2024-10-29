@@ -19,49 +19,6 @@ export default function JoinForm() {
     const router = useRouter();
     const setACToken = useToken((state) => state.setToken);
 
-    // const {
-    //     register,
-    //     handleSubmit,
-    //     reset,
-    //     formState: { errors },
-    // } = useForm<JoinFormData>({
-    //     resolver: zodResolver(joinFormSchema),
-    // });
-
-    // async function handleRegister(data: JoinFormData) {
-    //     setIsLoading(true);
-
-    //     try {
-    //         const response = await fetch('/api/user/add', {
-    //             method: 'POST',
-    //             headers: {
-    //                 'Content-Type': 'application/json',
-    //             },
-    //             body: JSON.stringify({
-    //                 name: data.name,
-    //                 userId: data.userId,
-    //                 password: data.password,
-    //                 email: data.email,
-    //             }),
-    //         });
-
-    //         const fetchData = await response.json();
-
-    //         if (!response.ok) {
-    //             alert('실패');
-    //         } else {
-    //             alert('성공');
-    //             router.push('/login');
-    //             return fetchData;
-    //         }
-    //     } catch (error) {
-    //         console.log(error);
-    //     } finally {
-    //         setIsLoading(false);
-    //     }
-    //     reset();
-    // }
-
     async function handleJoin(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
         setIsLoading(true);

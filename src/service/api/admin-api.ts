@@ -70,3 +70,15 @@ export async function deleteBlock(token: string, id: number): Promise<void> {
         body: JSON.stringify({ id }),
     });
 }
+
+// export async function updateUser(token: string) {
+//     const response = await fetch('/api/user/update', {
+//         method: 'POST',
+//         headers: {
+//             Authorization: `Bearer ${token}`,
+//             'Content-Type': 'application/json',
+//         },
+//     });
+//     const { data } = await response.json();
+//     return data;
+// }

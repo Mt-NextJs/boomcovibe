@@ -6,8 +6,64 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import useToken from 'store/useToken';
+// import { useForm } from 'react-hook-form';
+// import { loginFormSchema, SignInSchema } from 'schemas/schema';
+// import { zodResolver } from '@hookform/resolvers/zod';
 
 export default function LoginForm() {
+    // const {
+    //     register,
+    //     handleSubmit,
+    //     formState: { errors, isSubmitting },
+    //     reset,
+    //     setError,
+    // } = useForm<SignInSchema>({
+    //     resolver: zodResolver(loginFormSchema),
+    // });
+
+    // const setACToken = useToken((state) => state.setToken);
+    // const router = useRouter();
+
+    // const onSubmit: SubmitHandler<SignInSchema> = async (data) => {
+    //     try {
+    //         const res = await fetch('/api/login', {
+    //             method: 'POST',
+    //             body: JSON.stringify({
+    //                 userId: data.userId,
+    //                 password: data.password,
+    //             }),
+    //             headers: {
+    //                 'Content-Type': 'application/json',
+    //             },
+    //         });
+
+    //         const responseData = await res.json();
+    //         console.log(responseData);
+
+    //         if (responseData?.errors) {
+    //             Object.entries(responseData.errors).forEach(
+    //                 ([field, message]) => {
+    //                     setError(field as SignInFields, {
+    //                         type: 'server',
+    //                         message: message as string,
+    //                     });
+    //                 },
+    //             );
+    //         }
+
+    //         if (responseData?.created) {
+    //             reset();
+    //             const token = responseData.data.token;
+    //             localStorage.setItem('token', token);
+    //             setACToken(token);
+    //             router.push('/admin');
+    //             return responseData;
+    //         }
+    //     } catch (error) {
+    //         console.log(data);
+    //     }
+    // };
+
     const [userId, setUserId] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -77,6 +133,7 @@ export default function LoginForm() {
                         </span>
                     </label>
                     <input
+                        // {...register('userId')}
                         id="userId"
                         name="userId"
                         type="text"
@@ -90,6 +147,12 @@ export default function LoginForm() {
                         onChange={(e) => setUserId(e.target.value)}
                     ></input>
 
+                    {/* {errors.userId && (
+                        <p className="mt-2 text-sm text-red-600 dark:text-red-500">
+                            {errors?.userId?.message}
+                        </p>
+                    )} */}
+
                     <label htmlFor="password" className="title">
                         비밀번호
                         <span className="title relative top-1 ml-2 inline-block text-red-500">
@@ -97,6 +160,7 @@ export default function LoginForm() {
                         </span>
                     </label>
                     <input
+                        // {...register('password')}
                         id="password"
                         name="password"
                         type="password"
