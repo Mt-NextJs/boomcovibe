@@ -76,7 +76,6 @@ a {
     }
 }
 
-/* 로딩 블록 애니메이션-yellow */
 .loading-block-second {
     animation: loadingBlockYellow 2s ease-in-out forwards;
 }
@@ -89,7 +88,6 @@ a {
     }
 }
 
-/* 로딩 블록 애니메이션-blue */
 .loading-block-third {
     animation: loadingBlockBlue 1.5s ease-in-out forwards;
 }
@@ -98,11 +96,10 @@ a {
         top: -23rem;
     }
     100% {
-        top: 10.8rem;
+        top: 12rem;
     }
 }
 
-/* 로딩 블록 애니메이션-white */
 .loading-block-fourth {
     animation: loadingBlockWhite 1.2s ease-in-out forwards;
 }
@@ -111,7 +108,7 @@ a {
         top: -23rem;
     }
     100% {
-        top: 17.1rem;
+        top: 19.1rem;
     }
 }
 

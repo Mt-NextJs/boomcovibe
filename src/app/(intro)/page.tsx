@@ -8,10 +8,10 @@ export default function Intro() {
     return (
         <div className="flex h-dvh flex-col bg-primary-100 py-[20%]">
             <div className="flex h-full items-center">
-                <div className="grid grid-cols-2">
+                <div className="grid grid-cols-2 items-center">
                     <BlockStack />
-                    <div className="z-30 grid grid-flow-col grid-rows-2 gap-4">
-                        <div className="logo-desc text-foreground mt-10 w-full pr-2 text-xl">
+                    <div className="z-30 grid h-fit grid-flow-col grid-rows-2 gap-4">
+                        <div className="logo-desc text-foreground w-full pr-2 text-xl">
                             <Image
                                 src="/assets/icons/main1.png"
                                 alt="블록으로"
@@ -28,7 +28,7 @@ export default function Intro() {
                                 <BlockLogo />
                             </div>
                         </div>
-                        <div className="logo-inmylink text-center">
+                        <div className="logo-inmylink h-fit text-center">
                             <div>
                                 <Image
                                     src="/assets/icons/main3.png"
