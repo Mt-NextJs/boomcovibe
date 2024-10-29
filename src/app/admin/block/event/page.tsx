@@ -51,7 +51,7 @@ export default function EventBlock() {
             };
 
             const result = await addBlock({ accessToken: token, blockData });
-            if (result.ok) {
+            if (result) {
                 router.push('/admin');
             }
         } catch (error) {
