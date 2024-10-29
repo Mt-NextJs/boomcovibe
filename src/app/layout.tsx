@@ -11,6 +11,9 @@ export const metadata: Metadata = {
         default: 'IN MY LINK',
     },
     description: 'BOOMCO co.',
+    icons: {
+        icon: '/assets/icons/icon-block2.png',
+    },
 };
 
 export default function RootLayout({

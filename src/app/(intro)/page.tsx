@@ -11,12 +11,12 @@ export default function Intro() {
                 <div className="grid grid-cols-2">
                     <BlockStack />
                     <div className="z-30 grid grid-flow-col grid-rows-2 gap-4">
-                        <div className="logo-desc text-foreground w-full pr-2 text-xl">
+                        <div className="logo-desc text-foreground mt-10 w-full pr-2 text-xl">
                             <Image
                                 src="/assets/icons/main1.png"
                                 alt="블록으로"
-                                width={694}
-                                height={163}
+                                width={700}
+                                height={400}
                             />
                             <div className="flex flex-col">
                                 <Image

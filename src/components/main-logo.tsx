@@ -5,12 +5,10 @@ import { useState, useEffect } from 'react';
 export default function BlockLogo() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const images = [
-        '/assets/icons/main4.png',
         '/assets/icons/main5.png',
         '/assets/icons/main6.png',
         '/assets/icons/main7.png',
-        '/assets/icons/main8.png',
-        '/assets/icons/main9.png',
+        '/assets/icons/main4.png',
     ];
 
     useEffect(() => {
@@ -28,9 +26,8 @@ export default function BlockLogo() {
             <Image
                 src={images[currentImageIndex]} // 슬라이드 이미지
                 alt="슬라이드 이미지"
-                height={0}
-                width={0}
-                // style={{ width: 'auto', height: '130px' }}
+                height={163}
+                width={700}
             />
         </>
     );
