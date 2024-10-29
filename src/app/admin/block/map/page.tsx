@@ -23,7 +23,7 @@ export default function MapBlock() {
 
     const [totalValue, setTotalValue] = useState<MapBlock>({
         type: 8,
-        sequence: maxSequence,
+        sequence: maxSequence + 1,
         title: '',
         subText01: '',
         subText02: '',
