@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useToken from 'store/useToken';
+import useBlockStore from 'store/useBlockStore';
 import { addBlock } from 'service/api/block-api';
 import BlockHeader from '../components/block-header';
 import DaumPost from './components/address';
@@ -10,7 +11,11 @@ import PreblockMap from '../components/preview/preblock-map';
 
 export default function MapBlock() {
     const { token } = useToken();
+    const { blocks } = useBlockStore();
     const router = useRouter();
+    const maxSequence = blocks
+        ? Math.max(...blocks.map((b) => b.sequence), 0)
+        : 0;
     const [addressObj, setAddressObj] = useState<AddressProps>({
         areaAddress: '',
         townAddress: '',
@@ -18,7 +23,7 @@ export default function MapBlock() {
 
     const [totalValue, setTotalValue] = useState<MapBlock>({
         type: 8,
-        sequence: 0,
+        sequence: maxSequence,
         title: '',
         subText01: '',
         subText02: '',
