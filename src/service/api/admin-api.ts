@@ -71,14 +71,16 @@ export async function deleteBlock(token: string, id: number): Promise<void> {
     });
 }
 
-// export async function updateUser(token: string) {
-//     const response = await fetch('/api/user/update', {
-//         method: 'POST',
-//         headers: {
-//             Authorization: `Bearer ${token}`,
-//             'Content-Type': 'application/json',
-//         },
-//     });
-//     const { data } = await response.json();
-//     return data;
-// }
+export async function updatePrivate(
+    token: string,
+    isPrivate: boolean,
+): Promise<void> {
+    const response = await fetch('/api/user/private', {
+        method: 'POST',
+        headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ privateYn: isPrivate ? 'Y' : 'N' }),
+    });
+}

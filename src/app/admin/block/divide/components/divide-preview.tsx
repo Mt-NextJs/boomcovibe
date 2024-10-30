@@ -8,8 +8,8 @@ export default function DividePreview({
     return (
         <>
             <p className="mb-2">미리보기</p>
-            <div className="mx-auto mb-10 h-56 w-full bg-slate-100 py-4">
-                <div className="mx-auto h-full w-1/2 rounded-tl-3xl rounded-tr-3xl bg-white px-2 pt-2 shadow-lg">
+            <div className="mx-auto mb-10 h-56 w-full bg-slate-100 p-4">
+                <div className="mx-auto h-full max-w-[300px] rounded-tl-3xl rounded-tr-3xl bg-white px-2 pt-2 shadow-lg">
                     <div className="mx-auto h-full w-full overflow-hidden rounded-tl-3xl rounded-tr-3xl border border-gray-100 px-4 pt-4">
                         <div className="flex h-2/5 w-full rounded-lg border border-gray-100 p-1 shadow-md">
                             <div className="aspect-square h-full rounded-lg bg-slate-300"></div>

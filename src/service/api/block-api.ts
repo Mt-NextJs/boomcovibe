@@ -38,7 +38,7 @@ export const updateBlock = async (params: UpdateBlockParams) => {
     }
 };
 
-// 블록 업데이트 API 호출 함수
+// 캘린더 블록 업데이트 API 호출 함수
 export const updateCalBlock = async (params: AddBlockParams) => {
     const { accessToken, blockData } = params;
     const response = await fetch('/api/link/update', {

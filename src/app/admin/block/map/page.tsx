@@ -3,26 +3,51 @@
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import useToken from 'store/useToken';
-import { addBlock } from 'service/api/block-api';
+import useBlockStore from 'store/useBlockStore';
+import { addBlock, updateCalBlock } from 'service/api/block-api';
 import BlockHeader from '../components/block-header';
 import DaumPost from './components/address';
 import PreblockMap from '../components/preview/preblock-map';
+import { useBlockSubmit } from 'hooks/useBlockSubmit';
 
 export default function MapBlock() {
     const { token } = useToken();
+    const { blocks } = useBlockStore();
+    const { block, paramsId } = useBlockSubmit();
     const router = useRouter();
-    const [addressObj, setAddressObj] = useState<AddressProps>({
-        areaAddress: '',
-        townAddress: '',
-    });
+    const maxSequence = blocks
+        ? Math.max(...blocks.map((b) => b.sequence), 0)
+        : 0;
+    const [addressObj, setAddressObj] = useState<AddressProps>(
+        paramsId && block
+            ? {
+                  areaAddress: JSON.parse(block.subText01).areaAddress,
+                  townAddress: JSON.parse(block.subText01).townAddress,
+              }
+            : {
+                  areaAddress: '',
+                  townAddress: '',
+              },
+    );
 
-    const [totalValue, setTotalValue] = useState<MapBlock>({
-        type: 8,
-        sequence: 0,
-        title: '',
-        subText01: '',
-        subText02: '',
-    });
+    const [totalValue, setTotalValue] = useState<MapBlock>(
+        paramsId && block
+            ? {
+                  id: Number(paramsId),
+                  type: 8,
+                  sequence: block.sequence,
+                  title: block.title,
+                  subText01: block.subText01,
+                  subText02: block.subText02,
+              }
+            : {
+                  type: 8,
+                  sequence: maxSequence + 1,
+                  title: '',
+                  subText01: '',
+                  subText02: '',
+              },
+    );
 
     const handleInputFunction = (
         event: React.ChangeEvent<HTMLInputElement>,
@@ -50,10 +75,18 @@ export default function MapBlock() {
             return;
         }
         try {
-            const result = await addBlock({
-                accessToken: token,
-                blockData: totalValue,
-            });
+            let result;
+            if (paramsId && block) {
+                result = await updateCalBlock({
+                    accessToken: token,
+                    blockData: totalValue,
+                });
+            } else {
+                result = await addBlock({
+                    accessToken: token,
+                    blockData: totalValue,
+                });
+            }
             if (result) {
                 router.push('/admin');
             }
