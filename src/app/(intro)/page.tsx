@@ -41,7 +41,7 @@ export default function Intro() {
                     </div>
                 </div>
             </div>
-            <div className="loginButtons absolute bottom-[10%] flex min-w-[25rem] flex-col items-center gap-[2rem] self-center">
+            <div className="loginButtons absolute bottom-[10%] flex min-w-[24rem] flex-col items-center gap-[2rem] self-center">
                 <Link
                     href={ClientRoute.LOGIN as string}
                     className={'button color'}

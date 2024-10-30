@@ -16,6 +16,7 @@ import {
 } from 'service/api/admin-api';
 import Skeleton from './components/skeleton';
 import useBlockStore from 'store/useBlockStore';
+import PreviewPage from '@components/preview-page';
 
 export default function Admin() {
     const { blocks, setBlocks } = useBlockStore();
@@ -24,12 +25,15 @@ export default function Admin() {
     const [visitorInfo, setVisitorInfo] = useState<Visitor | null>(null);
     const [loading, setLoading] = useState<boolean>(true);
     const [isBlockLinkOpen, setIsBlockLinkOpen] = useState(false);
+    const [previewModalOpen, setPreviewModalOpen] = useState(false);
     const [isPrivate, setIsPrivate] = useState(false);
     const [movingState, setMovingState] = useState<{
         index: number | null;
         action: 'UP' | 'DOWN' | null;
     }>({ index: null, action: null });
+
     const router = useRouter();
+
     useEffect(() => {
         const token = localStorage.getItem('token');
         if (!token) {
@@ -102,6 +106,11 @@ export default function Admin() {
     const handleBlockLink = () => {
         setIsBlockLinkOpen(!isBlockLinkOpen);
     };
+
+    const handlePreviewOpen = () => {
+        setPreviewModalOpen(!previewModalOpen);
+    };
+
     const handlePrivate = () => {
         if (!token) return;
         setIsPrivate(!isPrivate);
@@ -262,8 +271,17 @@ export default function Admin() {
                 ) : (
                     <Empty />
                 )}
+
                 {isBlockLinkOpen && (
                     <BlockLink handleBlockLink={handleBlockLink} />
+                )}
+
+                {previewModalOpen && (
+                    <PreviewPage
+                        handlePreviewOpen={handlePreviewOpen}
+                        name={userInfo.name}
+                        blocks={blocks}
+                    />
                 )}
             </section>
             {/* 미리보기 & 추가 버튼 */}
@@ -271,9 +289,13 @@ export default function Admin() {
             <footer
                 className={`pointer-events-none fixed bottom-0 left-1/2 flex h-16 w-full max-w-[768px] -translate-x-1/2 items-center justify-between p-3 ${!isBlockLinkOpen && 'bg-gradient-to-b from-transparent to-white'}`}
             >
-                <button className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg">
+                <button
+                    className="pointer-events-auto absolute -top-4 left-1/2 -translate-x-1/2 rounded-full border border-gray-100 bg-white p-4 font-semibold text-black shadow-lg"
+                    onClick={handlePreviewOpen}
+                >
                     미리보기
                 </button>
+
                 <button
                     className="pointer-events-auto absolute -top-4 right-3 h-fit w-fit rounded-full bg-primary p-4"
                     onClick={handleBlockLink}
