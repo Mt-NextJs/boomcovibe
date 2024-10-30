@@ -190,10 +190,7 @@ export default function Admin() {
                         </div>
                     </div>
                 </div>
-                <button
-                    onClick={handleLogout}
-                    className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md"
-                >
+                <button className="absolute right-8 top-14 rounded-full bg-white p-1 shadow-md">
                     <Image
                         src={'/assets/icons/icon_menu.png'}
                         alt="menu image"
