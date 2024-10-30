@@ -73,7 +73,7 @@ export default function JoinForm() {
             const password = formData.get('password');
             const email = formData.get('email');
 
-            const response = await fetch('/api/login', {
+            const response = await fetch('/api/user/add', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

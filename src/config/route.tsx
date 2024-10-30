@@ -5,6 +5,7 @@ export const ClientRoute: ClientRouteType = {
     LOGIN: '/login',
     JOIN: '/join',
     ADMIN: '/admin',
+    PREVIEW: '/admin/preview',
     MY: '/admin/my',
     PROFILE: {
         DETAIL: '/admin/profile/detail',

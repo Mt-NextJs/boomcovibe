@@ -82,6 +82,7 @@ interface CalendarBlock {
 
 // 지도 블록 타입
 interface MapBlock {
+    id?: number;
     type: 8;
     sequence: number;
     title: string;
