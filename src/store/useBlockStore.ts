@@ -19,7 +19,6 @@ const useBlockStore = create<BlockStore>()(
             block: null,
             setBlocks: (blocks) => set({ blocks }),
             setBlock: (block) => {
-                console.log(block, 'block set');
                 set({ block });
             },
             getBlockById: (id) =>

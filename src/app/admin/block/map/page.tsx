@@ -67,7 +67,6 @@ export default function MapBlock() {
             subText01: JSON.stringify(addressObj),
         }));
     }, [addressObj]);
-    console.log(totalValue);
 
     const handleSubmitFunction = async (): Promise<void> => {
         if (!token) {

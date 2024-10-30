@@ -17,7 +17,7 @@ import {
 import Skeleton from './components/skeleton';
 import useBlockStore from 'store/useBlockStore';
 import PreviewPage from '@components/preview-page';
-import Link from 'next/link';
+import HowtoModal from '@components/howto-modal';
 
 export default function Admin() {
     const { blocks, setBlocks } = useBlockStore();
@@ -27,6 +27,7 @@ export default function Admin() {
     const [loading, setLoading] = useState<boolean>(true);
     const [isBlockLinkOpen, setIsBlockLinkOpen] = useState(false);
     const [previewModalOpen, setPreviewModalOpen] = useState(false);
+    const [howtoModalOpen, setHowtoModalOpen] = useState(false);
     const [isPrivate, setIsPrivate] = useState(false);
     const [movingState, setMovingState] = useState<{
         index: number | null;
@@ -112,14 +113,20 @@ export default function Admin() {
         setPreviewModalOpen(!previewModalOpen);
     };
 
+    const handleHowtoOpen = () => {
+        setHowtoModalOpen(!howtoModalOpen);
+    };
+
     const handlePrivate = () => {
         if (!token) return;
         setIsPrivate(!isPrivate);
         updatePrivate(token, !isPrivate);
     };
+
     async function handleLogout() {
         try {
             localStorage.removeItem('token');
+            localStorage.removeItem('block-storage');
             await router.push('/login');
         } catch (error) {
             console.error(error);
@@ -234,14 +241,17 @@ export default function Admin() {
             <section className="flex flex-1 flex-col px-3 pb-16 pt-3 text-black">
                 <h2 className="mb-8 flex items-center gap-1 text-base font-bold">
                     블록 리스트
-                    <a className="rounded-full bg-slate-100 p-1" href="#">
+                    <button
+                        className="rounded-full bg-slate-100 p-1"
+                        onClick={handleHowtoOpen}
+                    >
                         <Image
                             src={'/assets/icons/icon_Q_mark.png'}
                             alt="question mark"
                             width={16}
                             height={16}
                         />
-                    </a>
+                    </button>
                 </h2>
 
                 {blocks && blocks.length > 0 ? (
@@ -274,11 +284,16 @@ export default function Admin() {
                     <BlockLink handleBlockLink={handleBlockLink} />
                 )}
 
+                {howtoModalOpen && (
+                    <HowtoModal handleHowtoOpen={handleHowtoOpen} />
+                )}
+
                 {previewModalOpen && (
                     <PreviewPage
                         handlePreviewOpen={handlePreviewOpen}
                         name={userInfo.name}
                         blocks={blocks}
+                        isPrivate={isPrivate}
                     />
                 )}
             </section>
