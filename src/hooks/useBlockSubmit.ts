@@ -59,7 +59,7 @@ export function useBlockSubmit() {
                     if (newBlock.url && !validateURL(newBlock.url))
                         return alert('올바른 URL을 입력해주세요');
                 }
-                console.log(newBlock, 'newBlock');
+                // console.log(newBlock, 'newBlock');
                 await addBlock({
                     accessToken: token,
                     blockData: newBlock,

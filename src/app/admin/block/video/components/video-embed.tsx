@@ -1,6 +1,6 @@
 export default function VideoEmbed({ url }: { url: string }) {
     // src 없을 때 사용할 스켈레톤 구현 필요
-    console.log(url);
+    // console.log(url);
     if (url === '' || url.includes('undefined')) return null;
     return (
         <iframe

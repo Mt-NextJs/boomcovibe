@@ -19,7 +19,7 @@ export async function deleteImage(url: string) {
     const storageRef = ref(storage, filePath);
     try {
         await deleteObject(storageRef);
-        console.log('이미지 삭제 성공');
+        // console.log('이미지 삭제 성공');
     } catch (error) {
         console.log(error);
     }
