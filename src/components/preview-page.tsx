@@ -7,8 +7,8 @@ import LinkStyle from '@app/admin/block/link/components/link-style';
 import PreblockImage from '@app/admin/block/components/preview/preblock-image';
 import PreblockEvent from '@app/admin/block/components/preview/preblock-event';
 import PreblockText from '@app/admin/block/components/preview/preblock-text';
-import PreblockCalendarOne from '@app/admin/block/components/preview/preblock-cal-one';
-import PreblockCalendarTwo from '@app/admin/block/components/preview/preblock-cal-two';
+import PreblockCalOne from '@app/admin/block/components/preview/pre-cal-one';
+import PreblockCalTwo from '@app/admin/block/components/preview/pre-cal-two';
 import PreblockMap from '@app/admin/block/components/preview/preblock-map';
 import PreblockNoContent from '@app/admin/block/components/preview/preblock-nocontent';
 
@@ -63,12 +63,12 @@ export default function PreviewPage({
             case 6:
                 return <PreblockText title={title} />;
             case 7:
-                // return style === 1 ? (
-                //     <PreblockCalendarOne flag={1} />
-                // ) : (
-                //     <PreblockCalendarTwo />
-                // );
-                return 'useEffect 해결중';
+                return style === 1 ? (
+                    <PreblockCalOne schedule={schedule} />
+                ) : (
+                    <PreblockCalTwo />
+                );
+
             case 8:
                 const addressObj = subText01 ? JSON.parse(subText01) : {};
                 const totalValue = {
@@ -93,18 +93,21 @@ export default function PreviewPage({
     return (
         <>
             <Modal handleFunction={handlePreviewOpen}>
-                <>
+                <div className="align-center flex flex-col gap-5">
                     <PreblockProfile name={name} />
                     {blocks && blocks.length > 0 ? ( // blocks가 존재하는지 확인
                         blocks.map((block, index) => (
-                            <div key={index} className="block-item">
+                            <div
+                                key={index}
+                                className="grid w-full place-items-center"
+                            >
                                 {renderBlock(block)}
                             </div>
                         ))
                     ) : (
                         <PreblockNoContent />
                     )}
-                </>
+                </div>
             </Modal>
         </>
     );

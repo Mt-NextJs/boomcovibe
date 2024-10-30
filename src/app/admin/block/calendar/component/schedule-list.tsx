@@ -1,3 +1,5 @@
+import { useBlockSubmit } from "hooks/useBlockSubmit";
+import Link from "next/link";
 import React from "react";
 
 interface scheduleProps {
@@ -41,6 +43,7 @@ const checkDate = (startDate: Date, endDate: Date) => {
 };
 
 export default function ScheduleList({ flag, data }: scheduleProps) {
+  const { paramsId } = useBlockSubmit();
   const startDate = dateFormat(new Date(data?.dateStart));
   const endDate = dateFormat(new Date(data?.dateEnd));
   const dateCheck = checkDate(
@@ -85,9 +88,11 @@ export default function ScheduleList({ flag, data }: scheduleProps) {
               </div>
             </div>
             <div className="flex h-40 w-1/6 flex-col items-center justify-evenly gap-4">
-              <button className="rounded-xl bg-gray-200 px-5 py-3.5 font-bold hover:bg-gray-400">
-                수정
-              </button>
+              <Link href={`/admin/block/calendar/form?paramsId=${paramsId}`}>
+                <button className="rounded-xl bg-gray-200 px-5 py-3.5 font-bold hover:bg-gray-400">
+                  수정
+                </button>
+              </Link>
               <button className="rounded-xl bg-red-100 px-5 py-3.5 font-bold text-red-500 hover:bg-red-300">
                 삭제
               </button>
