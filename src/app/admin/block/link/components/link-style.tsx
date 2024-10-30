@@ -9,7 +9,7 @@ export default function LinkStyle({
     selectedStyle: number;
     imgUrl: string;
 }) {
-    console.log(selectedStyle);
+    // console.log(selectedStyle);
     return (
         <div
             className={`relative flex h-full min-h-16 w-full overflow-hidden rounded-lg bg-white shadow-lg ${selectedStyle === 3 && 'flex-col'} ${selectedStyle === 1 && 'p-2'}`}

@@ -28,7 +28,7 @@ export default function CalendarBlock() {
     //     }
     // }, [isListView]);
 
-    console.log(isListView);
+    // console.log(isListView);
     useEffect(() => {
         if (blocks) {
             setDataSet(true);

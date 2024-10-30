@@ -47,7 +47,7 @@ export async function updateBlockOrder(
     const cleanedBlocks = blocks.map(
         ({ chosen, className, 'data-id': _, ...block }) => block,
     );
-    console.log(cleanedBlocks, 'cleanedBlocks', blocks);
+    // console.log(cleanedBlocks, 'cleanedBlocks', blocks);
     const response = await fetch('/api/link/update/order', {
         method: 'POST',
         headers: {

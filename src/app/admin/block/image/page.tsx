@@ -15,7 +15,7 @@ export default function ImageBlock() {
 
     const handleTitleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
-        console.log(name, value);
+        // console.log(name, value);
         if (name === 'title') setTitle(value);
         if (name === 'url') setUrl(value);
         if (name === 'imgUrl') setImgUrl(value);
