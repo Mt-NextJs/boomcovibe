@@ -1,13 +1,12 @@
-interface LoginFormData {
+export interface LoginFormData {
     userId: string;
-    password: number;
+    password: string;
 }
 
 export interface JoinFormData {
     name: string;
     userId: string;
-    password: number;
-    confirmPassword: number;
+    password: string;
     email: string;
 }
 
