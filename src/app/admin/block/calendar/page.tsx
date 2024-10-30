@@ -9,13 +9,26 @@ import BlockHeader from '../components/block-header';
 import PreblockCalendarOne from '../components/preview/preblock-cal-one';
 import PreblockCalendarTwo from '../components/preview/preblock-cal-two';
 import useBlockStore from 'store/useBlockStore';
+import { useBlockSubmit } from 'hooks/useBlockSubmit';
+import { updateCalBlock } from 'service/api/block-api';
 
 export default function CalendarBlock() {
     const [dataSet, setDataSet] = useState<boolean>(false);
     const { blocks } = useBlockStore();
+    const { block, paramsId } = useBlockSubmit();
     const [isListView, setIsListView] = useState(true);
     const [viewTypeNow, setViewTypeNow] = useState(true);
 
+    // isListView true이면 캘린더블록 스타일 1, false면 스타일 2로 업데이트 ㅠㅠ
+    // useEffect(() => {
+    //     if (isListView) {
+    //         updateCalBlock;
+    //     } else {
+    //         updateCalBlock;
+    //     }
+    // }, [isListView]);
+
+    console.log(isListView);
     useEffect(() => {
         if (blocks) {
             setDataSet(true);
@@ -23,6 +36,7 @@ export default function CalendarBlock() {
             setDataSet(false);
         }
     }, [blocks]);
+
     return (
         <>
             <BlockHeader
@@ -34,7 +48,13 @@ export default function CalendarBlock() {
                   캘린더 블록을 공개할 수 있습니다`}
             />
             <div className="px-10">
-                <Link href={'/admin/block/calendar/form'}>
+                <Link
+                    href={
+                        paramsId
+                            ? `/admin/block/calendar/form?paramsId=${paramsId}`
+                            : '/admin/block/calendar/form'
+                    }
+                >
                     <button className="button color">
                         + 캘린더에 일정을 추가하세요
                     </button>
@@ -64,7 +84,7 @@ export default function CalendarBlock() {
                                     <div
                                         className={`button-color h-3 w-3 rounded-full ${
                                             isListView
-                                                ? 'border-background border-2 bg-primary'
+                                                ? 'border-2 border-white bg-primary'
                                                 : ''
                                         }`}
                                     ></div>
@@ -85,7 +105,7 @@ export default function CalendarBlock() {
                                     <div
                                         className={`button-color h-3 w-3 rounded-full ${
                                             !isListView
-                                                ? 'border-background border-2 bg-primary'
+                                                ? 'border-2 border-white bg-primary'
                                                 : ''
                                         }`}
                                     ></div>

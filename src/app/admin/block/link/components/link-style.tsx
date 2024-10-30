@@ -12,7 +12,7 @@ export default function LinkStyle({
     console.log(selectedStyle);
     return (
         <div
-            className={`relative flex h-full min-h-16 w-5/6 overflow-hidden rounded-lg bg-white shadow-lg ${selectedStyle === 3 && 'flex-col'} ${selectedStyle === 1 && 'p-2'}`}
+            className={`relative flex h-full min-h-16 w-full overflow-hidden rounded-lg bg-white shadow-lg ${selectedStyle === 3 && 'flex-col'} ${selectedStyle === 1 && 'p-2'}`}
         >
             {selectedStyle === 1 && (
                 <div className="relative aspect-square h-20 overflow-hidden rounded-lg bg-slate-300">

@@ -168,12 +168,15 @@ a {
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 20;
 }
 
 /* 모달 중앙 */
 .content-modal {
-    padding: 1.5rem 3rem;
+    padding: 3rem;
     width: 25.125rem;
+    height: 40rem;
+    overflow-y: scroll;
     border-radius: 1.4rem;
     border: 0.063rem solid gray;
     display: flex;
