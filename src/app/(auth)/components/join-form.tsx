@@ -21,7 +21,7 @@ const joinFormSchema = z.object({
     password: z
         .string({ required_error: '비밀번호가 요구 됩니다.' })
         .min(4, { message: '비밀번호는 최소 4글자 이상 입니다.' }),
-    // confirmPassword: z.string(),
+
     email: z.string().trim().email(),
 });
 
