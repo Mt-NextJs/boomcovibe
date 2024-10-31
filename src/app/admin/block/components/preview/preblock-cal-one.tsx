@@ -11,9 +11,9 @@ export default function PreblockCalendarOne({ flag }: flagProps) {
     const { block, paramsId } = useBlockSubmit();
     const [renderData, setRenderData] = useState<Schedule[]>([]);
 
-    const dataList = renderData?.map((data, index) => (
-        <ScheduleList key={index} flag={flag} data={data} />
-    ));
+    const dataList = renderData?.map((data, index) => {
+        return <ScheduleList key={index} flag={flag} data={data} />;
+    });
 
     useEffect(() => {
         if (block?.schedule && paramsId) {
