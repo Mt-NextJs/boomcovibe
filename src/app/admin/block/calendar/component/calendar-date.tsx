@@ -28,6 +28,7 @@ export default function CalendarDateComponent({
     pastsetYear,
     pastsetMonth,
 }: Props) {
+    // console.log(pastmonth);
     const handlePreviousMonth = () => {
         if (pastmonth === 0) {
             pastsetMonth(11); // 12월
@@ -60,7 +61,7 @@ export default function CalendarDateComponent({
 
                     <h1 className="flex items-center text-base font-semibold leading-6 text-gray-900">
                         <time>
-                            {pastyear}년 {MONTH_NAMES[pastmonth]}월
+                            {pastyear}년 {pastmonth}월
                         </time>
                     </h1>
 

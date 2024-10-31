@@ -4,18 +4,16 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
 import './component/schedule.css';
-import ScheduleList from './component/schedule-list';
 import BlockHeader from '../components/block-header';
 import PreblockCalendarOne from '../components/preview/preblock-cal-one';
 import PreblockCalendarTwo from '../components/preview/preblock-cal-two';
 import useBlockStore from 'store/useBlockStore';
 import { useBlockSubmit } from 'hooks/useBlockSubmit';
-import { updateCalBlock } from 'service/api/block-api';
 
 export default function CalendarBlock() {
     const [dataSet, setDataSet] = useState<boolean>(false);
     const { blocks } = useBlockStore();
-    const { block, paramsId } = useBlockSubmit();
+    const { paramsId } = useBlockSubmit();
     const [isListView, setIsListView] = useState(true);
     const [viewTypeNow, setViewTypeNow] = useState(true);
 
@@ -28,7 +26,6 @@ export default function CalendarBlock() {
     //     }
     // }, [isListView]);
 
-    // console.log(isListView);
     useEffect(() => {
         if (blocks) {
             setDataSet(true);
