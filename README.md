@@ -1,5 +1,6 @@
 # 소셜링크 정리 웹페이지 구현 프로젝트 1차 고도화
 
+서비스페이지: [인마이링크 바로가기](https://www.inmylink.com)
 협업페이지: [노션 페이지 바로가기](https://print-ilikepenguin.notion.site/11682d67d3ef80b9aaadc9125e48317e?pvs=4)
 
 ## 목차
