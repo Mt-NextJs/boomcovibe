@@ -42,7 +42,8 @@ export default function ProfileDetail() {
     async function handleLogout() {
         try {
             localStorage.removeItem('token');
-            router.push('/login');
+            localStorage.removeItem('block-storage');
+            await router.push('/login');
         } catch (error) {
             console.error(error);
         }

@@ -34,7 +34,6 @@ export default function JoinForm() {
     // const [email, setEmail] = useState('');
     const [isLoading, setIsLoading] = useState<boolean>(false);
     const router = useRouter();
-    const setACToken = useToken((state) => state.setToken);
 
     const {
         register,
@@ -58,11 +57,11 @@ export default function JoinForm() {
             if (!response.ok) {
                 alert('실패');
             } else {
-                alert('성공');
+                alert('회원가입이 완료되었습니다! 로그인해주세요');
                 console.log(fetchData);
-                const token = fetchData.data.token;
-                localStorage.setItem('token', token);
-                setACToken(token);
+                // consttoken = fetchData.data.token;
+                // localStorage.setItem('token', token);
+                // setAC Token(token);
                 router.push('/login');
                 return fetchData;
             }
