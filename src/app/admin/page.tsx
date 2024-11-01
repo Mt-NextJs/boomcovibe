@@ -1,5 +1,6 @@
 'use client';
 import Image from 'next/image';
+import Link from 'next/link';
 import { useEffect, useState } from 'react';
 import Empty from './components/empty';
 import { ReactSortable, SortableEvent } from 'react-sortablejs';
@@ -151,16 +152,20 @@ export default function Admin() {
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-5 bg-white">
             {/* 프로필 */}
             <header className="relative flex h-52 w-full flex-col items-center justify-center bg-gray-100 py-8">
-                <Image
-                    src={'/assets/icons/icon_profile.png'}
-                    alt="User Avatar"
-                    width={64}
-                    height={64}
-                />
+                <Link href="/admin/profile/detail">
+                    <Image
+                        src={'/assets/icons/icon_profile.png'}
+                        alt="User Avatar"
+                        width={64}
+                        height={64}
+                    />
+                </Link>
                 <div className="flex w-full flex-col items-center">
-                    <p className="mt-2 font-semibold text-black underline">
-                        {userInfo?.name}
-                    </p>
+                    <Link href="/admin/profile/detail">
+                        <p className="mt-2 font-semibold text-black underline">
+                            {userInfo?.name}
+                        </p>
+                    </Link>
 
                     <div className="group relative flex w-fit flex-col items-center justify-center gap-1">
                         {/* 토글 버튼 */}

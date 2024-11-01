@@ -3,9 +3,33 @@
 import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import { fetchUserInfo } from 'service/api/admin-api';
 
 export default function ProfileEdit() {
     const router = useRouter();
+    const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+    const [name, setName] = useState('');
+    const [userId, setUserId] = useState('');
+    const [email, setEmail] = useState('');
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const token = localStorage.getItem('token');
+            if (token) {
+                try {
+                    const userData = await fetchUserInfo(token);
+                    setUserInfo(userData);
+                    setName(userData.name || '');
+                    setUserId(userData.userId || '');
+                    setEmail(userData.email || '');
+                } catch (error) {
+                    console.error('Error fetching user data:', error);
+                }
+            }
+        };
+        fetchData();
+    }, []);
 
     return (
         <main className="relative flex min-h-screen w-full max-w-[768px] flex-col gap-2 bg-white">
@@ -41,10 +65,11 @@ export default function ProfileEdit() {
                         id="name"
                         name="name"
                         type="text"
-                        // value={name}
+                        value={name}
+                        onChange={(e) => setName(e.target.value)}
                         className="input mb-5"
                         placeholder="이름을 입력하세요."
-                    ></input>
+                    />
                     <label htmlFor="userId" className="title">
                         아이디
                     </label>
@@ -52,9 +77,11 @@ export default function ProfileEdit() {
                         id="userId"
                         name="userId"
                         type="text"
+                        value={userId}
+                        onChange={(e) => setUserId(e.target.value)}
                         className="input mb-5"
                         placeholder="아이디를 입력하세요."
-                    ></input>
+                    />
                     <label htmlFor="email" className="title">
                         이메일
                     </label>
@@ -62,9 +89,11 @@ export default function ProfileEdit() {
                         id="email"
                         name="email"
                         type="text"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         className="input mb-5"
                         placeholder="이메일을 입력하세요."
-                    ></input>
+                    />
                 </form>
 
                 <div className="flex gap-2 px-2">
